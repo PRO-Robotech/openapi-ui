@@ -1,9 +1,10 @@
 import React, { FC, Fragment, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Spin, Alert, Card, Input, Typography } from 'antd'
-import { useApiResourceTypesByGroup, checkIfApiInstanceNamespaceScoped } from '@prorobotech/openapi-k8s-toolkit'
+import { Spin, Alert, Input, Typography } from 'antd'
+import { Spacer, useApiResourceTypesByGroup, checkIfApiInstanceNamespaceScoped } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store/store'
+import { TitleWithNoTopMargin } from 'components/atoms'
 import { Styled } from './styled'
 
 type TListInsideApisByApiGroupProps = {
@@ -35,7 +36,9 @@ export const ListInsideApisByApiGroup: FC<TListInsideApisByApiGroupProps> = ({ n
       : data?.resources
 
   return (
-    <Card title="Api Groups">
+    <>
+      <TitleWithNoTopMargin level={3}>API Groups</TitleWithNoTopMargin>
+      <Spacer $space={20} $samespace />
       {isPending && <Spin />}
       {!error && data && (
         <Styled.Grid>
@@ -81,6 +84,6 @@ export const ListInsideApisByApiGroup: FC<TListInsideApisByApiGroupProps> = ({ n
         </Styled.Grid>
       )}
       {error && <Alert message={`An error has occurred: ${error?.message} `} type="error" />}
-    </Card>
+    </>
   )
 }

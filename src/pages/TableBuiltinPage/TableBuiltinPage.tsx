@@ -38,6 +38,7 @@ export const TableBuiltinPage: FC<TTableBuiltinPageProps> = ({ forcedTheme, insi
   return (
     <BaseTemplate forcedTheme={forcedTheme} inside={inside}>
       <ManageableBreadcrumbs inside={inside} />
+      <Spacer $space={20} $samespace />
       <BackLink to={namespace ? customBacklinkWithInside : clustererBacklink} title={typeName} />
       <Spacer $space={20} $samespace />
       <ContentCard flexGrow={1} displayFlex flexFlow="column">

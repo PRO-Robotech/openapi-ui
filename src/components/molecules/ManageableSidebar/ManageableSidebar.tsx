@@ -30,6 +30,7 @@ export const ManageableSidebar: FC<TManageableSidebarProps> = ({ projectName, in
           syntheticProject,
         }}
         pathname={pathname}
+        noMarginTop
       />
     </Styled.Container>
   )

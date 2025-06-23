@@ -1,10 +1,18 @@
 import React, { FC } from 'react'
-import { Flex } from 'antd'
-import { Spacer } from '@prorobotech/openapi-k8s-toolkit'
+import { Col } from 'antd'
+import { ContentCard, Spacer } from '@prorobotech/openapi-k8s-toolkit'
 import { useParams, useSearchParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
-import { CreateBuiltinForm, UpdateBuiltinForm, BackLink, ManageableBreadcrumbs, ManageableSidebar } from 'components'
+import {
+  CreateBuiltinForm,
+  UpdateBuiltinForm,
+  BackLink,
+  ManageableBreadcrumbs,
+  ManageableSidebar,
+  RowFlexGrow,
+  FlexCol,
+} from 'components'
 import { BaseTemplate } from 'templates'
 
 type TFormBuiltinPageProps = {
@@ -38,15 +46,21 @@ export const FormBuiltinPage: FC<TFormBuiltinPageProps> = ({ forcedTheme, inside
         to={backLink || customBacklink}
         title={`${entryName ? 'Update' : 'Create'} ${typeName}${entryName ? `/${entryName}` : ''}`}
       />
-      <Spacer $space={10} $samespace />
-      <Flex>
-        <ManageableSidebar instanceName={possibleInstance} projectName={possibleProject} />
-        {entryName ? (
-          <UpdateBuiltinForm namespace={namespace} typeName={typeName} entryName={entryName} backLink={backLink} />
-        ) : (
-          <CreateBuiltinForm namespace={namespace} typeName={typeName} backLink={backLink} />
-        )}
-      </Flex>
+      <Spacer $space={20} $samespace />
+      <ContentCard flexGrow={1} displayFlex flexFlow="column">
+        <RowFlexGrow>
+          <Col span="auto">
+            <ManageableSidebar instanceName={possibleInstance} projectName={possibleProject} />
+          </Col>
+          <FlexCol flex="auto">
+            {entryName ? (
+              <UpdateBuiltinForm namespace={namespace} typeName={typeName} entryName={entryName} backLink={backLink} />
+            ) : (
+              <CreateBuiltinForm namespace={namespace} typeName={typeName} backLink={backLink} />
+            )}
+          </FlexCol>
+        </RowFlexGrow>
+      </ContentCard>
     </BaseTemplate>
   )
 }

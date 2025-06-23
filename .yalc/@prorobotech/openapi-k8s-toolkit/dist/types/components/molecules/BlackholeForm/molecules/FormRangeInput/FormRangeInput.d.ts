@@ -1,0 +1,20 @@
+import { FC } from 'react';
+import { TFormName, TPersistedControls, TUrlParams } from '../../../../../localTypes/form';
+import { TRangeInputCustomProps } from '../../../../../localTypes/formExtensions';
+type TFormRangeInputProps = {
+    name: TFormName;
+    arrKey?: number;
+    arrName?: TFormName;
+    persistName?: TFormName;
+    required?: string[];
+    forceNonRequired?: boolean;
+    isHidden?: boolean;
+    description?: string;
+    isEdit?: boolean;
+    persistedControls: TPersistedControls;
+    customProps: TRangeInputCustomProps;
+    urlParams: TUrlParams;
+    onRemoveByMinus?: () => void;
+};
+export declare const FormRangeInput: FC<TFormRangeInputProps>;
+export {};

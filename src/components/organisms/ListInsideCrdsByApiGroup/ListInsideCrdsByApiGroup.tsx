@@ -1,8 +1,9 @@
 import React, { FC } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Spin, Alert, Card, Typography } from 'antd'
-import { useApiResourceTypesByGroup, checkIfApiInstanceNamespaceScoped } from '@prorobotech/openapi-k8s-toolkit'
+import { Spin, Alert, Typography } from 'antd'
+import { Spacer, useApiResourceTypesByGroup, checkIfApiInstanceNamespaceScoped } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
+import { TitleWithNoTopMargin } from 'components/atoms'
 import { RootState } from 'store/store'
 
 type TListInsideCrdsByApiGroupProps = {
@@ -38,7 +39,9 @@ export const ListInsideCrdsByApiGroup: FC<TListInsideCrdsByApiGroupProps> = ({
       : data?.resources
 
   return (
-    <Card title="CRD Groups">
+    <>
+      <TitleWithNoTopMargin level={3}>CRD Groups</TitleWithNoTopMargin>
+      <Spacer $space={20} $samespace />
       {isPending && <Spin />}
       {!error &&
         data &&
@@ -64,6 +67,6 @@ export const ListInsideCrdsByApiGroup: FC<TListInsideCrdsByApiGroupProps> = ({
             )
           })}
       {error && <Alert message={`An error has occurred: ${error?.message} `} type="error" />}
-    </Card>
+    </>
   )
 }

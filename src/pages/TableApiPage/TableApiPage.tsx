@@ -46,6 +46,7 @@ export const TableApiPage: FC<TTableApiPageProps> = ({ forcedTheme, inside }) =>
   return (
     <BaseTemplate forcedTheme={forcedTheme} inside={inside}>
       <ManageableBreadcrumbs inside={inside} />
+      <Spacer $space={20} $samespace />
       <BackLink
         to={namespace ? customBacklinkWithInside : clustererBacklink}
         title={`${apiGroup}/${apiVersion}/${typeName}`}

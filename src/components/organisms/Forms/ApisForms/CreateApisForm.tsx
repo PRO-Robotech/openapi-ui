@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react'
 import { Segmented } from 'antd'
-import { ContentCard, Spacer } from '@prorobotech/openapi-k8s-toolkit'
+import { Spacer } from '@prorobotech/openapi-k8s-toolkit'
 import { BlackholeForm } from 'components'
 
 type TCreateApisFormProps = {
@@ -30,7 +30,7 @@ export const CreateApisForm: FC<TCreateApisFormProps> = ({ namespace, apiGroup, 
   }
 
   return (
-    <ContentCard>
+    <>
       <Segmented<string>
         options={['OpenAPI', 'Manual']}
         value={currentMode}
@@ -52,6 +52,6 @@ export const CreateApisForm: FC<TCreateApisFormProps> = ({ namespace, apiGroup, 
         backlink={backLink}
         modeData={modeData}
       />
-    </ContentCard>
+    </>
   )
 }

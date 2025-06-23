@@ -1,0 +1,20 @@
+import { FC } from 'react';
+import { SliderBaseProps } from 'antd/es/slider';
+import { TFormName, TPersistedControls } from '../../../../../../../localTypes/form';
+export type TRangeInputProps = {
+    name: TFormName;
+    arrKey?: number;
+    arrName?: TFormName;
+    persistName?: TFormName;
+    required?: string[];
+    forceNonRequired?: boolean;
+    isHidden?: boolean;
+    persistedControls: TPersistedControls;
+    description?: string;
+    onRemoveByMinus?: () => void;
+    max: number;
+    min: number;
+    step?: number;
+    initialValue?: number;
+} & SliderBaseProps;
+export declare const RangeInput: FC<TRangeInputProps>;

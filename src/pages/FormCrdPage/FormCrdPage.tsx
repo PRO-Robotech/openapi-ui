@@ -1,10 +1,18 @@
 import React, { FC } from 'react'
-import { Flex } from 'antd'
-import { Spacer } from '@prorobotech/openapi-k8s-toolkit'
+import { Col } from 'antd'
+import { ContentCard, Spacer } from '@prorobotech/openapi-k8s-toolkit'
 import { useParams, useSearchParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
-import { CreateCrdsForm, UpdateCrdsForm, BackLink, ManageableBreadcrumbs, ManageableSidebar } from 'components'
+import {
+  CreateCrdsForm,
+  UpdateCrdsForm,
+  BackLink,
+  ManageableBreadcrumbs,
+  ManageableSidebar,
+  RowFlexGrow,
+  FlexCol,
+} from 'components'
 import { BaseTemplate } from 'templates'
 
 type TFormCrdPageProps = {
@@ -40,28 +48,34 @@ export const FormCrdPage: FC<TFormCrdPageProps> = ({ forcedTheme, inside }) => {
           entryName ? `/${entryName}` : ''
         }`}
       />
-      <Spacer $space={10} $samespace />
-      <Flex>
-        <ManageableSidebar instanceName={possibleInstance} projectName={possibleProject} />
-        {entryName ? (
-          <UpdateCrdsForm
-            namespace={namespace}
-            apiGroup={apiGroup}
-            apiVersion={apiVersion}
-            typeName={typeName}
-            entryName={entryName}
-            backLink={backLink}
-          />
-        ) : (
-          <CreateCrdsForm
-            namespace={namespace}
-            apiGroup={apiGroup}
-            apiVersion={apiVersion}
-            typeName={typeName}
-            backLink={backLink}
-          />
-        )}
-      </Flex>
+      <Spacer $space={20} $samespace />
+      <ContentCard flexGrow={1} displayFlex flexFlow="column">
+        <RowFlexGrow>
+          <Col span="auto">
+            <ManageableSidebar instanceName={possibleInstance} projectName={possibleProject} />
+          </Col>
+          <FlexCol flex="auto">
+            {entryName ? (
+              <UpdateCrdsForm
+                namespace={namespace}
+                apiGroup={apiGroup}
+                apiVersion={apiVersion}
+                typeName={typeName}
+                entryName={entryName}
+                backLink={backLink}
+              />
+            ) : (
+              <CreateCrdsForm
+                namespace={namespace}
+                apiGroup={apiGroup}
+                apiVersion={apiVersion}
+                typeName={typeName}
+                backLink={backLink}
+              />
+            )}
+          </FlexCol>
+        </RowFlexGrow>
+      </ContentCard>
     </BaseTemplate>
   )
 }

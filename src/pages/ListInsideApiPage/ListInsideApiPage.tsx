@@ -1,7 +1,8 @@
 import React, { FC } from 'react'
-import { Spacer } from '@prorobotech/openapi-k8s-toolkit'
+import { Col } from 'antd'
+import { ContentCard, Spacer } from '@prorobotech/openapi-k8s-toolkit'
 import { useParams } from 'react-router-dom'
-import { ListInsideAllResources, ManageableBreadcrumbs } from 'components'
+import { ListInsideAllResources, ManageableBreadcrumbs, ManageableSidebar, RowFlexGrow, FlexCol } from 'components'
 import { BaseTemplate } from 'templates'
 
 type TListInsideApiPageProps = {
@@ -16,7 +17,16 @@ export const ListInsideApiPage: FC<TListInsideApiPageProps> = ({ forcedTheme, in
     <BaseTemplate forcedTheme={forcedTheme} inside={inside}>
       <ManageableBreadcrumbs inside />
       <Spacer $space={20} $samespace />
-      <ListInsideAllResources namespace={namespace} />
+      <ContentCard flexGrow={1} displayFlex flexFlow="column">
+        <RowFlexGrow>
+          <Col span="auto">
+            <ManageableSidebar />
+          </Col>
+          <FlexCol flex="auto">
+            <ListInsideAllResources namespace={namespace} />
+          </FlexCol>
+        </RowFlexGrow>
+      </ContentCard>
     </BaseTemplate>
   )
 }

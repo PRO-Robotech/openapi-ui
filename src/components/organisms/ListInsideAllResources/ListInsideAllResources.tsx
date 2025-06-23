@@ -7,10 +7,12 @@ import {
   TreeWithSearch,
   useApisResourceTypes,
   useBuiltinResourceTypes,
+  Spacer,
 } from '@prorobotech/openapi-k8s-toolkit'
-import { Spin, Alert } from 'antd'
+import { Spin, Alert, Flex } from 'antd'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store/store'
+import { TitleWithNoTopMargin } from 'components/atoms'
 import { Styled } from './styled'
 
 type TListInsideAllResourcesProps = {
@@ -40,9 +42,11 @@ export const ListInsideAllResources: FC<TListInsideAllResourcesProps> = ({ names
 
   return (
     <Styled.Grid>
-      {apiGroupList.error && <Alert message={`An error has occurred: ${apiGroupList.error?.message} `} type="error" />}
-
-      <Styled.FullHeighCard title="CRD Groups">
+      <div>
+        <Flex justify="center">
+          <TitleWithNoTopMargin level={3}>CRD Groups</TitleWithNoTopMargin>
+        </Flex>
+        <Spacer $space={20} $samespace />
         {apiGroupList.isPending && <Spin />}
         {apiGroupList.error && (
           <Alert message={`An error has occurred: ${apiGroupList.error?.message} `} type="error" />
@@ -66,9 +70,12 @@ export const ListInsideAllResources: FC<TListInsideAllResourcesProps> = ({ names
             }}
           />
         )}
-      </Styled.FullHeighCard>
-
-      <Styled.FullHeighCard title="API Groups">
+      </div>
+      <div>
+        <Flex justify="center">
+          <TitleWithNoTopMargin level={3}>API Groups</TitleWithNoTopMargin>
+        </Flex>
+        <Spacer $space={20} $samespace />
         {apiGroupList.isPending && <Spin />}
         {apiGroupList.error && (
           <Alert message={`An error has occurred: ${apiGroupList.error?.message} `} type="error" />
@@ -90,9 +97,12 @@ export const ListInsideAllResources: FC<TListInsideAllResourcesProps> = ({ names
             }}
           />
         )}
-      </Styled.FullHeighCard>
-
-      <Styled.FullHeighCard title="Builtin Groups">
+      </div>
+      <div>
+        <Flex justify="center">
+          <TitleWithNoTopMargin level={3}>Builtin Groups</TitleWithNoTopMargin>
+        </Flex>
+        <Spacer $space={20} $samespace />
         {builtInData.isPending && <Spin />}
         {builtInData.error && <Alert message={`An error has occurred: ${builtInData.error?.message} `} type="error" />}
         {!builtInData.error && builtinGroups && (
@@ -109,7 +119,7 @@ export const ListInsideAllResources: FC<TListInsideAllResourcesProps> = ({ names
             }}
           />
         )}
-      </Styled.FullHeighCard>
+      </div>
     </Styled.Grid>
   )
 }

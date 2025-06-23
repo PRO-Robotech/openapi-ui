@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react'
 import { Spin, Alert, Segmented } from 'antd'
-import { useApiResourceSingle, ContentCard, Spacer } from '@prorobotech/openapi-k8s-toolkit'
+import { useApiResourceSingle, Spacer } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store/store'
 import { BlackholeForm } from 'components'
@@ -65,7 +65,7 @@ export const UpdateApisForm: FC<TUpdateApisFormProps> = ({
   const { managedFields: __, ...metadata } = data.metadata
 
   return (
-    <ContentCard>
+    <>
       <Segmented<string>
         options={['OpenAPI', 'Manual']}
         value={currentMode}
@@ -87,6 +87,6 @@ export const UpdateApisForm: FC<TUpdateApisFormProps> = ({
         backlink={backLink}
         modeData={modeData}
       />
-    </ContentCard>
+    </>
   )
 }

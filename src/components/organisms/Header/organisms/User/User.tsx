@@ -1,6 +1,9 @@
 import React, { FC } from 'react'
-import { Button, Tooltip, Dropdown, theme } from 'antd'
+import { useNavigate } from 'react-router-dom'
+import { Button, Tooltip, Dropdown, theme, Typography } from 'antd'
 import { LogoutOutlined } from '@ant-design/icons'
+import { useSelector } from 'react-redux'
+import type { RootState } from 'store/store'
 import { useAuth } from 'hooks/useAuth'
 import { logout } from 'api/auth'
 import { Styled } from './styled'
@@ -8,6 +11,8 @@ import { Styled } from './styled'
 export const User: FC = () => {
   const { fullName } = useAuth()
   const { token } = theme.useToken()
+  const navigate = useNavigate()
+  const baseprefix = useSelector((state: RootState) => state.baseprefix.baseprefix)
 
   return (
     <Dropdown
@@ -20,10 +25,14 @@ export const User: FC = () => {
           // },
           {
             key: '2',
+            label: <div onClick={() => navigate(`${baseprefix}/inside`)}>Inside</div>,
+          },
+          {
+            key: '3',
             label: (
-              <div onClick={() => logout()}>
+              <Typography.Text type="danger" onClick={() => logout()}>
                 <LogoutOutlined /> Logout
-              </div>
+              </Typography.Text>
             ),
           },
         ],

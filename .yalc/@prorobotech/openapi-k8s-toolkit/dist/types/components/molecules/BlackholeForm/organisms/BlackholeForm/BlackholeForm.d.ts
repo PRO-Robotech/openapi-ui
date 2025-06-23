@@ -1,0 +1,33 @@
+import { FC } from 'react';
+import { OpenAPIV2 } from 'openapi-types';
+import { TJSON } from '../../../../../localTypes/JSON';
+import { TUrlParams } from '../../../../../localTypes/form';
+import { TFormsPrefillsData } from '../../../../../localTypes/formExtensions';
+type TBlackholeFormCreateProps = {
+    cluster: string;
+    theme: 'light' | 'dark';
+    urlParams: TUrlParams;
+    urlParamsForPermissions: {
+        apiGroup?: string;
+        typeName?: string;
+    };
+    formsPrefillsData?: TFormsPrefillsData;
+    staticProperties: OpenAPIV2.SchemaObject['properties'];
+    required?: string[];
+    hiddenPaths?: string[][];
+    expandedPaths?: string[][];
+    persistedPaths?: string[][];
+    prefillValuesSchema?: TJSON;
+    prefillValueNamespaceOnly?: string;
+    isNameSpaced?: false | string[];
+    isCreate?: boolean;
+    type: 'builtin' | 'apis';
+    apiGroupApiVersion: string;
+    kindName: string;
+    typeName: string;
+    backlink?: string | null;
+    designNewLayout?: boolean;
+    designNewLayoutHeight?: number;
+};
+export declare const BlackholeForm: FC<TBlackholeFormCreateProps>;
+export {};
