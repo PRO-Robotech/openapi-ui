@@ -48,7 +48,7 @@ export const FormBuiltinPage: FC<TFormBuiltinPageProps> = ({ forcedTheme, inside
       />
       <Spacer $space={20} $samespace />
       <ContentCard flexGrow={1} displayFlex flexFlow="column">
-        <RowFlexGrow>
+        <RowFlexGrow wrap={false}>
           <Col span="auto">
             <ManageableSidebar instanceName={possibleInstance} projectName={possibleProject} />
           </Col>
