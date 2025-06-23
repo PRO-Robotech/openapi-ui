@@ -195,6 +195,19 @@ export const App: FC<TAppProps> = ({ isFederation, forcedTheme }) => {
               trackBg: colors?.colorText,
               trackHoverBg: colors?.colorText,
             },
+            Menu: {
+              itemBg: colors?.colorBgContainer,
+              itemHoverBg: colors?.colorBgContainer,
+              itemActiveBg: colors?.colorInfoBg,
+              itemSelectedBg: colors?.colorInfoBg,
+              subMenuItemBg: colors?.colorFillQuaternary,
+              // itemColor: colors?.colorTextDescription,
+              // itemHoverColor: colors?.colorTextDescription,
+              itemColor: colors?.colorText,
+              itemHoverColor: colors?.colorText,
+              itemSelectedColor: colors?.colorText,
+              itemBorderRadius: 0,
+            },
           },
         }}
       >
