@@ -15,12 +15,11 @@ const Container = styled.div<TContainerProps>`
   overflow-y: auto;
   scrollbar-width: thin;
   direction: rtl;
+  max-height: ${({ $maxHeight }) => $maxHeight || 'initial'};
 
   & ul {
     direction: ltr;
   }
-
-  max-height: ${({ $maxHeight }) => $maxHeight || 'initial'};
 
   &:empty {
     display: none;
