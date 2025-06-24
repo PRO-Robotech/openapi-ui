@@ -1,0 +1,15 @@
+export const HEAD_FIRST_ROW = 52
+export const HEAD_SECOND_ROW = 52
+export const HEAD_BORDER_BOTTOM = 1
+export const FOOTER_HEIGHT = 70
+export const MAIN_CONTENT_VERTICAL_PADDING = 20
+export const MAIN_CONTENT_HORIZONTAL_PADDING = 48
+export const BACKLINK_HEIGHT = 38
+export const BACKLINK_MARGIN_TOP = 4
+export const AFTER_BREADCRUMBS_SPACE = 20
+export const AFTER_BACKLINK_SPACE = 20
+/* computed only */
+export const BREADCRUMBS_HEIGHT = 26
+export const CONTENT_CARD_PADDING = 24
+export const BLACKHOLE_FORM_VIEW_SWITCH_HEIGHT = 28
+export const BLACKHOLE_FORM_SUBMIT_ROW_HEIGHT = 46

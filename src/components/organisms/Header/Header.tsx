@@ -1,6 +1,7 @@
 import React, { FC } from 'react'
 import { Flex, theme } from 'antd'
 import { useParams } from 'react-router-dom'
+import { HEAD_FIRST_ROW, HEAD_SECOND_ROW, HEAD_BORDER_BOTTOM } from 'constants/blocksSizes'
 import { Logo, Documentation, ThemeSelector, User, Selector, SelectorInside } from './organisms'
 import { Styled } from './styled'
 
@@ -18,7 +19,7 @@ export const Header: FC<THeaderProps> = ({ inside }) => {
 
   return (
     <>
-      <Styled.PaddingContainer>
+      <Styled.PaddingContainer $height={HEAD_FIRST_ROW}>
         <Flex justify="space-between">
           <div>
             <Logo />
@@ -32,8 +33,12 @@ export const Header: FC<THeaderProps> = ({ inside }) => {
           </div>
         </Flex>
       </Styled.PaddingContainer>
-      <Styled.BackgroundContainer $bgColor={token.colorFillSecondary} $borderColor={token.colorBorder}>
-        <Styled.PaddingContainer>
+      <Styled.BackgroundContainer
+        $bgColor={token.colorFillSecondary}
+        $borderColor={token.colorBorder}
+        $borderSize={HEAD_BORDER_BOTTOM}
+      >
+        <Styled.PaddingContainer $height={HEAD_SECOND_ROW}>
           {inside ? (
             <SelectorInside clusterName={clusterName} namespace={namespace} />
           ) : (

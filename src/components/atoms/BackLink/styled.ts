@@ -1,11 +1,13 @@
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+import { BACKLINK_HEIGHT, BACKLINK_MARGIN_TOP } from 'constants/blocksSizes'
 
 const Container = styled.div`
   display: flex;
   gap: 8px;
   align-items: baseline;
-  margin-top: 4px;
+  margin-top: ${BACKLINK_MARGIN_TOP}px;
+  height: ${BACKLINK_HEIGHT}px;
 `
 
 const CustomLink = styled(Link)`

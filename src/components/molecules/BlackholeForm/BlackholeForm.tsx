@@ -12,6 +12,21 @@ import {
 import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
 import { BASE_API_GROUP, BASE_API_VERSION } from 'constants/customizationApiGroupAndVersion'
+import {
+  HEAD_FIRST_ROW,
+  HEAD_SECOND_ROW,
+  HEAD_BORDER_BOTTOM,
+  FOOTER_HEIGHT,
+  MAIN_CONTENT_VERTICAL_PADDING,
+  BREADCRUMBS_HEIGHT,
+  AFTER_BREADCRUMBS_SPACE,
+  BACKLINK_HEIGHT,
+  BACKLINK_MARGIN_TOP,
+  AFTER_BACKLINK_SPACE,
+  CONTENT_CARD_PADDING,
+  BLACKHOLE_FORM_VIEW_SWITCH_HEIGHT,
+  BLACKHOLE_FORM_SUBMIT_ROW_HEIGHT,
+} from 'constants/blocksSizes'
 
 type TBlackholeFormProps = {
   data:
@@ -47,7 +62,21 @@ export const BlackholeForm: FC<TBlackholeFormProps> = ({ data, isCreate, backlin
   const [height, setHeight] = useState(0)
 
   useEffect(() => {
-    const height = window.innerHeight - 52 - 52 - 20 * 2 - 26 - 20 - 38 - 10 - 24 * 2 - 28 - 10 - 46 - 50 - 33
+    const height =
+      window.innerHeight -
+      HEAD_FIRST_ROW -
+      HEAD_SECOND_ROW -
+      HEAD_BORDER_BOTTOM -
+      MAIN_CONTENT_VERTICAL_PADDING * 2 -
+      BREADCRUMBS_HEIGHT -
+      AFTER_BREADCRUMBS_SPACE -
+      BACKLINK_HEIGHT -
+      BACKLINK_MARGIN_TOP -
+      AFTER_BACKLINK_SPACE -
+      CONTENT_CARD_PADDING * 2 -
+      FOOTER_HEIGHT -
+      BLACKHOLE_FORM_VIEW_SWITCH_HEIGHT -
+      BLACKHOLE_FORM_SUBMIT_ROW_HEIGHT
     setHeight(height)
 
     const handleResize = () => {

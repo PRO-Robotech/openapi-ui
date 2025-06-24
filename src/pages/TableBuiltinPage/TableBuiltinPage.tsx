@@ -11,6 +11,7 @@ import {
   BASE_INSTANCES_VERSION,
   BASE_INSTANCES_RESOURCE_NAME,
 } from 'constants/customizationApiGroupAndVersion'
+import { AFTER_BACKLINK_SPACE, AFTER_BREADCRUMBS_SPACE } from 'constants/blocksSizes'
 
 type TTableBuiltinPageProps = {
   forcedTheme?: 'light' | 'dark'
@@ -38,9 +39,9 @@ export const TableBuiltinPage: FC<TTableBuiltinPageProps> = ({ forcedTheme, insi
   return (
     <BaseTemplate forcedTheme={forcedTheme} inside={inside}>
       <ManageableBreadcrumbs inside={inside} />
-      <Spacer $space={20} $samespace />
+      <Spacer $space={AFTER_BREADCRUMBS_SPACE} $samespace />
       <BackLink to={namespace ? customBacklinkWithInside : clustererBacklink} title={typeName} />
-      <Spacer $space={20} $samespace />
+      <Spacer $space={AFTER_BACKLINK_SPACE} $samespace />
       <ContentCard flexGrow={1} displayFlex flexFlow="column">
         <RowFlexGrow wrap={false}>
           <Col span="auto">

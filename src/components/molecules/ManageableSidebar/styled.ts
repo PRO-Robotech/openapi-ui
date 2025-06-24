@@ -4,13 +4,23 @@ type TContainerProps = {
   $isDark?: boolean
   $colorInfoBg?: string
   $colorFillQuaternary?: string
-  $colorPrimaryBorder?: string
+  $colorPrimaryHover?: string
   $colorBorder?: string
+  $maxHeight: number
 }
 
 const Container = styled.div<TContainerProps>`
   width: 250px;
   padding-right: 20px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  direction: rtl;
+
+  & ul {
+    direction: ltr;
+  }
+
+  max-height: ${({ $maxHeight }) => $maxHeight || 'initial'};
 
   &:empty {
     display: none;
@@ -45,13 +55,13 @@ const Container = styled.div<TContainerProps>`
 
   /* selected header bgcolor */
 
-  && .ant-menu-submenu-selected div {
+  /* && .ant-menu-submenu-selected div {
     background-color: ${({ $colorInfoBg }) => $colorInfoBg || 'initial'};
   }
 
   && .ant-menu-submenu-selected div:hover {
     background-color: ${({ $colorInfoBg }) => $colorInfoBg || 'initial'};
-  }
+  } */
 
   /* selected shift to right */
 
@@ -70,7 +80,7 @@ const Container = styled.div<TContainerProps>`
     display: block;
     width: 3px;
     height: 100%;
-    background-color: ${({ $colorPrimaryBorder }) => $colorPrimaryBorder || 'initial'};
+    background-color: ${({ $colorPrimaryHover }) => $colorPrimaryHover || 'initial'};
     border-radius: 4px;
     content: ' ';
   }

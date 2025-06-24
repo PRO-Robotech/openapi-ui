@@ -3,6 +3,7 @@ import { Col } from 'antd'
 import { ContentCard, Spacer } from '@prorobotech/openapi-k8s-toolkit'
 import { ListProjects, ManageableBreadcrumbs, ManageableSidebar, RowFlexGrow, FlexCol } from 'components'
 import { BaseTemplate } from 'templates'
+import { AFTER_BREADCRUMBS_SPACE } from 'constants/blocksSizes'
 
 type TListProjectsPageProps = {
   forcedTheme?: 'light' | 'dark'
@@ -12,7 +13,7 @@ export const ListProjectsPage: FC<TListProjectsPageProps> = ({ forcedTheme }) =>
   return (
     <BaseTemplate forcedTheme={forcedTheme}>
       <ManageableBreadcrumbs />
-      <Spacer $space={20} $samespace />
+      <Spacer $space={AFTER_BREADCRUMBS_SPACE} $samespace />
       <ContentCard flexGrow={1} displayFlex flexFlow="column">
         <RowFlexGrow wrap={false}>
           <Col span="auto">

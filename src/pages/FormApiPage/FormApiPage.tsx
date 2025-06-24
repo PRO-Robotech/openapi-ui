@@ -13,6 +13,7 @@ import {
   RowFlexGrow,
   FlexCol,
 } from 'components'
+import { AFTER_BACKLINK_SPACE, AFTER_BREADCRUMBS_SPACE } from 'constants/blocksSizes'
 import { BaseTemplate } from 'templates'
 
 type TFormApiPageProps = {
@@ -41,14 +42,14 @@ export const FormApiPage: FC<TFormApiPageProps> = ({ forcedTheme, inside }) => {
   return (
     <BaseTemplate forcedTheme={forcedTheme} inside={inside}>
       <ManageableBreadcrumbs inside={inside} />
-      <Spacer $space={20} $samespace />
+      <Spacer $space={AFTER_BREADCRUMBS_SPACE} $samespace />
       <BackLink
         to={backLink || customBacklink}
         title={`${entryName ? 'Update' : 'Create'} ${apiGroup}/${apiVersion}/${typeName}${
           entryName ? `/${entryName}` : ''
         }`}
       />
-      <Spacer $space={20} $samespace />
+      <Spacer $space={AFTER_BACKLINK_SPACE} $samespace />
       <ContentCard flexGrow={1} displayFlex flexFlow="column">
         <RowFlexGrow wrap={false}>
           <Col span="auto">
