@@ -13,6 +13,7 @@ import {
   RowFlexGrow,
   FlexCol,
 } from 'components'
+import { getSidebarIdPrefix } from 'utils/getSidebarIdPrefix'
 import { AFTER_BACKLINK_SPACE, AFTER_BREADCRUMBS_SPACE } from 'constants/blocksSizes'
 import { BaseTemplate } from 'templates'
 
@@ -39,6 +40,8 @@ export const FormCrdPage: FC<TFormCrdPageProps> = ({ forcedTheme, inside }) => {
 
   const backLink = searchParams.get('backlink')?.startsWith('/') ? searchParams.get('backlink') : undefined
 
+  const sidebarId = `${getSidebarIdPrefix({ instance: !!syntheticProject, project: !!namespace, inside })}crd-form`
+
   return (
     <BaseTemplate forcedTheme={forcedTheme} inside={inside}>
       <ManageableBreadcrumbs inside={inside} />
@@ -53,7 +56,7 @@ export const FormCrdPage: FC<TFormCrdPageProps> = ({ forcedTheme, inside }) => {
       <ContentCard flexGrow={1} displayFlex flexFlow="column">
         <RowFlexGrow wrap={false}>
           <Col span="auto">
-            <ManageableSidebar instanceName={possibleInstance} projectName={possibleProject} />
+            <ManageableSidebar instanceName={possibleInstance} projectName={possibleProject} idToCompare={sidebarId} />
           </Col>
           <FlexCol flex="auto">
             {entryName ? (

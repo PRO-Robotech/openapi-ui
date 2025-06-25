@@ -5,6 +5,7 @@ import { useParams, useSearchParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
 import { TableBuiltinInfo, BackLink, ManageableBreadcrumbs, ManageableSidebar, RowFlexGrow, FlexCol } from 'components'
+import { getSidebarIdPrefix } from 'utils/getSidebarIdPrefix'
 import { BaseTemplate } from 'templates'
 import {
   BASE_INSTANCES_API_GROUP,
@@ -36,6 +37,8 @@ export const TableBuiltinPage: FC<TTableBuiltinPageProps> = ({ forcedTheme, insi
 
   const clustererBacklink = inside ? customBacklinkWithInside : `${baseprefix}/clusters`
 
+  const sidebarId = `${getSidebarIdPrefix({ instance: !!syntheticProject, project: !!namespace, inside })}builtin-table`
+
   return (
     <BaseTemplate forcedTheme={forcedTheme} inside={inside}>
       <ManageableBreadcrumbs inside={inside} />
@@ -45,7 +48,7 @@ export const TableBuiltinPage: FC<TTableBuiltinPageProps> = ({ forcedTheme, insi
       <ContentCard flexGrow={1} displayFlex flexFlow="column">
         <RowFlexGrow wrap={false}>
           <Col span="auto">
-            <ManageableSidebar instanceName={possibleInstance} projectName={possibleProject} />
+            <ManageableSidebar instanceName={possibleInstance} projectName={possibleProject} idToCompare={sidebarId} />
           </Col>
           <FlexCol flex="auto">
             {typeName && (

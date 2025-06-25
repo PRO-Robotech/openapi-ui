@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
 import { TableCrdInfo, BackLink, ManageableBreadcrumbs, ManageableSidebar, RowFlexGrow, FlexCol } from 'components'
+import { getSidebarIdPrefix } from 'utils/getSidebarIdPrefix'
 import { BaseTemplate } from 'templates'
 import {
   BASE_INSTANCES_API_GROUP,
@@ -35,6 +36,8 @@ export const TableCrdPage: FC<TTableCrdPageProps> = ({ forcedTheme, inside }) =>
 
   const clustererBacklink = inside ? customBacklinkWithInside : `${baseprefix}/clusters`
 
+  const sidebarId = `${getSidebarIdPrefix({ instance: !!syntheticProject, project: !!namespace, inside })}crd-table`
+
   return (
     <BaseTemplate forcedTheme={forcedTheme} inside={inside}>
       <ManageableBreadcrumbs inside={inside} />
@@ -47,7 +50,7 @@ export const TableCrdPage: FC<TTableCrdPageProps> = ({ forcedTheme, inside }) =>
       <ContentCard flexGrow={1} displayFlex flexFlow="column">
         <RowFlexGrow wrap={false}>
           <Col span="auto">
-            <ManageableSidebar instanceName={possibleInstance} projectName={possibleProject} />
+            <ManageableSidebar instanceName={possibleInstance} projectName={possibleProject} idToCompare={sidebarId} />
           </Col>
           <FlexCol flex="auto">
             {crdName && apiGroup && apiVersion && apiExtensionVersion && (

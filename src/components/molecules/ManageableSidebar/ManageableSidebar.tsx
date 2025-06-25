@@ -23,9 +23,10 @@ import { Styled } from './styled'
 type TManageableSidebarProps = {
   instanceName?: string
   projectName?: string
+  idToCompare: string
 }
 
-export const ManageableSidebar: FC<TManageableSidebarProps> = ({ projectName, instanceName }) => {
+export const ManageableSidebar: FC<TManageableSidebarProps> = ({ projectName, instanceName, idToCompare }) => {
   const { pathname } = useLocation()
   const params = useParams()
   const clusterName = params?.clusterName || ''
@@ -84,6 +85,7 @@ export const ManageableSidebar: FC<TManageableSidebarProps> = ({ projectName, in
           syntheticProject,
         }}
         pathname={pathname}
+        idToCompare={idToCompare}
         noMarginTop
       />
     </Styled.Container>

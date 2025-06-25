@@ -2,6 +2,7 @@ import React, { FC } from 'react'
 import { Col } from 'antd'
 import { ContentCard, Spacer } from '@prorobotech/openapi-k8s-toolkit'
 import { ListProjects, ManageableBreadcrumbs, ManageableSidebar, RowFlexGrow, FlexCol } from 'components'
+import { getSidebarIdPrefix } from 'utils/getSidebarIdPrefix'
 import { BaseTemplate } from 'templates'
 import { AFTER_BREADCRUMBS_SPACE } from 'constants/blocksSizes'
 
@@ -10,6 +11,8 @@ type TListProjectsPageProps = {
 }
 
 export const ListProjectsPage: FC<TListProjectsPageProps> = ({ forcedTheme }) => {
+  const sidebarId = `${getSidebarIdPrefix({})}projects-list`
+
   return (
     <BaseTemplate forcedTheme={forcedTheme}>
       <ManageableBreadcrumbs />
@@ -17,7 +20,7 @@ export const ListProjectsPage: FC<TListProjectsPageProps> = ({ forcedTheme }) =>
       <ContentCard flexGrow={1} displayFlex flexFlow="column">
         <RowFlexGrow wrap={false}>
           <Col span="auto">
-            <ManageableSidebar />
+            <ManageableSidebar idToCompare={sidebarId} />
           </Col>
           <FlexCol flex="auto">
             <ListProjects />
