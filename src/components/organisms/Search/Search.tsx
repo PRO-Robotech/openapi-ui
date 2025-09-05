@@ -1,10 +1,29 @@
 /* eslint-disable max-lines-per-function */
-import React, { FC } from 'react'
+import React, { FC, useState, useEffect } from 'react'
 import { theme, Typography } from 'antd'
+import { getKinds, getSortedKinds, TKindIndex, TKindWithVersion } from '@prorobotech/openapi-k8s-toolkit'
+import { useSelector } from 'react-redux'
+import { RootState } from 'store/store'
 import { Styled } from './styled'
 
 export const Search: FC = () => {
   const { token } = theme.useToken()
+  const cluster = useSelector((state: RootState) => state.cluster.cluster)
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [kindIndex, setKindIndex] = useState<TKindIndex>()
+  const [kindWithVersion, setKindWithVersion] = useState<TKindWithVersion[]>()
+
+  useEffect(() => {
+    getKinds({
+      clusterName: cluster,
+    }).then(data => {
+      setKindIndex(data)
+      setKindWithVersion(getSortedKinds(data))
+    })
+  }, [cluster])
+
+  console.log(kindWithVersion)
 
   return (
     <Styled.CatContainer>
