@@ -25,7 +25,7 @@ export const User: FC = () => {
           // },
           {
             key: '2',
-            label: <div onClick={() => navigate(`${baseprefix}/inside`)}>Inside</div>,
+            label: <div onClick={() => navigate(`${baseprefix}/inside/clusters`)}>Inside</div>,
           },
           {
             key: '3',

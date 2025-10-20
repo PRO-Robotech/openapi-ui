@@ -7,18 +7,17 @@ import { getBreadcrumbsIdPrefix } from 'utils/getBreadcrumbsIdPrefix'
 import { BaseTemplate } from 'templates'
 
 type TListInsideApiPageProps = {
-  forcedTheme?: 'light' | 'dark'
   inside?: boolean
 }
 
-export const ListInsideApiPage: FC<TListInsideApiPageProps> = ({ forcedTheme, inside }) => {
+export const ListInsideApiPage: FC<TListInsideApiPageProps> = ({ inside }) => {
   const { namespace } = useParams()
 
   const sidebarId = `${getSidebarIdPrefix({ namespace: !!namespace, inside })}apis`
   const breadcrumbsId = `${getBreadcrumbsIdPrefix({ namespace: !!namespace, inside })}apis`
 
   return (
-    <BaseTemplate forcedTheme={forcedTheme} inside={inside} sidebar={<ManageableSidebar idToCompare={sidebarId} />}>
+    <BaseTemplate inside={inside} sidebar={<ManageableSidebar idToCompare={sidebarId} />}>
       <NavigationContainer>
         <ManageableBreadcrumbs idToCompare={breadcrumbsId} inside />
       </NavigationContainer>

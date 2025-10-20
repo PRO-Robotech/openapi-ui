@@ -10,11 +10,12 @@ import {
   usePermissions,
   DeleteModal,
   DeleteModalMany,
-  checkIfBuiltInInstanceNamespaceScoped,
-  checkIfApiInstanceNamespaceScoped,
+  // checkIfBuiltInInstanceNamespaceScoped,
+  // checkIfApiInstanceNamespaceScoped,
   useBuiltinResources,
   useApiResources,
   Spacer,
+  getLinkToForm,
 } from '@prorobotech/openapi-k8s-toolkit'
 import { FlexGrow, PaddingContainer } from 'components'
 import { TABLE_PROPS } from 'constants/tableProps'
@@ -27,13 +28,13 @@ import {
   TABLE_ADD_BUTTON_HEIGHT,
 } from 'constants/blocksSizes'
 import { OverflowContainer } from './atoms'
-import { getDataItems, getBackLinkToTable, getLinkToForm } from './utils'
+import { getDataItems } from './utils'
 
 type TTableApiBuiltinProps = {
   namespace?: string
   resourceType: 'builtin' | 'api'
   apiGroup?: string // api
-  apiVersion?: string // api
+  apiVersion: string // api
   typeName: string
   labels?: string[]
   fields?: string[]
@@ -71,7 +72,8 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
   )
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const [selectedRowsData, setSelectedRowsData] = useState<{ name: string; endpoint: string }[]>([])
-  const [isNamespaced, setIsNamespaced] = useState<boolean>()
+  // const [isNamespaced, setIsNamespaced] = useState<boolean>()
+  // const [isNamespacedLoading, setIsNamespacedLoading] = useState<boolean>()
 
   const [height, setHeight] = useState(0)
 
@@ -97,55 +99,46 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
     }
   }, [])
 
-  useEffect(() => {
-    if (resourceType === 'builtin') {
-      checkIfBuiltInInstanceNamespaceScoped({
-        typeName,
-        clusterName: cluster,
-      }).then(({ isNamespaceScoped }) => {
-        if (isNamespaceScoped) {
-          setIsNamespaced(isNamespaceScoped)
-        }
-      })
-    }
-    if (resourceType === 'api' && apiGroup && apiVersion) {
-      checkIfApiInstanceNamespaceScoped({
-        apiGroup,
-        apiVersion,
-        typeName,
-        clusterName: cluster,
-      }).then(({ isNamespaceScoped }) => {
-        if (isNamespaceScoped) {
-          setIsNamespaced(true)
-        }
-      })
-    }
-  }, [resourceType, cluster, typeName, apiGroup, apiVersion])
+  // useEffect(() => {
+  //   setIsNamespacedLoading(true)
+  //   if (resourceType === 'builtin') {
+  //     checkIfBuiltInInstanceNamespaceScoped({
+  //       typeName,
+  //       clusterName: cluster,
+  //     })
+  //       .then(({ isNamespaceScoped }) => {
+  //         if (isNamespaceScoped) {
+  //           setIsNamespaced(isNamespaceScoped)
+  //         } else {
+  //           setIsNamespaced(false)
+  //         }
+  //       })
+  //       .finally(() => setIsNamespacedLoading(false))
+  //   }
+  //   if (resourceType === 'api' && apiGroup && apiVersion) {
+  //     checkIfApiInstanceNamespaceScoped({
+  //       apiGroup,
+  //       apiVersion,
+  //       typeName,
+  //       clusterName: cluster,
+  //     })
+  //       .then(({ isNamespaceScoped }) => {
+  //         if (isNamespaceScoped) {
+  //           setIsNamespaced(true)
+  //         } else {
+  //           setIsNamespaced(false)
+  //         }
+  //       })
+  //       .finally(() => setIsNamespacedLoading(false))
+  //   }
+  // }, [resourceType, cluster, typeName, apiGroup, apiVersion])
 
   const createPermission = usePermissions({
-    apiGroup: apiGroup || '',
-    typeName,
-    namespace: '',
+    group: apiGroup || undefined,
+    resource: typeName,
+    namespace: params.namespace,
     clusterName: cluster,
     verb: 'create',
-    refetchInterval: false,
-  })
-
-  const updatePermission = usePermissions({
-    apiGroup: apiGroup || '',
-    typeName,
-    namespace: '',
-    clusterName: cluster,
-    verb: 'update',
-    refetchInterval: false,
-  })
-
-  const deletePermission = usePermissions({
-    apiGroup: apiGroup || '',
-    typeName,
-    namespace: '',
-    clusterName: cluster,
-    verb: 'delete',
     refetchInterval: false,
   })
 
@@ -233,35 +226,26 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
                 ...replaceValuesPartsOfUrls,
               }}
               cluster={cluster}
+              namespace={namespace}
               theme={theme}
               baseprefix={inside ? `${baseprefix}/inside` : baseprefix}
               dataItems={getDataItems({ resourceType, dataBuiltin, dataApi })}
+              k8sResource={{
+                resource: typeName,
+                apiGroup,
+                apiVersion,
+              }}
+              // isNamespaced={isNamespaced}
+              // isNamespacedLoading={isNamespacedLoading}
               dataForControls={{
                 cluster,
                 syntheticProject: params.syntheticProject,
-                pathPrefix: resourceType === 'builtin' ? 'forms/builtin' : 'forms/apis',
-                typeName,
-                apiVersion: resourceType === 'builtin' ? 'v1' : `${apiGroup}/${apiVersion}`,
-                backlink: getBackLinkToTable({
-                  resourceType,
-                  cluster,
-                  baseprefix,
-                  namespace,
-                  syntheticProject: params.syntheticProject,
-                  apiGroup,
-                  apiVersion,
-                  typeName,
-                  inside,
-                  fullPath,
-                  searchMount,
-                }),
-                deletePathPrefix:
-                  resourceType === 'builtin' ? `/api/clusters/${cluster}/k8s/api` : `/api/clusters/${cluster}/k8s/apis`,
+                resource: typeName,
+                apiGroup,
+                apiVersion,
+              }}
+              dataForControlsInternal={{
                 onDeleteHandle,
-                permissions: {
-                  canUpdate: isNamespaced ? true : updatePermission.data?.status.allowed,
-                  canDelete: isNamespaced ? true : deletePermission.data?.status.allowed,
-                },
               }}
               selectData={{
                 selectedRowKeys,
@@ -271,7 +255,6 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
                 },
               }}
               tableProps={{ ...TABLE_PROPS, disablePagination: !searchMount }}
-              namespaceScopedWithoutNamespace={isNamespaced && !namespace}
               // maxHeight={height - 65}
             />
           )}
@@ -297,7 +280,6 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
             type="primary"
             onClick={() => {
               const url = getLinkToForm({
-                resourceType,
                 cluster,
                 baseprefix,
                 namespace,
@@ -311,8 +293,10 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
               })
               navigate(url)
             }}
-            loading={isNamespaced ? false : createPermission.isPending}
-            disabled={isNamespaced ? false : !createPermission.data?.status.allowed}
+            // loading={isNamespaced ? false : createPermission.isPending}
+            // disabled={isNamespaced ? false : !createPermission.data?.status.allowed}
+            loading={createPermission.isPending}
+            disabled={!createPermission.data?.status.allowed}
           >
             <PlusOutlined />
             Add {kindName}

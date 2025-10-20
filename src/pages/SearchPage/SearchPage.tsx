@@ -6,11 +6,7 @@ import { getSidebarIdPrefix } from 'utils/getSidebarIdPrefix'
 import { getBreadcrumbsIdPrefix } from 'utils/getBreadcrumbsIdPrefix'
 import { BaseTemplate } from 'templates'
 
-type TSearchPageProps = {
-  forcedTheme?: 'light' | 'dark'
-}
-
-export const SearchPage: FC<TSearchPageProps> = ({ forcedTheme }) => {
+export const SearchPage: FC = () => {
   const { namespace, syntheticProject } = useParams()
 
   const possibleProject = syntheticProject && namespace ? syntheticProject : namespace
@@ -28,7 +24,6 @@ export const SearchPage: FC<TSearchPageProps> = ({ forcedTheme }) => {
 
   return (
     <BaseTemplate
-      forcedTheme={forcedTheme}
       inside={false}
       isSearch
       sidebar={

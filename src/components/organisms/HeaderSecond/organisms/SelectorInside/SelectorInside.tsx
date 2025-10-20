@@ -14,8 +14,8 @@ export const SelectorInside: FC<TSelectorInsideProps> = ({ clusterName, namespac
   const navigate = useNavigate()
   const params = useParams()
 
-  const [selectedClusterName, setSelectedClusterName] = useState(clusterName)
-  const [selectedNamespace, setSelectedNamespace] = useState(namespace)
+  const [selectedClusterName, setSelectedClusterName] = useState<string | undefined>(clusterName)
+  const [selectedNamespace, setSelectedNamespace] = useState<string | undefined>(namespace)
 
   // const { namespacesInSidebar, clustersInSidebar } = useNavSelectorInside(selectedClusterName)
   const { namespacesInSidebar } = useNavSelectorInside(selectedClusterName)

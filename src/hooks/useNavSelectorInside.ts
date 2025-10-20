@@ -19,6 +19,7 @@ export const useNavSelectorInside = (clusterName?: string) => {
     clusterName: clusterName || '',
     typeName: 'namespaces',
     limit: null,
+    isEnabled: Boolean(clusterName),
   })
 
   const clustersInSidebar = clusterList ? clusterList.map(mappedClusterToOptionInSidebar) : []

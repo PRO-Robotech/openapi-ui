@@ -7,11 +7,7 @@ import type { RootState } from 'store/store'
 import { ListClusters, NavigationContainer } from 'components'
 import { BaseTemplate } from 'templates'
 
-type TListClustersPageProps = {
-  forcedTheme?: 'light' | 'dark'
-}
-
-export const ListClustersPage: FC<TListClustersPageProps> = ({ forcedTheme }) => {
+export const ListClustersPage: FC = () => {
   const baseprefix = useSelector((state: RootState) => state.baseprefix.baseprefix)
 
   const breadcrumbItems = [
@@ -26,7 +22,7 @@ export const ListClustersPage: FC<TListClustersPageProps> = ({ forcedTheme }) =>
   ]
 
   return (
-    <BaseTemplate withNoCluster forcedTheme={forcedTheme}>
+    <BaseTemplate>
       <NavigationContainer>
         <Breadcrumb items={breadcrumbItems} separator=">" />
       </NavigationContainer>

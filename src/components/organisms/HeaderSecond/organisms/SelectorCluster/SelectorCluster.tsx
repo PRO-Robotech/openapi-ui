@@ -38,7 +38,7 @@ export const SelectorCluster: FC<TSelectorClusterProps> = ({ clusterName }) => {
     <Flex gap={18} justify="start" align="center">
       <Typography.Text>Cluster: </Typography.Text>
       <EntrySelect
-        placeholder="Cluster"
+        placeholder="Select Cluster"
         options={clustersInSidebar}
         value={selectedClusterName}
         onChange={handleClusterChange}

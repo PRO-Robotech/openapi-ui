@@ -7,18 +7,17 @@ import { getBreadcrumbsIdPrefix } from 'utils/getBreadcrumbsIdPrefix'
 import { BaseTemplate } from 'templates'
 
 type TListInsideCrdByApiGroupPageProps = {
-  forcedTheme?: 'light' | 'dark'
   inside?: boolean
 }
 
-export const ListInsideCrdByApiGroupPage: FC<TListInsideCrdByApiGroupPageProps> = ({ forcedTheme, inside }) => {
+export const ListInsideCrdByApiGroupPage: FC<TListInsideCrdByApiGroupPageProps> = ({ inside }) => {
   const { namespace, apiGroup, apiVersion, apiExtensionVersion } = useParams()
 
   const sidebarId = `${getSidebarIdPrefix({ namespace: !!namespace, inside })}crd-by-api`
   const breadcrumbsId = `${getBreadcrumbsIdPrefix({ namespace: !!namespace, inside })}crd-by-api`
 
   return (
-    <BaseTemplate forcedTheme={forcedTheme} inside={inside} sidebar={<ManageableSidebar idToCompare={sidebarId} />}>
+    <BaseTemplate inside={inside} sidebar={<ManageableSidebar idToCompare={sidebarId} />}>
       <NavigationContainer>
         <ManageableBreadcrumbs idToCompare={breadcrumbsId} inside />
       </NavigationContainer>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { FC, useState, useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Spin, Alert, Button, Flex } from 'antd'
@@ -130,133 +131,135 @@ export const ResourceInfo: FC<TResourceInfoProps> = ({
       return acc
     }, {})
 
-  return (
-    <>
-      {isPending && <Spin />}
-      {error && <Alert message={`An error has occurred: ${error?.message} `} type="error" />}
-      <OverflowMaxHeightContainer $maxHeight={height}>
-        {!error && data && (
-          <EnrichedTableProvider
-            key={`/${apiGroup}/${apiVersion}/${crdPluralName}`}
-            customizationId={`${customizationIdPrefix}/${apiGroup}/${apiVersion}/${crdPluralName}`}
-            tableMappingsReplaceValues={{
-              clusterName: params.clusterName,
-              projectName: params.projectName,
-              instanceName: params.instanceName,
-              namespace: params.namespace,
-              syntheticProject: params.syntheticProject,
-              entryType: params.entryType,
-              apiGroup: params.apiGroup,
-              apiVersion: params.apiVersion,
-              typeName: params.typeName,
-              entryName: params.entryName,
-              apiExtensionVersion: params.apiExtensionVersion,
-              crdName: params.crdName,
-              ...replaceValuesPartsOfUrls,
-            }}
-            forceDefaultAdditionalPrinterColumns={crdAdditionalPrinterColumns}
-            cluster={cluster}
-            theme={theme}
-            baseprefix={inside ? `${baseprefix}/inside` : baseprefix}
-            dataItems={data.items}
-            resourceSchema={resourceSchema}
-            dataForControls={{
-              cluster,
-              syntheticProject: params.syntheticProject,
-              pathPrefix: 'forms/crds',
-              typeName: crdPluralName,
-              apiVersion: `${apiGroup}/${apiVersion}`,
-              backlink: `${baseprefix}${inside ? '/inside' : ''}/${cluster}${namespace ? `/${namespace}` : ''}${
-                params.syntheticProject ? `/${params.syntheticProject}` : ''
-              }/crd-table/${apiGroup}/${apiVersion}/${apiExtensionVersion}/${crdName}`,
-              deletePathPrefix: `/api/clusters/${clusterName}/k8s/apis`,
-              onDeleteHandle,
-              permissions: {
-                canUpdate: permissions.canUpdate,
-                canDelete: permissions.canDelete,
-              },
-            }}
-            selectData={{
-              selectedRowKeys,
-              onChange: (selectedRowKeys: React.Key[], selectedRowsData: { name: string; endpoint: string }[]) => {
-                setSelectedRowKeys(selectedRowKeys)
-                setSelectedRowsData(selectedRowsData)
-              },
-            }}
-            tableProps={{ ...TABLE_PROPS, disablePagination: true }}
-            // maxHeight={height - 65}
-          />
-        )}
-        {/* {selectedRowKeys.length > 0 && (
-          <MarginTopContainer $top={-40}>
-            <Flex gap={16}>
-              <Button type="primary" onClick={clearSelected}>
-                <ClearOutlined />
-                Clear
-              </Button>
-              <Button type="primary" onClick={() => setIsDeleteModalManyOpen(selectedRowsData)}>
-                <MinusOutlined />
-                Delete
-              </Button>
-            </Flex>
-          </MarginTopContainer>
-        )} */}
-      </OverflowMaxHeightContainer>
-      <FlexGrow />
-      <PaddingContainer $padding="4px">
-        <Flex justify="space-between">
-          <Button
-            type="primary"
-            onClick={() =>
-              navigate(
-                `${baseprefix}${inside ? '/inside' : ''}/${cluster}${namespace ? `/${namespace}` : ''}${
-                  params.syntheticProject ? `/${params.syntheticProject}` : ''
-                }/forms/crds/${apiGroup}/${apiVersion}/${crdPluralName}?backlink=${baseprefix}${
-                  inside ? '/inside' : ''
-                }/${cluster}${namespace ? `/${namespace}` : ''}${
-                  params.syntheticProject ? `/${params.syntheticProject}` : ''
-                }/crd-table/${apiGroup}/${apiVersion}/${apiExtensionVersion}/${crdName}`,
-              )
-            }
-            loading={permissions.canCreate === undefined}
-            disabled={permissions.canCreate === false}
-          >
-            <PlusOutlined />
-            Add
-          </Button>
-          {selectedRowKeys.length > 0 && (
-            <Flex gap={16}>
-              <Button type="primary" onClick={clearSelected}>
-                <ClearOutlined />
-                Clear
-              </Button>
-              <Button type="primary" onClick={() => setIsDeleteModalManyOpen(selectedRowsData)}>
-                <MinusOutlined />
-                Delete
-              </Button>
-            </Flex>
-          )}
-        </Flex>
-      </PaddingContainer>
-      {isDeleteModalOpen && (
-        <DeleteModal
-          name={isDeleteModalOpen.name}
-          onClose={() => {
-            setIsDeleteModalOpen(false)
-            clearSelected()
-          }}
-          endpoint={isDeleteModalOpen.endpoint}
-        />
-      )}
-      {isDeleteModalManyOpen !== false && (
-        <DeleteModalMany
-          data={isDeleteModalManyOpen}
-          onClose={() => {
-            setIsDeleteModalManyOpen(false)
-            clearSelected()
-          }}
-        />
-      )}
-    </>
-  )
+  return <div>Most likely deprecated</div>
+
+  // return (
+  //   <>
+  //     {isPending && <Spin />}
+  //     {error && <Alert message={`An error has occurred: ${error?.message} `} type="error" />}
+  //     <OverflowMaxHeightContainer $maxHeight={height}>
+  //       {!error && data && (
+  //         <EnrichedTableProvider
+  //           key={`/${apiGroup}/${apiVersion}/${crdPluralName}`}
+  //           customizationId={`${customizationIdPrefix}/${apiGroup}/${apiVersion}/${crdPluralName}`}
+  //           tableMappingsReplaceValues={{
+  //             clusterName: params.clusterName,
+  //             projectName: params.projectName,
+  //             instanceName: params.instanceName,
+  //             namespace: params.namespace,
+  //             syntheticProject: params.syntheticProject,
+  //             entryType: params.entryType,
+  //             apiGroup: params.apiGroup,
+  //             apiVersion: params.apiVersion,
+  //             typeName: params.typeName,
+  //             entryName: params.entryName,
+  //             apiExtensionVersion: params.apiExtensionVersion,
+  //             crdName: params.crdName,
+  //             ...replaceValuesPartsOfUrls,
+  //           }}
+  //           forceDefaultAdditionalPrinterColumns={crdAdditionalPrinterColumns}
+  //           cluster={cluster}
+  //           theme={theme}
+  //           baseprefix={inside ? `${baseprefix}/inside` : baseprefix}
+  //           dataItems={data.items}
+  //           resourceSchema={resourceSchema}
+  //           dataForControls={{
+  //             cluster,
+  //             syntheticProject: params.syntheticProject,
+  //             pathPrefix: 'forms/crds',
+  //             typeName: crdPluralName,
+  //             apiVersion: `${apiGroup}/${apiVersion}`,
+  //             backlink: `${baseprefix}${inside ? '/inside' : ''}/${cluster}${namespace ? `/${namespace}` : ''}${
+  //               params.syntheticProject ? `/${params.syntheticProject}` : ''
+  //             }/crd-table/${apiGroup}/${apiVersion}/${apiExtensionVersion}/${crdName}`,
+  //             deletePathPrefix: `/api/clusters/${clusterName}/k8s/apis`,
+  //             onDeleteHandle,
+  //             permissions: {
+  //               canUpdate: permissions.canUpdate,
+  //               canDelete: permissions.canDelete,
+  //             },
+  //           }}
+  //           selectData={{
+  //             selectedRowKeys,
+  //             onChange: (selectedRowKeys: React.Key[], selectedRowsData: { name: string; endpoint: string }[]) => {
+  //               setSelectedRowKeys(selectedRowKeys)
+  //               setSelectedRowsData(selectedRowsData)
+  //             },
+  //           }}
+  //           tableProps={{ ...TABLE_PROPS, disablePagination: true }}
+  //           // maxHeight={height - 65}
+  //         />
+  //       )}
+  //       {/* {selectedRowKeys.length > 0 && (
+  //         <MarginTopContainer $top={-40}>
+  //           <Flex gap={16}>
+  //             <Button type="primary" onClick={clearSelected}>
+  //               <ClearOutlined />
+  //               Clear
+  //             </Button>
+  //             <Button type="primary" onClick={() => setIsDeleteModalManyOpen(selectedRowsData)}>
+  //               <MinusOutlined />
+  //               Delete
+  //             </Button>
+  //           </Flex>
+  //         </MarginTopContainer>
+  //       )} */}
+  //     </OverflowMaxHeightContainer>
+  //     <FlexGrow />
+  //     <PaddingContainer $padding="4px">
+  //       <Flex justify="space-between">
+  //         <Button
+  //           type="primary"
+  //           onClick={() =>
+  //             navigate(
+  //               `${baseprefix}${inside ? '/inside' : ''}/${cluster}${namespace ? `/${namespace}` : ''}${
+  //                 params.syntheticProject ? `/${params.syntheticProject}` : ''
+  //               }/forms/crds/${apiGroup}/${apiVersion}/${crdPluralName}?backlink=${baseprefix}${
+  //                 inside ? '/inside' : ''
+  //               }/${cluster}${namespace ? `/${namespace}` : ''}${
+  //                 params.syntheticProject ? `/${params.syntheticProject}` : ''
+  //               }/crd-table/${apiGroup}/${apiVersion}/${apiExtensionVersion}/${crdName}`,
+  //             )
+  //           }
+  //           loading={permissions.canCreate === undefined}
+  //           disabled={permissions.canCreate === false}
+  //         >
+  //           <PlusOutlined />
+  //           Add
+  //         </Button>
+  //         {selectedRowKeys.length > 0 && (
+  //           <Flex gap={16}>
+  //             <Button type="primary" onClick={clearSelected}>
+  //               <ClearOutlined />
+  //               Clear
+  //             </Button>
+  //             <Button type="primary" onClick={() => setIsDeleteModalManyOpen(selectedRowsData)}>
+  //               <MinusOutlined />
+  //               Delete
+  //             </Button>
+  //           </Flex>
+  //         )}
+  //       </Flex>
+  //     </PaddingContainer>
+  //     {isDeleteModalOpen && (
+  //       <DeleteModal
+  //         name={isDeleteModalOpen.name}
+  //         onClose={() => {
+  //           setIsDeleteModalOpen(false)
+  //           clearSelected()
+  //         }}
+  //         endpoint={isDeleteModalOpen.endpoint}
+  //       />
+  //     )}
+  //     {isDeleteModalManyOpen !== false && (
+  //       <DeleteModalMany
+  //         data={isDeleteModalManyOpen}
+  //         onClose={() => {
+  //           setIsDeleteModalManyOpen(false)
+  //           clearSelected()
+  //         }}
+  //       />
+  //     )}
+  //   </>
+  // )
 }

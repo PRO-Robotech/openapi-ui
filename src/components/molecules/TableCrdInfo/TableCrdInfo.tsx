@@ -50,8 +50,8 @@ export const TableCrdInfo: FC<TTableCrdInfoProps> = ({
   }, [cluster, data, isPending, error, apiGroup, apiVersion])
 
   const createPermission = usePermissions({
-    apiGroup,
-    typeName: data ? data.spec.names.singular : '',
+    group: apiGroup,
+    resource: data ? data.spec.names.singular : '',
     namespace: '',
     clusterName: cluster,
     verb: 'create',
@@ -59,8 +59,8 @@ export const TableCrdInfo: FC<TTableCrdInfoProps> = ({
   })
 
   const updatePermission = usePermissions({
-    apiGroup,
-    typeName: data ? data.spec.names.singular : '',
+    group: apiGroup,
+    resource: data ? data.spec.names.singular : '',
     namespace: '',
     clusterName: cluster,
     verb: 'update',
@@ -68,8 +68,8 @@ export const TableCrdInfo: FC<TTableCrdInfoProps> = ({
   })
 
   const deletePermission = usePermissions({
-    apiGroup,
-    typeName: data ? data.spec.names.singular : '',
+    group: apiGroup,
+    resource: data ? data.spec.names.singular : '',
     namespace: '',
     clusterName: cluster,
     verb: 'delete',

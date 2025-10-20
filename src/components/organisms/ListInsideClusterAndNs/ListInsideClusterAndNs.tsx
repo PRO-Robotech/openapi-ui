@@ -18,9 +18,10 @@ export const ListInsideClusterAndNs: FC = () => {
   const [selectedNamespace, setSelectedNamespace] = useState<string>()
 
   const namespacesData = useBuiltinResources({
-    clusterName: cluster,
+    clusterName: selectedCluster || '',
     typeName: 'namespaces',
     limit: null,
+    isEnabled: selectedCluster !== undefined,
   })
 
   return (

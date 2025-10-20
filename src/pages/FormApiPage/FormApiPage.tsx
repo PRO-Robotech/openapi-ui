@@ -18,11 +18,10 @@ import { BASE_USE_NAMESPACE_NAV } from 'constants/customizationApiGroupAndVersio
 import { BaseTemplate } from 'templates'
 
 type TFormApiPageProps = {
-  forcedTheme?: 'light' | 'dark'
   inside?: boolean
 }
 
-export const FormApiPage: FC<TFormApiPageProps> = ({ forcedTheme, inside }) => {
+export const FormApiPage: FC<TFormApiPageProps> = ({ inside }) => {
   const { clusterName, syntheticProject, namespace, apiGroup, apiVersion, typeName, entryName } = useParams()
   const [searchParams] = useSearchParams()
   const baseprefix = useSelector((state: RootState) => state.baseprefix.baseprefix)
@@ -54,7 +53,6 @@ export const FormApiPage: FC<TFormApiPageProps> = ({ forcedTheme, inside }) => {
 
   return (
     <BaseTemplate
-      forcedTheme={forcedTheme}
       inside={inside}
       sidebar={
         <ManageableSidebar

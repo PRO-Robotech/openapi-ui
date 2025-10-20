@@ -5,11 +5,7 @@ import { getBreadcrumbsIdPrefix } from 'utils/getBreadcrumbsIdPrefix'
 import { getSidebarIdPrefix } from 'utils/getSidebarIdPrefix'
 import { BaseTemplate } from 'templates'
 
-type TFactoryPageProps = {
-  forcedTheme?: 'light' | 'dark'
-}
-
-export const FactoryPage: FC<TFactoryPageProps> = ({ forcedTheme }) => {
+export const FactoryPage: FC = () => {
   const { namespace, syntheticProject, key } = useParams()
 
   const [currentTags, setCurrentTags] = useState<string[]>()
@@ -29,7 +25,6 @@ export const FactoryPage: FC<TFactoryPageProps> = ({ forcedTheme }) => {
 
   return (
     <BaseTemplate
-      forcedTheme={forcedTheme}
       sidebar={
         <ManageableSidebar
           instanceName={possibleInstance}
@@ -38,7 +33,7 @@ export const FactoryPage: FC<TFactoryPageProps> = ({ forcedTheme }) => {
           currentTags={currentTags}
         />
       }
-      withNoCluster
+      // withNoCluster
     >
       <NavigationContainer>
         <ManageableBreadcrumbs idToCompare={breadcrumbsId} />

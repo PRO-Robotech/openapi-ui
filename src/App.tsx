@@ -30,6 +30,7 @@ import {
 } from 'pages'
 import { getBasePrefix } from 'utils/getBaseprefix'
 import { colorsLight, colorsDark, sizes } from 'constants/colors'
+import { MainLayout } from 'templates/MainLayout'
 
 type TAppProps = {
   isFederation?: boolean
@@ -54,87 +55,77 @@ export const App: FC<TAppProps> = ({ isFederation, forcedTheme }) => {
 
   const renderRoutes = (prefix = '') => (
     <Routes>
-      <Route path={`${prefix}/`} element={<MainPage forcedTheme={forcedTheme} />} />
-      <Route path={`${prefix}/clusters`} element={<ListClustersPage forcedTheme={forcedTheme} />} />
-      <Route path={`${prefix}/clusters/:clusterName`} element={<ListProjectsPage forcedTheme={forcedTheme} />} />
-      <Route path={`${prefix}/inside/`} element={<MainPage forcedTheme={forcedTheme} />} />
-      <Route
-        path={`${prefix}/clusters/:clusterName/projects/:namespace`}
-        element={<ProjectInfoPage forcedTheme={forcedTheme} />}
-      />
-      <Route
-        path={`${prefix}/inside/clusters`}
-        element={<ListInsideClustersAndNsPage forcedTheme={forcedTheme} inside />}
-      />
-      <Route
-        path={`${prefix}/inside/:clusterName/:namespace?/apis`}
-        element={<ListInsideApiPage forcedTheme={forcedTheme} inside />}
-      />
-      <Route
-        path={`${prefix}/inside/:clusterName/:namespace?/crds-by-api/:apiGroup/:apiVersion/:apiExtensionVersion`}
-        element={<ListInsideCrdByApiGroupPage forcedTheme={forcedTheme} inside />}
-      />
-      <Route
-        path={`${prefix}/inside/:clusterName/:namespace?/apis-by-api/:apiGroup/:apiVersion/`}
-        element={<ListInsideApiByApiGroupPage forcedTheme={forcedTheme} inside />}
-      />
-      <Route
-        path={`${prefix}/:clusterName/:namespace?/:syntheticProject?/crd-table/:apiGroup/:apiVersion/:apiExtensionVersion/:crdName`}
-        element={<TableCrdPage forcedTheme={forcedTheme} />}
-      />
-      <Route
-        path={`${prefix}/:clusterName/:namespace?/:syntheticProject?/api-table/:apiGroup/:apiVersion/:typeName`}
-        element={<TableApiPage forcedTheme={forcedTheme} />}
-      />
-      <Route
-        path={`${prefix}/:clusterName/:namespace?/:syntheticProject?/builtin-table/:typeName`}
-        element={<TableBuiltinPage forcedTheme={forcedTheme} />}
-      />
-      <Route
-        path={`${prefix}/:clusterName/:namespace?/:syntheticProject?/forms/builtin/:apiVersion/:typeName/:entryName?/`}
-        element={<FormBuiltinPage forcedTheme={forcedTheme} />}
-      />
-      <Route
-        path={`${prefix}/:clusterName/:namespace?/:syntheticProject?/forms/apis/:apiGroup/:apiVersion/:typeName/:entryName?/`}
-        element={<FormApiPage forcedTheme={forcedTheme} />}
-      />
-      <Route
-        path={`${prefix}/:clusterName/:namespace?/:syntheticProject?/forms/crds/:apiGroup/:apiVersion/:typeName/:entryName?/`}
-        element={<FormCrdPage forcedTheme={forcedTheme} />}
-      />
-      <Route
-        path={`${prefix}/inside/:clusterName/:namespace?/:syntheticProject?/crd-table/:apiGroup/:apiVersion/:apiExtensionVersion/:crdName`}
-        element={<TableCrdPage forcedTheme={forcedTheme} inside />}
-      />
-      <Route
-        path={`${prefix}/inside/:clusterName/:namespace?/:syntheticProject?/api-table/:apiGroup/:apiVersion/:typeName`}
-        element={<TableApiPage forcedTheme={forcedTheme} inside />}
-      />
-      <Route
-        path={`${prefix}/inside/:clusterName/:namespace?/:syntheticProject?/builtin-table/:typeName`}
-        element={<TableBuiltinPage forcedTheme={forcedTheme} inside />}
-      />
-      <Route
-        path={`${prefix}/inside/:clusterName/:namespace?/:syntheticProject?/forms/builtin/:apiVersion/:typeName/:entryName?/`}
-        element={<FormBuiltinPage forcedTheme={forcedTheme} inside />}
-      />
-      <Route
-        path={`${prefix}/inside/:clusterName/:namespace?/:syntheticProject?/forms/apis/:apiGroup/:apiVersion/:typeName/:entryName?/`}
-        element={<FormApiPage forcedTheme={forcedTheme} inside />}
-      />
-      <Route
-        path={`${prefix}/inside/:clusterName/:namespace?/:syntheticProject?/forms/crds/:apiGroup/:apiVersion/:typeName/:entryName?/`}
-        element={<FormCrdPage forcedTheme={forcedTheme} inside />}
-      />
-      <Route
-        path={`${prefix}/:clusterName/:namespace?/:syntheticProject?/factory/:key/*`}
-        element={<FactoryPage forcedTheme={forcedTheme} />}
-      />
-      <Route
-        path={`${prefix}/:clusterName/:namespace?/:syntheticProject?/search/*`}
-        element={<SearchPage forcedTheme={forcedTheme} />}
-      />
-      <Route path={`${prefix}/factory-admin/*`} element={<FactoryAdminPage />} />
+      <Route element={<MainLayout forcedTheme={forcedTheme} />}>
+        <Route path={`${prefix}/`} element={<MainPage />} />
+        <Route path={`${prefix}/clusters`} element={<ListClustersPage />} />
+        <Route path={`${prefix}/clusters/:clusterName`} element={<ListProjectsPage />} />
+        <Route path={`${prefix}/inside/`} element={<MainPage />} />
+        <Route path={`${prefix}/clusters/:clusterName/projects/:namespace`} element={<ProjectInfoPage />} />
+        <Route path={`${prefix}/inside/clusters`} element={<ListInsideClustersAndNsPage inside />} />
+        <Route path={`${prefix}/inside/:clusterName/:namespace?/apis`} element={<ListInsideApiPage inside />} />
+        <Route
+          path={`${prefix}/inside/:clusterName/:namespace?/crds-by-api/:apiGroup/:apiVersion/:apiExtensionVersion`}
+          element={<ListInsideCrdByApiGroupPage inside />}
+        />
+        <Route
+          path={`${prefix}/inside/:clusterName/:namespace?/apis-by-api/:apiGroup/:apiVersion/`}
+          element={<ListInsideApiByApiGroupPage inside />}
+        />
+        <Route
+          path={`${prefix}/:clusterName/:namespace?/:syntheticProject?/crd-table/:apiGroup/:apiVersion/:apiExtensionVersion/:crdName`}
+          element={<TableCrdPage />}
+        />
+        <Route
+          path={`${prefix}/:clusterName/:namespace?/:syntheticProject?/api-table/:apiGroup/:apiVersion/:typeName`}
+          element={<TableApiPage />}
+        />
+        <Route
+          path={`${prefix}/:clusterName/:namespace?/:syntheticProject?/builtin-table/:typeName`}
+          element={<TableBuiltinPage />}
+        />
+        <Route
+          path={`${prefix}/:clusterName/:namespace?/:syntheticProject?/forms/builtin/:apiVersion/:typeName/:entryName?/`}
+          element={<FormBuiltinPage />}
+        />
+        <Route
+          path={`${prefix}/:clusterName/:namespace?/:syntheticProject?/forms/apis/:apiGroup/:apiVersion/:typeName/:entryName?/`}
+          element={<FormApiPage />}
+        />
+        <Route
+          path={`${prefix}/:clusterName/:namespace?/:syntheticProject?/forms/crds/:apiGroup/:apiVersion/:typeName/:entryName?/`}
+          element={<FormCrdPage />}
+        />
+        <Route
+          path={`${prefix}/inside/:clusterName/:namespace?/:syntheticProject?/crd-table/:apiGroup/:apiVersion/:apiExtensionVersion/:crdName`}
+          element={<TableCrdPage inside />}
+        />
+        <Route
+          path={`${prefix}/inside/:clusterName/:namespace?/:syntheticProject?/api-table/:apiGroup/:apiVersion/:typeName`}
+          element={<TableApiPage inside />}
+        />
+        <Route
+          path={`${prefix}/inside/:clusterName/:namespace?/:syntheticProject?/builtin-table/:typeName`}
+          element={<TableBuiltinPage inside />}
+        />
+        <Route
+          path={`${prefix}/inside/:clusterName/:namespace?/:syntheticProject?/forms/builtin/:apiVersion/:typeName/:entryName?/`}
+          element={<FormBuiltinPage inside />}
+        />
+        <Route
+          path={`${prefix}/inside/:clusterName/:namespace?/:syntheticProject?/forms/apis/:apiGroup/:apiVersion/:typeName/:entryName?/`}
+          element={<FormApiPage inside />}
+        />
+        <Route
+          path={`${prefix}/inside/:clusterName/:namespace?/:syntheticProject?/forms/crds/:apiGroup/:apiVersion/:typeName/:entryName?/`}
+          element={<FormCrdPage inside />}
+        />
+        <Route
+          path={`${prefix}/:clusterName/:namespace?/:syntheticProject?/factory/:key/*`}
+          element={<FactoryPage />}
+        />
+        <Route path={`${prefix}/:clusterName/:namespace?/:syntheticProject?/search/*`} element={<SearchPage />} />
+        <Route path={`${prefix}/factory-admin/*`} element={<FactoryAdminPage />} />
+      </Route>
     </Routes>
   )
 

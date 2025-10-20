@@ -2,13 +2,9 @@ import React, { FC } from 'react'
 import { RedirectProjectList } from 'components'
 import { BaseTemplate } from 'templates'
 
-type TListProjectsPageProps = {
-  forcedTheme?: 'light' | 'dark'
-}
-
-export const ListProjectsPage: FC<TListProjectsPageProps> = ({ forcedTheme }) => {
+export const ListProjectsPage: FC = () => {
   return (
-    <BaseTemplate forcedTheme={forcedTheme}>
+    <BaseTemplate>
       <RedirectProjectList />
     </BaseTemplate>
   )

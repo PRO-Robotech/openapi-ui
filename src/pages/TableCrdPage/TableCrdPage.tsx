@@ -12,11 +12,10 @@ import { BaseTemplate } from 'templates'
 import { BASE_USE_NAMESPACE_NAV } from 'constants/customizationApiGroupAndVersion'
 
 type TTableCrdPageProps = {
-  forcedTheme?: 'light' | 'dark'
   inside?: boolean
 }
 
-export const TableCrdPage: FC<TTableCrdPageProps> = ({ forcedTheme, inside }) => {
+export const TableCrdPage: FC<TTableCrdPageProps> = ({ inside }) => {
   const { clusterName, namespace, syntheticProject, apiGroup, apiVersion, apiExtensionVersion, crdName } = useParams()
   const baseprefix = useSelector((state: RootState) => state.baseprefix.baseprefix)
 
@@ -48,7 +47,6 @@ export const TableCrdPage: FC<TTableCrdPageProps> = ({ forcedTheme, inside }) =>
 
   return (
     <BaseTemplate
-      forcedTheme={forcedTheme}
       inside={inside}
       sidebar={
         <ManageableSidebar

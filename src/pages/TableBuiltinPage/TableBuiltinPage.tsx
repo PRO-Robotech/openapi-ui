@@ -12,11 +12,10 @@ import { BaseTemplate } from 'templates'
 import { BASE_USE_NAMESPACE_NAV } from 'constants/customizationApiGroupAndVersion'
 
 type TTableBuiltinPageProps = {
-  forcedTheme?: 'light' | 'dark'
   inside?: boolean
 }
 
-export const TableBuiltinPage: FC<TTableBuiltinPageProps> = ({ forcedTheme, inside }) => {
+export const TableBuiltinPage: FC<TTableBuiltinPageProps> = ({ inside }) => {
   const { clusterName, namespace, syntheticProject, typeName } = useParams()
   const [searchParams] = useSearchParams()
   const baseprefix = useSelector((state: RootState) => state.baseprefix.baseprefix)
@@ -49,7 +48,6 @@ export const TableBuiltinPage: FC<TTableBuiltinPageProps> = ({ forcedTheme, insi
 
   return (
     <BaseTemplate
-      forcedTheme={forcedTheme}
       inside={inside}
       sidebar={
         <ManageableSidebar
@@ -68,6 +66,8 @@ export const TableBuiltinPage: FC<TTableBuiltinPageProps> = ({ forcedTheme, insi
         {typeName && (
           <TableApiBuiltin
             resourceType="builtin"
+            apiVersion="v1"
+            key={`${namespace}-${typeName}`}
             namespace={namespace}
             typeName={typeName}
             limit={searchParams.get('limit')}

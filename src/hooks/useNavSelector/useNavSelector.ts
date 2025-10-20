@@ -66,6 +66,7 @@ export const useNavSelector = (clusterName?: string, projectName?: string) => {
     apiVersion: BASE_PROJECTS_VERSION,
     typeName: BASE_PROJECTS_RESOURCE_NAME,
     limit: null,
+    isEnabled: clusterName !== undefined,
   })
 
   const { data: instances, isSuccess: allInstancesLoadingSuccess } = useApiResources({
@@ -75,6 +76,7 @@ export const useNavSelector = (clusterName?: string, projectName?: string) => {
     apiVersion: BASE_INSTANCES_VERSION,
     typeName: BASE_INSTANCES_RESOURCE_NAME,
     limit: null,
+    isEnabled: clusterName !== undefined,
   })
 
   const clustersInSidebar = clusterList ? clusterList.map(mappedClusterToOptionInSidebar) : []
