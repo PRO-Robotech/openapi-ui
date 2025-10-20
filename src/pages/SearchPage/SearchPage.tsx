@@ -16,16 +16,21 @@ export const SearchPage: FC<TSearchPageProps> = ({ forcedTheme }) => {
   const possibleProject = syntheticProject && namespace ? syntheticProject : namespace
   const possibleInstance = syntheticProject && namespace ? namespace : undefined
 
-  const sidebarId = `${getSidebarIdPrefix({ instance: !!syntheticProject, project: !!namespace })}seach-page`
+  // const sidebarId = `${getSidebarIdPrefix({ instance: !!syntheticProject, project: !!namespace })}search-page`
+  // const breadcrumbsId = `${getBreadcrumbsIdPrefix({
+  //   instance: !!syntheticProject,
+  //   project: !!namespace,
+  // })}search-page`
+  const sidebarId = `${getSidebarIdPrefix({ namespace: !!namespace })}search-page`
   const breadcrumbsId = `${getBreadcrumbsIdPrefix({
-    instance: !!syntheticProject,
-    project: !!namespace,
-  })}seach-page`
+    namespace: !!namespace,
+  })}search-page`
 
   return (
     <BaseTemplate
       forcedTheme={forcedTheme}
       inside={false}
+      isSearch
       sidebar={
         <ManageableSidebar
           instanceName={possibleInstance}

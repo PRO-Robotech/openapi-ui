@@ -2,7 +2,9 @@ name: release
 on:
   push:
     branches:
-      - '*'
+      - main
+      - develop
+      - release/*
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
       - 'v[0-9]+.[0-9]+.[0-9]+rc[0-9]+'
@@ -28,6 +30,10 @@ jobs:
           username: ${{ secrets.CUSTOM_DOCKERHUB_USERNAME }}
           password: ${{ secrets.CUSTOM_DOCKERHUB_TOKEN }}
 
+      - name: Sanitize branch name
+        id: sanitize
+        run: echo "branch=$(echo '${{ github.head_ref || github.ref_name }}' | tr '/' '-')" >> $GITHUB_OUTPUT
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
@@ -35,6 +41,6 @@ jobs:
           file: ./Dockerfile.build
           builder: default
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ secrets.CUSTOM_DOCKERHUB_USERNAME }}/openapi-ui:${{ github.head_ref || github.ref_name }}-${{ steps.short-sha.outputs.sha }}
+          tags: ${{ secrets.CUSTOM_DOCKERHUB_USERNAME }}/openapi-ui:${{ steps.sanitize.outputs.branch }}-${{ steps.short-sha.outputs.sha }}
           build-args: |
             NODE_VERSION=${{ env.NODE_VERSION }}

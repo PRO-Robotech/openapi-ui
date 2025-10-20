@@ -164,6 +164,9 @@ export const App: FC<TAppProps> = ({ isFederation, forcedTheme }) => {
               colorText: colors?.colorText,
               colorTextLightSolid: colors?.colorText,
             },
+            Popover: {
+              colorBgElevated: colors?.colorBgLayout,
+            },
             Table: {
               headerBg: colors?.colorBgLayout,
             },

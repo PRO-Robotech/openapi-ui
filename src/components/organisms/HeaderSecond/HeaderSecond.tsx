@@ -8,9 +8,10 @@ import { Styled } from './styled'
 
 type THeaderProps = {
   inside?: boolean
+  isSearch?: boolean
 }
 
-export const HeaderSecond: FC<THeaderProps> = ({ inside }) => {
+export const HeaderSecond: FC<THeaderProps> = ({ inside, isSearch }) => {
   // const { projectName, instanceName, clusterName, entryType, namespace, syntheticProject } = useParams()
   const { projectName, instanceName, clusterName, namespace, syntheticProject } = useParams()
   const { token } = theme.useToken()
@@ -24,14 +25,14 @@ export const HeaderSecond: FC<THeaderProps> = ({ inside }) => {
         <Flex gap={18}>
           {inside ? <SelectorClusterInside clusterName={clusterName} /> : <SelectorCluster clusterName={clusterName} />}
           {inside && <SelectorInside clusterName={clusterName} namespace={namespace} />}
-          {!inside && BASE_USE_NAMESPACE_NAV !== 'true' && (
+          {!inside && !isSearch && BASE_USE_NAMESPACE_NAV !== 'true' && (
             <Selector
               clusterName={clusterName}
               projectName={projectName || possibleProject}
               instanceName={instanceName || possibleInstance}
             />
           )}
-          {!inside && BASE_USE_NAMESPACE_NAV === 'true' && (
+          {!inside && (isSearch || BASE_USE_NAMESPACE_NAV === 'true') && (
             <SelectorNamespace clusterName={clusterName} namespace={namespace} />
           )}
         </Flex>

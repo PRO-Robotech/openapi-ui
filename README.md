@@ -35,3 +35,4 @@ This app can be configured through environment variables.
 | `REMOVE_BACKLINK`                        | `boolean` | Remove backlink arrow from right-side navigation                                        |
 | `REMOVE_BACKLINK_TEXT`                   | `boolean` | Remove backlink text from right-side navigation                                         |
 | `DOCS_URL`                               | `string`  | URL to navigate from question mark                                                      |
+| `SEARCH_TABLE_CUSTOMIZATION_PREFIX`      | `string`  | Search tables Customization id prefix                                                   |

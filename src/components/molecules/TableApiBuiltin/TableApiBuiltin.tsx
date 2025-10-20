@@ -14,6 +14,7 @@ import {
   checkIfApiInstanceNamespaceScoped,
   useBuiltinResources,
   useApiResources,
+  Spacer,
 } from '@prorobotech/openapi-k8s-toolkit'
 import { FlexGrow, PaddingContainer } from 'components'
 import { TABLE_PROPS } from 'constants/tableProps'
@@ -34,13 +35,13 @@ type TTableApiBuiltinProps = {
   apiGroup?: string // api
   apiVersion?: string // api
   typeName: string
-  specificName?: string
   labels?: string[]
   fields?: string[]
   limit: string | null
   inside?: boolean
   customizationIdPrefix: string
   searchMount?: boolean
+  kindName?: string
 }
 
 export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
@@ -49,13 +50,13 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
   apiGroup,
   apiVersion,
   typeName,
-  specificName,
   labels,
   fields,
   limit,
   inside,
   customizationIdPrefix,
   searchMount,
+  kindName,
 }) => {
   const location = useLocation()
   const navigate = useNavigate()
@@ -156,7 +157,6 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
     clusterName: cluster,
     namespace,
     typeName,
-    specificName,
     labels,
     fields,
     limit,
@@ -173,7 +173,6 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
     apiGroup: apiGroup || '',
     apiVersion: apiVersion || '',
     typeName,
-    specificName,
     labels,
     fields,
     limit,
@@ -195,6 +194,8 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
       acc[index.toString()] = value
       return acc
     }, {})
+
+  const fullPath = `${location.pathname}${location.search}`
 
   return (
     <>
@@ -234,7 +235,7 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
               cluster={cluster}
               theme={theme}
               baseprefix={inside ? `${baseprefix}/inside` : baseprefix}
-              dataItems={getDataItems({ resourceType, dataBuiltin, dataApi, isSingle: !!specificName })}
+              dataItems={getDataItems({ resourceType, dataBuiltin, dataApi })}
               dataForControls={{
                 cluster,
                 syntheticProject: params.syntheticProject,
@@ -251,6 +252,8 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
                   apiVersion,
                   typeName,
                   inside,
+                  fullPath,
+                  searchMount,
                 }),
                 deletePathPrefix:
                   resourceType === 'builtin' ? `/api/clusters/${cluster}/k8s/api` : `/api/clusters/${cluster}/k8s/apis`,
@@ -268,6 +271,7 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
                 },
               }}
               tableProps={{ ...TABLE_PROPS, disablePagination: !searchMount }}
+              namespaceScopedWithoutNamespace={isNamespaced && !namespace}
               // maxHeight={height - 65}
             />
           )}
@@ -286,49 +290,47 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
           </MarginTopContainer>
         )} */}
       </OverflowContainer>
-      {!searchMount && (
-        <>
-          <FlexGrow />
-          <PaddingContainer $padding="4px">
-            <Flex justify="space-between">
-              <Button
-                type="primary"
-                onClick={() => {
-                  const url = getLinkToForm({
-                    resourceType,
-                    cluster,
-                    baseprefix,
-                    namespace,
-                    syntheticProject: params.syntheticProject,
-                    apiGroup,
-                    apiVersion,
-                    typeName,
-                    inside,
-                  })
-                  navigate(url)
-                }}
-                loading={isNamespaced ? false : createPermission.isPending}
-                disabled={isNamespaced ? false : !createPermission.data?.status.allowed}
-              >
-                <PlusOutlined />
-                Add
+      {searchMount ? <Spacer $space={12} $samespace /> : <FlexGrow />}
+      <PaddingContainer $padding="4px">
+        <Flex justify="space-between">
+          <Button
+            type="primary"
+            onClick={() => {
+              const url = getLinkToForm({
+                resourceType,
+                cluster,
+                baseprefix,
+                namespace,
+                syntheticProject: params.syntheticProject,
+                apiGroup,
+                apiVersion,
+                typeName,
+                inside,
+                fullPath,
+                searchMount,
+              })
+              navigate(url)
+            }}
+            loading={isNamespaced ? false : createPermission.isPending}
+            disabled={isNamespaced ? false : !createPermission.data?.status.allowed}
+          >
+            <PlusOutlined />
+            Add {kindName}
+          </Button>
+          {selectedRowKeys.length > 0 && (
+            <Flex gap={16}>
+              <Button type="primary" onClick={clearSelected}>
+                <ClearOutlined />
+                Clear
               </Button>
-              {selectedRowKeys.length > 0 && (
-                <Flex gap={16}>
-                  <Button type="primary" onClick={clearSelected}>
-                    <ClearOutlined />
-                    Clear
-                  </Button>
-                  <Button type="primary" onClick={() => setIsDeleteModalManyOpen(selectedRowsData)}>
-                    <MinusOutlined />
-                    Delete
-                  </Button>
-                </Flex>
-              )}
+              <Button type="primary" onClick={() => setIsDeleteModalManyOpen(selectedRowsData)}>
+                <MinusOutlined />
+                Delete
+              </Button>
             </Flex>
-          </PaddingContainer>
-        </>
-      )}
+          )}
+        </Flex>
+      </PaddingContainer>
       {isDeleteModalOpen && (
         <DeleteModal
           name={isDeleteModalOpen.name}

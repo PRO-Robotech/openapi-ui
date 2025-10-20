@@ -24,10 +24,18 @@ type TBaseTemplateProps = {
   children?: ReactNode | undefined
   forcedTheme?: 'dark' | 'light'
   inside?: boolean
+  isSearch?: boolean
   sidebar?: ReactNode
 }
 
-export const BaseTemplate: FC<TBaseTemplateProps> = ({ children, withNoCluster, forcedTheme, inside, sidebar }) => {
+export const BaseTemplate: FC<TBaseTemplateProps> = ({
+  children,
+  withNoCluster,
+  forcedTheme,
+  inside,
+  isSearch,
+  sidebar,
+}) => {
   const navigate = useNavigate()
   const { clusterName } = useParams()
   const { useToken } = antdtheme
@@ -106,7 +114,7 @@ export const BaseTemplate: FC<TBaseTemplateProps> = ({ children, withNoCluster, 
                 </Col>
                 <FlexCol flex="auto">
                   <DefaultLayout.ContentPadding $isFederation={isFederation}>
-                    <HeaderSecond inside={inside} />
+                    <HeaderSecond inside={inside} isSearch={isSearch} />
                     {clusterListQuery.error && (
                       <Alert message={`Cluster List Error: ${clusterListQuery.error?.message} `} type="error" />
                     )}

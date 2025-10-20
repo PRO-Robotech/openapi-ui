@@ -1,9 +1,12 @@
 import React, { FC, useState } from 'react'
 import { Flex, Typography } from 'antd'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useDirectUnknownResource } from '@prorobotech/openapi-k8s-toolkit'
+import { useSelector } from 'react-redux'
+import type { RootState } from 'store/store'
 import { useNavSelectorInside } from 'hooks/useNavSelectorInside'
 import { useMountEffect } from 'hooks/useMountEffect'
+import { useIsSearchPage } from 'hooks/useIsSearchPage'
 import { EntrySelect } from 'components/atoms'
 import {
   BASE_API_GROUP,
@@ -19,6 +22,9 @@ type TSelectorNamespaceProps = {
 
 export const SelectorNamespace: FC<TSelectorNamespaceProps> = ({ clusterName, namespace }) => {
   const navigate = useNavigate()
+  const location = useLocation()
+
+  const baseprefix = useSelector((state: RootState) => state.baseprefix.baseprefix)
 
   const [selectedClusterName, setSelectedClusterName] = useState(clusterName)
   const [selectedNamespace, setSelectedNamespace] = useState(namespace)
@@ -34,7 +40,45 @@ export const SelectorNamespace: FC<TSelectorNamespaceProps> = ({ clusterName, na
     isEnabled: clusterName !== undefined,
   })
 
+  const isSearchPage = useIsSearchPage(baseprefix || '')
+
   const handleNamepsaceChange = (value?: string) => {
+    if (isSearchPage) {
+      const { pathname, search, hash } = location
+      const segs = pathname.split('/')
+
+      // Assume pattern: /prefix/:clusterName/:namespace?/:syntheticProject?/search/*
+      // Find the "search" segment index
+      const searchIdx = segs.indexOf('search')
+      const clusterIdx = segs.indexOf(selectedClusterName || '')
+      if (clusterIdx === -1) {
+        return
+      } // bail if we can't find the cluster
+
+      const nsIdx = clusterIdx + 1 // where namespace would live if present
+      const spIdx = clusterIdx + 2 // where syntheticProject would live if present
+      const nsExists = nsIdx < searchIdx // true if something occupies ns slot
+      const spExists = spIdx < searchIdx // true if something occupies sp slot
+
+      if (value && value !== 'all') {
+        setSelectedNamespace(value)
+
+        if (nsExists) {
+          // replace namespace in place
+          segs[nsIdx] = value
+        } else {
+          // insert namespace before "search" (or before syntheticProject if present)
+          const insertAt = spExists ? spIdx : searchIdx
+          segs.splice(insertAt, 0, value)
+        }
+      } else if (nsExists) {
+        segs.splice(nsIdx, 1) // removes namespace; syntheticProject (if any) shifts left
+      }
+      // if ns didn't exist, nothing to clear
+
+      navigate(segs.join('/') + search + hash, { replace: true })
+      return
+    }
     if (value && value !== 'all') {
       setSelectedNamespace(value)
       const changeUrl =

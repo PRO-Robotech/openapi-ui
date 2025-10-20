@@ -68,6 +68,11 @@ const REMOVE_BACKLINK_TEXT =
 
 const DOCS_URL = process.env.LOCAL === 'true' ? options?.DOCS_URL : process.env.DOCS_URL
 
+const SEARCH_TABLE_CUSTOMIZATION_PREFIX =
+  process.env.LOCAL === 'true'
+    ? options?.SEARCH_TABLE_CUSTOMIZATION_PREFIX
+    : process.env.SEARCH_TABLE_CUSTOMIZATION_PREFIX
+
 const healthcheck = require('express-healthcheck')
 const promBundle = require('express-prom-bundle')
 
@@ -192,6 +197,7 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
       LOGOUT_URL: ${JSON.stringify(LOGOUT_URL) || '"check envs"'},
       LOGIN_USERNAME_FIELD: ${JSON.stringify(LOGIN_USERNAME_FIELD) || '"check envs"'},
       DOCS_URL: ${JSON.stringify(DOCS_URL) || '"/docs"'},
+      SEARCH_TABLE_CUSTOMIZATION_PREFIX: ${JSON.stringify(SEARCH_TABLE_CUSTOMIZATION_PREFIX) || '"search-"'},
       REMOVE_BACKLINK: ${!!REMOVE_BACKLINK ? JSON.stringify(REMOVE_BACKLINK).toLowerCase() : '"false"'},
       REMOVE_BACKLINK_TEXT: ${!!REMOVE_BACKLINK_TEXT ? JSON.stringify(REMOVE_BACKLINK_TEXT).toLowerCase() : '"false"'}
     }

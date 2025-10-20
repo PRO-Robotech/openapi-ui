@@ -1,3 +1,5 @@
+import { SEARCH_TABLE_CUSTOMIZATION_PREFIX } from 'constants/customizationApiGroupAndVersion'
+
 export const getTableCustomizationIdPrefix = ({
   project,
   instance,
@@ -16,7 +18,7 @@ export const getTableCustomizationIdPrefix = ({
   if (inside) {
     result = 'inside-'
   } else if (search) {
-    result = 'search-'
+    result = SEARCH_TABLE_CUSTOMIZATION_PREFIX
   } else {
     result = 'stock-'
   }
