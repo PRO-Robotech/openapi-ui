@@ -39,6 +39,7 @@ const CUSTOMIZATION_NAVIGATION_RESOURCE =
     : process.env.CUSTOMIZATION_NAVIGATION_RESOURCE
 
 const USE_NAMESPACE_NAV = process.env.LOCAL === 'true' ? options?.USE_NAMESPACE_NAV : process.env.USE_NAMESPACE_NAV
+const HIDE_INSIDE = process.env.LOCAL === 'true' ? options?.HIDE_INSIDE : process.env.HIDE_INSIDE
 
 const NAVIGATE_FROM_CLUSTERLIST =
   process.env.LOCAL === 'true' ? options?.NAVIGATE_FROM_CLUSTERLIST : process.env.NAVIGATE_FROM_CLUSTERLIST
@@ -239,6 +240,7 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
       }
       CUSTOMIZATION_NAVIGATION_RESOURCE: ${JSON.stringify(CUSTOMIZATION_NAVIGATION_RESOURCE) || '"check envs"'},
       USE_NAMESPACE_NAV: ${USE_NAMESPACE_NAV ? JSON.stringify(USE_NAMESPACE_NAV).toLowerCase() : '"false"'},
+      HIDE_INSIDE: ${HIDE_INSIDE ? JSON.stringify(HIDE_INSIDE).toLowerCase() : '"false"'},
       NAVIGATE_FROM_CLUSTERLIST: ${JSON.stringify(NAVIGATE_FROM_CLUSTERLIST) || '"check envs"'},
       PROJECTS_API_GROUP: ${JSON.stringify(PROJECTS_API_GROUP) || '"check envs"'},
       PROJECTS_VERSION: ${JSON.stringify(PROJECTS_VERSION) || '"check envs"'},

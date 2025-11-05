@@ -38,6 +38,10 @@ export const BASE_USE_NAMESPACE_NAV = import.meta.env.DEV
   ? window._env_.USE_NAMESPACE_NAV || import.meta.env.VITE_USE_NAMESPACE_NAV
   : window._env_.USE_NAMESPACE_NAV
 
+export const BASE_HIDE_INSIDE = import.meta.env.DEV
+  ? window._env_.HIDE_INSIDE || import.meta.env.VITE_HIDE_INSIDE
+  : window._env_.HIDE_INSIDE
+
 export const BASE_NAVIGATE_FROM_CLUSTERLIST = import.meta.env.DEV
   ? window._env_.NAVIGATE_FROM_CLUSTERLIST || import.meta.env.VITE_NAVIGATE_FROM_CLUSTERLIST
   : window._env_.NAVIGATE_FROM_CLUSTERLIST
