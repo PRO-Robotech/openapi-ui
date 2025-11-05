@@ -15,7 +15,7 @@ This app can be configured through environment variables.
 | `KUBE_API_URL`                                | `string`  | URL for the Kubernetes API. `http://api.incloud-web.svc.default.in-cloud.internal:8081` |
 | `BFF_URL`                                     | `string`  | URL for the BFF                                                                         |
 | `TITLE_TEXT`                                  | `string`  | Page title                                                                              |
-| `TITLE_TEXT`                                  | `string`  | Page title                                                                              |
+| `LOGO_TEXT`                                   | `string`  | Logo text near icon                                                                     |
 | `ICON_SVG`                                    | `string`  | Favicon base64 encoded                                                                  |
 | `FOOTER_TEXT`                                 | `string`  | Footer text                                                                             |
 | `CUSTOM_LOGO_SVG`                             | `string`  | Base64 encoded svg                                                                      |
@@ -28,6 +28,7 @@ This app can be configured through environment variables.
 | `CUSTOMIZATION_NAVIGATION_RESOURCE_NAME`      | `string`  | Resource plural name for navigation settings. `navigations`                             |
 | `CUSTOMIZATION_NAVIGATION_RESOURCE`           | `string`  | Resource name for navigation settings. `navigation`                                     |
 | `USE_NAMESPACE_NAV`                           | `boolean` | Use namespaces instead of project/instances. `true`                                     |
+| `HIDE_INSIDE`                                 | `boolean` | Use namespaces instead of project/instances. `true`                                     |
 | `NAVIGATE_FROM_CLUSTERLIST`                   | `string`  | Location to be navigated after selecting cluster. `/openapi-ui/clusters/~recordValue~`  |
 | `PROJECTS_API_GROUP`                          | `string`  | API group for projects resources. If not using namespace nav.                           |
 | `PROJECTS_VERSION`                            | `string`  | API version for projects resources. If not using namespace nav.                         |

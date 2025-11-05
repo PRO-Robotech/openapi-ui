@@ -18,7 +18,7 @@ const Container = styled.div<TContainerProps>`
   direction: rtl;
   max-height: ${({ $maxHeight }) => $maxHeight || 'initial'};
   user-select: none;
-  border-top-right-radius: 12px;
+  border-top-right-radius: 7px;
 
   & ul {
     direction: ltr;
@@ -51,9 +51,9 @@ const Container = styled.div<TContainerProps>`
 
   /* corner radius */
 
-  && .ant-menu li:first-child div:first-child {
-    border-top-right-radius: 8px;
-  }
+  /* && .ant-menu li:first-child div:first-child {
+    border-top-right-radius: 4px;
+  } */
 
   /* selected header bgcolor */
 
