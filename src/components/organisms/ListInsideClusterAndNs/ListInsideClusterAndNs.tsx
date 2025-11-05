@@ -37,7 +37,7 @@ export const ListInsideClusterAndNs: FC = () => {
     clusterName: selectedCluster || '',
     typeName: 'namespaces',
     limit: null,
-    isEnabled: selectedCluster !== undefined && !isCustomNamespaceResource,
+    isEnabled: Boolean(selectedCluster !== undefined && !isCustomNamespaceResource),
   })
 
   const namespacesDataCustom = useApiResources({
@@ -46,7 +46,7 @@ export const ListInsideClusterAndNs: FC = () => {
     apiVersion: CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION,
     typeName: CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME,
     limit: null,
-    isEnabled: selectedCluster !== undefined && isCustomNamespaceResource,
+    isEnabled: Boolean(selectedCluster !== undefined && isCustomNamespaceResource),
   })
 
   return (
