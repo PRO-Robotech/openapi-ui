@@ -67,8 +67,10 @@ export const ManageableSidebar: FC<TManageableSidebarProps> = ({
       $maxHeight={height}
     >
       <ManageableSidebarWithDataProvider
-        uri={`/api/clusters/${clusterName}/k8s/apis/${BASE_API_GROUP}/${BASE_API_VERSION}/sidebars/`}
-        refetchInterval={5000}
+        wsUrl={`/api/clusters/${clusterName}/openapi-bff-ws/listThenWatch/listWatchWs`}
+        apiGroup={BASE_API_GROUP}
+        apiVersion={BASE_API_VERSION}
+        plural="sidebars"
         isEnabled={clusterName !== undefined}
         replaceValues={{
           clusterName,
