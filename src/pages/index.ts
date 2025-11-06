@@ -19,3 +19,5 @@ export { FactoryPage } from './FactoryPage'
 export { FactoryAdminPage } from './FactoryAdminPage'
 /* search */
 export { SearchPage } from './SearchPage'
+/* list-then-watch */
+export { ListThenWatchPage } from './ListThenWatchPage'

@@ -46,6 +46,8 @@ export const TableBuiltinPage: FC<TTableBuiltinPageProps> = ({ inside }) => {
     inside,
   })
 
+  const limitSp = searchParams.get('limit')
+
   return (
     <BaseTemplate
       inside={inside}
@@ -70,7 +72,7 @@ export const TableBuiltinPage: FC<TTableBuiltinPageProps> = ({ inside }) => {
             key={`${namespace}-${typeName}`}
             namespace={namespace}
             typeName={typeName}
-            limit={searchParams.get('limit')}
+            limit={limitSp && limitSp.length > 0 ? Number(limitSp) : undefined}
             inside={inside}
             customizationIdPrefix={tableCustomizationIdPrefix}
           />

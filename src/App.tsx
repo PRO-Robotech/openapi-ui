@@ -27,6 +27,7 @@ import {
   FactoryPage,
   FactoryAdminPage,
   SearchPage,
+  ListThenWatchPage,
 } from 'pages'
 import { getBasePrefix } from 'utils/getBaseprefix'
 import { colorsLight, colorsDark, sizes } from 'constants/colors'
@@ -125,6 +126,10 @@ export const App: FC<TAppProps> = ({ isFederation, forcedTheme }) => {
         />
         <Route path={`${prefix}/:clusterName/:namespace?/:syntheticProject?/search/*`} element={<SearchPage />} />
         <Route path={`${prefix}/factory-admin/*`} element={<FactoryAdminPage />} />
+        <Route
+          path={`${prefix}/:clusterName/:namespace?/:syntheticProject?/list-then-watch/*`}
+          element={<ListThenWatchPage />}
+        />
       </Route>
     </Routes>
   )

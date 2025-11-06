@@ -1,4 +1,4 @@
-import { TBuiltinResources, TApiResources, TJSON } from '@prorobotech/openapi-k8s-toolkit'
+import { TSingleResource, TJSON } from '@prorobotech/openapi-k8s-toolkit'
 
 export const getDataItems = ({
   resourceType,
@@ -6,8 +6,8 @@ export const getDataItems = ({
   dataApi,
 }: {
   resourceType: 'builtin' | 'api'
-  dataBuiltin?: TBuiltinResources
-  dataApi?: TApiResources
+  dataBuiltin?: TSingleResource[]
+  dataApi?: TSingleResource[]
 }): TJSON[] => {
-  return resourceType === 'builtin' ? dataBuiltin?.items || [] : dataApi?.items || []
+  return resourceType === 'builtin' ? dataBuiltin || [] : dataApi || []
 }

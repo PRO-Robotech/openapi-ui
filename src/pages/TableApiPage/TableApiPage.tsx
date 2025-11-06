@@ -59,6 +59,8 @@ export const TableApiPage: FC<TTableApiPageProps> = ({ inside }) => {
   const sidebarIdProjectList = `${getSidebarIdPrefix({})}projects-list`
   const breadcrumbsIdProjectList = `${getBreadcrumbsIdPrefix({})}projects-list`
 
+  const limitSp = searchParams.get('limit')
+
   return (
     <BaseTemplate
       inside={inside}
@@ -84,7 +86,7 @@ export const TableApiPage: FC<TTableApiPageProps> = ({ inside }) => {
             apiVersion={apiVersion}
             typeName={typeName}
             key={`${apiGroup}-${apiVersion}-${namespace}-${typeName}`}
-            limit={searchParams.get('limit')}
+            limit={limitSp && limitSp.length > 0 ? Number(limitSp) : undefined}
             inside={inside}
             customizationIdPrefix={tableCustomizationIdPrefix}
           />

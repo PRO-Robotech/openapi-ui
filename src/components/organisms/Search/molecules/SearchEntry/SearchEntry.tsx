@@ -60,6 +60,8 @@ export const SearchEntry: FC<TSearchEntryProps> = ({ resource, labels, fields, f
     form.setFieldsValue({ [FIELD_NAME]: cur.filter(v => v !== value) })
   }
 
+  const limitSp = searchParams.get('limit')
+
   return (
     <Styled.Container $colorBorder={token.colorBorder} $colorText={token.colorText}>
       <Flex justify="space-between" align="center">
@@ -98,7 +100,7 @@ export const SearchEntry: FC<TSearchEntryProps> = ({ resource, labels, fields, f
               typeName={typeName}
               labels={labels?.length ? labels : undefined}
               fields={fields?.length ? fields : undefined}
-              limit={searchParams.get('limit')}
+              limit={limitSp && limitSp.length > 0 ? Number(limitSp) : undefined}
               customizationIdPrefix={tableCustomizationIdPrefix}
               searchMount
               kindName={kindName}

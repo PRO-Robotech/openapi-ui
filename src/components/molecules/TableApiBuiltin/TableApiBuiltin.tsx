@@ -12,8 +12,7 @@ import {
   DeleteModalMany,
   // checkIfBuiltInInstanceNamespaceScoped,
   // checkIfApiInstanceNamespaceScoped,
-  useBuiltinResources,
-  useApiResources,
+  useListWatch,
   Spacer,
   getLinkToForm,
 } from '@prorobotech/openapi-k8s-toolkit'
@@ -38,7 +37,7 @@ type TTableApiBuiltinProps = {
   typeName: string
   labels?: string[]
   fields?: string[]
-  limit: string | null
+  limit?: number
   inside?: boolean
   customizationIdPrefix: string
   searchMount?: boolean
@@ -143,33 +142,60 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
   })
 
   const {
-    isPending: isPendingBuiltin,
-    error: errorBuiltin,
-    data: dataBuiltin,
-  } = useBuiltinResources({
-    clusterName: cluster,
-    namespace,
-    typeName,
-    labels,
-    fields,
-    limit,
+    state: stateCore,
+    status: statusCore,
+    lastError: lastErrorCore,
+  } = useListWatch({
+    wsUrl: `/api/clusters/${cluster}/openapi-bff-ws/listThenWatch/listWatchWs`,
+    paused: false,
+    ignoreRemove: false,
+    autoDrain: true,
+    preserveStateOnUrlChange: true,
+    pageSize: limit,
+    query: {
+      namespace,
+      apiVersion: apiVersion || '',
+      plural: typeName,
+      labelSelector: labels ? encodeURIComponent(labels.join(',')) : undefined,
+      fieldSelector: fields ? encodeURIComponent(fields.join(',')) : undefined,
+    },
     isEnabled: resourceType === 'builtin',
   })
 
+  const isPendingBuiltin = statusCore === 'connecting'
+  const errorBuiltin = statusCore === 'closed' && lastErrorCore ? lastErrorCore : undefined
+  const dataBuiltin = stateCore.order.map(key => {
+    const res = stateCore.byKey[key]
+    return res
+  })
+
   const {
-    isPending: isPendingApi,
-    error: errorApi,
-    data: dataApi,
-  } = useApiResources({
-    clusterName: cluster,
-    namespace,
-    apiGroup: apiGroup || '',
-    apiVersion: apiVersion || '',
-    typeName,
-    labels,
-    fields,
-    limit,
+    state: stateApi,
+    status: statusApi,
+    lastError: lastErrorApi,
+  } = useListWatch({
+    wsUrl: `/api/clusters/${cluster}/openapi-bff-ws/listThenWatch/listWatchWs`,
+    paused: false,
+    ignoreRemove: false,
+    autoDrain: true,
+    preserveStateOnUrlChange: true,
+    pageSize: limit,
+    query: {
+      namespace,
+      apiGroup: apiGroup || '',
+      apiVersion: apiVersion || '',
+      plural: typeName,
+      labelSelector: labels ? labels.join(',') : undefined,
+      fieldSelector: fields ? fields.join(',') : undefined,
+    },
     isEnabled: resourceType === 'api' && !!apiGroup && !!apiVersion,
+  })
+
+  const isPendingApi = statusApi === 'connecting'
+  const errorApi = statusApi === 'closed' && lastErrorApi ? lastErrorApi : undefined
+  const dataApi = stateApi.order.map(key => {
+    const res = stateApi.byKey[key]
+    return res
   })
 
   const onDeleteHandle = (name: string, endpoint: string) => {
@@ -194,11 +220,9 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
     <>
       {((resourceType === 'builtin' && isPendingBuiltin) || (resourceType === 'api' && isPendingApi)) && <Spin />}
       {resourceType === 'builtin' && errorBuiltin && (
-        <Alert message={`An error has occurred: ${errorBuiltin?.message} `} type="error" />
+        <Alert message={`An error has occurred: ${errorBuiltin} `} type="error" />
       )}
-      {resourceType === 'api' && errorApi && (
-        <Alert message={`An error has occurred: ${errorApi?.message} `} type="error" />
-      )}
+      {resourceType === 'api' && errorApi && <Alert message={`An error has occurred: ${errorApi} `} type="error" />}
       <OverflowContainer height={height} searchMount={searchMount}>
         {!errorBuiltin &&
           !errorApi &&
