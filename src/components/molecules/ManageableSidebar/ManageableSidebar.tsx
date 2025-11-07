@@ -67,7 +67,7 @@ export const ManageableSidebar: FC<TManageableSidebarProps> = ({
       $maxHeight={height}
     >
       <ManageableSidebarWithDataProvider
-        wsUrl={`/api/clusters/${clusterName}/openapi-bff-ws/listThenWatch/listWatchWs`}
+        cluster={clusterName}
         apiGroup={BASE_API_GROUP}
         apiVersion={BASE_API_VERSION}
         plural="sidebars"

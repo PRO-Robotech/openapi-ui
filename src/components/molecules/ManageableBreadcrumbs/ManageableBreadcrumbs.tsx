@@ -32,7 +32,7 @@ export const ManageableBreadcrumbs: FC<TManageableBreadCrumbsProps> = ({ idToCom
   return (
     <ManageableBreadcrumbsWithDataProvider
       idToCompare={idToCompare}
-      wsUrl={`/api/clusters/${clusterName}/openapi-bff-ws/listThenWatch/listWatchWs`}
+      cluster={clusterName}
       apiGroup={BASE_API_GROUP}
       apiVersion={BASE_API_VERSION}
       plural={inside ? 'breadcrumbsinsides' : 'breadcrumbs'}
