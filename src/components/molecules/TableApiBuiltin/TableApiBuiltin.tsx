@@ -12,9 +12,10 @@ import {
   DeleteModalMany,
   // checkIfBuiltInInstanceNamespaceScoped,
   // checkIfApiInstanceNamespaceScoped,
-  useListWatch,
+  useK8sSmartResource,
   Spacer,
   getLinkToForm,
+  TSingleResource,
 } from '@prorobotech/openapi-k8s-toolkit'
 import { FlexGrow, PaddingContainer } from 'components'
 import { TABLE_PROPS } from 'constants/tableProps'
@@ -27,7 +28,7 @@ import {
   TABLE_ADD_BUTTON_HEIGHT,
 } from 'constants/blocksSizes'
 import { OverflowContainer } from './atoms'
-import { getDataItems } from './utils'
+// import { getDataItems } from './utils'
 
 type TTableApiBuiltinProps = {
   namespace?: string
@@ -142,60 +143,18 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
   })
 
   const {
-    state: stateCore,
-    status: statusCore,
-    lastError: lastErrorCore,
-  } = useListWatch({
-    wsUrl: `/api/clusters/${cluster}/openapi-bff-ws/listThenWatch/listWatchWs`,
-    paused: false,
-    ignoreRemove: false,
-    autoDrain: true,
-    preserveStateOnUrlChange: true,
-    pageSize: limit,
-    query: {
-      namespace,
-      apiVersion: apiVersion || '',
-      plural: typeName,
-      labelSelector: labels ? encodeURIComponent(labels.join(',')) : undefined,
-      fieldSelector: fields ? encodeURIComponent(fields.join(',')) : undefined,
-    },
-    isEnabled: resourceType === 'builtin',
-  })
-
-  const isPendingBuiltin = statusCore === 'connecting'
-  const errorBuiltin = statusCore === 'closed' && lastErrorCore ? lastErrorCore : undefined
-  const dataBuiltin = stateCore.order.map(key => {
-    const res = stateCore.byKey[key]
-    return res
-  })
-
-  const {
-    state: stateApi,
-    status: statusApi,
-    lastError: lastErrorApi,
-  } = useListWatch({
-    wsUrl: `/api/clusters/${cluster}/openapi-bff-ws/listThenWatch/listWatchWs`,
-    paused: false,
-    ignoreRemove: false,
-    autoDrain: true,
-    preserveStateOnUrlChange: true,
-    pageSize: limit,
-    query: {
-      namespace,
-      apiGroup: apiGroup || '',
-      apiVersion: apiVersion || '',
-      plural: typeName,
-      labelSelector: labels ? labels.join(',') : undefined,
-      fieldSelector: fields ? fields.join(',') : undefined,
-    },
-    isEnabled: resourceType === 'api' && !!apiGroup && !!apiVersion,
-  })
-
-  const isPendingApi = statusApi === 'connecting'
-  const errorApi = statusApi === 'closed' && lastErrorApi ? lastErrorApi : undefined
-  const dataApi = stateApi.order.map(key => {
-    const res = stateApi.byKey[key]
-    return res
+    data: dataItems,
+    isLoading,
+    error,
+  } = useK8sSmartResource<{ items: TSingleResource[] }>({
+    cluster,
+    namespace,
+    group: apiGroup || undefined,
+    version: apiVersion || '',
+    plural: typeName,
+    labelSelector: labels ? encodeURIComponent(labels.join(',')) : undefined,
+    fieldSelector: fields ? encodeURIComponent(fields.join(',')) : undefined,
+    limit,
   })
 
   const onDeleteHandle = (name: string, endpoint: string) => {
@@ -218,70 +177,65 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
 
   return (
     <>
-      {((resourceType === 'builtin' && isPendingBuiltin) || (resourceType === 'api' && isPendingApi)) && <Spin />}
-      {resourceType === 'builtin' && errorBuiltin && (
-        <Alert message={`An error has occurred: ${errorBuiltin} `} type="error" />
-      )}
-      {resourceType === 'api' && errorApi && <Alert message={`An error has occurred: ${errorApi} `} type="error" />}
+      {isLoading && <Spin />}
+      {error && <Alert message={`An error has occurred: ${error} `} type="error" />}
       <OverflowContainer height={height} searchMount={searchMount}>
-        {!errorBuiltin &&
-          !errorApi &&
-          ((resourceType === 'builtin' && dataBuiltin) || (resourceType === 'api' && dataApi)) && (
-            <EnrichedTableProvider
-              key={resourceType === 'builtin' ? `/v1/${typeName}` : `/${apiGroup}/${apiVersion}/${typeName}`}
-              customizationId={
-                resourceType === 'builtin'
-                  ? `${customizationIdPrefix}/v1/${typeName}`
-                  : `${customizationIdPrefix}/${apiGroup}/${apiVersion}/${typeName}`
-              }
-              tableMappingsReplaceValues={{
-                clusterName: params.clusterName,
-                projectName: params.projectName,
-                instanceName: params.instanceName,
-                namespace: params.namespace,
-                syntheticProject: params.syntheticProject,
-                entryType: params.entryType,
-                apiGroup: params.apiGroup,
-                apiVersion: params.apiVersion,
-                typeName: params.typeName,
-                entryName: params.entryName,
-                apiExtensionVersion: params.apiExtensionVersion,
-                crdName: params.crdName,
-                ...replaceValuesPartsOfUrls,
-              }}
-              cluster={cluster}
-              namespace={namespace}
-              theme={theme}
-              baseprefix={inside ? `${baseprefix}/inside` : baseprefix}
-              dataItems={getDataItems({ resourceType, dataBuiltin, dataApi })}
-              k8sResource={{
-                resource: typeName,
-                apiGroup,
-                apiVersion,
-              }}
-              // isNamespaced={isNamespaced}
-              // isNamespacedLoading={isNamespacedLoading}
-              dataForControls={{
-                cluster,
-                syntheticProject: params.syntheticProject,
-                resource: typeName,
-                apiGroup,
-                apiVersion,
-              }}
-              dataForControlsInternal={{
-                onDeleteHandle,
-              }}
-              selectData={{
-                selectedRowKeys,
-                onChange: (selectedRowKeys: React.Key[], selectedRowsData: { name: string; endpoint: string }[]) => {
-                  setSelectedRowKeys(selectedRowKeys)
-                  setSelectedRowsData(selectedRowsData)
-                },
-              }}
-              tableProps={{ ...TABLE_PROPS, disablePagination: !searchMount }}
-              // maxHeight={height - 65}
-            />
-          )}
+        {!error && dataItems && (
+          <EnrichedTableProvider
+            key={resourceType === 'builtin' ? `/v1/${typeName}` : `/${apiGroup}/${apiVersion}/${typeName}`}
+            customizationId={
+              resourceType === 'builtin'
+                ? `${customizationIdPrefix}/v1/${typeName}`
+                : `${customizationIdPrefix}/${apiGroup}/${apiVersion}/${typeName}`
+            }
+            tableMappingsReplaceValues={{
+              clusterName: params.clusterName,
+              projectName: params.projectName,
+              instanceName: params.instanceName,
+              namespace: params.namespace,
+              syntheticProject: params.syntheticProject,
+              entryType: params.entryType,
+              apiGroup: params.apiGroup,
+              apiVersion: params.apiVersion,
+              typeName: params.typeName,
+              entryName: params.entryName,
+              apiExtensionVersion: params.apiExtensionVersion,
+              crdName: params.crdName,
+              ...replaceValuesPartsOfUrls,
+            }}
+            cluster={cluster}
+            namespace={namespace}
+            theme={theme}
+            baseprefix={inside ? `${baseprefix}/inside` : baseprefix}
+            dataItems={dataItems.items}
+            k8sResource={{
+              resource: typeName,
+              apiGroup,
+              apiVersion,
+            }}
+            // isNamespaced={isNamespaced}
+            // isNamespacedLoading={isNamespacedLoading}
+            dataForControls={{
+              cluster,
+              syntheticProject: params.syntheticProject,
+              resource: typeName,
+              apiGroup,
+              apiVersion,
+            }}
+            dataForControlsInternal={{
+              onDeleteHandle,
+            }}
+            selectData={{
+              selectedRowKeys,
+              onChange: (selectedRowKeys: React.Key[], selectedRowsData: { name: string; endpoint: string }[]) => {
+                setSelectedRowKeys(selectedRowKeys)
+                setSelectedRowsData(selectedRowsData)
+              },
+            }}
+            tableProps={{ ...TABLE_PROPS, disablePagination: !searchMount }}
+            // maxHeight={height - 65}
+          />
+        )}
         {/* {selectedRowKeys.length > 0 && (
           <MarginTopContainer $top={-40}>
             <Flex gap={16}>
