@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
 import { useAuth } from 'hooks/useAuth'
 import { logout } from 'api/auth'
+import { BASE_HIDE_INSIDE } from 'constants/customizationApiGroupAndVersion'
 import { Styled } from './styled'
 
 export const User: FC = () => {
@@ -23,10 +24,14 @@ export const User: FC = () => {
           //   key: '1',
           //   label: <ThemeSelector />,
           // },
-          {
-            key: '2',
-            label: <div onClick={() => navigate(`${baseprefix}/inside/clusters`)}>Inside</div>,
-          },
+          ...(BASE_HIDE_INSIDE === 'true'
+            ? []
+            : [
+                {
+                  key: '2',
+                  label: <div onClick={() => navigate(`${baseprefix}/inside/clusters`)}>Inside</div>,
+                },
+              ]),
           {
             key: '3',
             label: (

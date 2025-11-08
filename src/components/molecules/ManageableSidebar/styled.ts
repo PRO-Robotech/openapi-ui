@@ -18,6 +18,7 @@ const Container = styled.div<TContainerProps>`
   direction: rtl;
   max-height: ${({ $maxHeight }) => $maxHeight || 'initial'};
   user-select: none;
+  border-top-right-radius: 7px;
 
   & ul {
     direction: ltr;
@@ -50,9 +51,9 @@ const Container = styled.div<TContainerProps>`
 
   /* corner radius */
 
-  && .ant-menu li:first-child div:first-child {
-    border-top-right-radius: 8px;
-  }
+  /* && .ant-menu li:first-child div:first-child {
+    border-top-right-radius: 4px;
+  } */
 
   /* selected header bgcolor */
 
@@ -71,7 +72,7 @@ const Container = styled.div<TContainerProps>`
   }
 
   && .ant-menu-sub .ant-menu-item.ant-menu-item-selected {
-    width: 225px;
+    width: 214px;
     margin-left: 25px !important;
     padding-left: 23px !important;
     transition: padding 0s;

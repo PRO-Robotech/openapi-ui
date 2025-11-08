@@ -2,6 +2,27 @@ export const getDynamicIndex = (baseprefix: string): string => {
   try {
     const mainJs = 'index-react.js'
     const mainCss = 'style.css'
+    const titleText = process.env.TITLE_TEXT || 'OpenAPI UI'
+    const iconSvg = process.env.ICON_SVG || ''
+
+    // Generate favicon from SVG if provided
+    const generateFavicon = (): string => {
+      if (!iconSvg) return ''
+      try {
+        // If iconSvg is base64-of-base64, unwrap once
+        const maybeInner = Buffer.from(iconSvg, 'base64').toString('utf8')
+        const payload =
+          /^[A-Za-z0-9+/=\n\r]+$/.test(maybeInner) && !maybeInner.trim().startsWith('<')
+            ? maybeInner // double-encoded → use inner base64
+            : iconSvg // single-encoded → already fine
+
+        const dataUri = `data:image/svg+xml;base64,${payload}`
+        return `<link rel="icon" type="image/svg+xml" href="${dataUri}">`
+      } catch (e) {
+        console.error('Error processing icon SVG:', e)
+        return ''
+      }
+    }
 
     return `<html>
   <head>
@@ -14,7 +35,8 @@ export const getDynamicIndex = (baseprefix: string): string => {
       href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
       rel="stylesheet"
     />
-    <title>OpenAPI UI</title>
+    <title>${titleText}</title>
+    ${generateFavicon()}
     <script src="${baseprefix}/env.js"></script>
     <script type="module" crossorigin src="${baseprefix}/${mainJs}"></script>
     <link rel="stylesheet" crossorigin href="${baseprefix}/${mainCss}">

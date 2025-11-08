@@ -18,6 +18,12 @@ if (process.env.LOCAL === 'true') {
 
 const KUBE_API_URL = process.env.LOCAL === 'true' ? options?.KUBE_API_URL : process.env.KUBE_API_URL
 
+const TITLE_TEXT = process.env.LOCAL === 'true' ? options?.TITLE_TEXT : process.env.TITLE_TEXT
+const LOGO_TEXT = process.env.LOCAL === 'true' ? options?.LOGO_TEXT : process.env.LOGO_TEXT
+const FOOTER_TEXT = process.env.LOCAL === 'true' ? options?.FOOTER_TEXT : process.env.FOOTER_TEXT
+const CUSTOM_LOGO_SVG = process.env.LOCAL === 'true' ? options?.CUSTOM_LOGO_SVG : process.env.CUSTOM_LOGO_SVG
+const CUSTOM_TENANT_TEXT = process.env.LOCAL === 'true' ? options?.CUSTOM_TENANT_TEXT : process.env.CUSTOM_TENANT_TEXT
+
 const CUSTOMIZATION_API_GROUP =
   process.env.LOCAL === 'true' ? options?.CUSTOMIZATION_API_GROUP : process.env.CUSTOMIZATION_API_GROUP
 const CUSTOMIZATION_API_VERSION =
@@ -33,6 +39,7 @@ const CUSTOMIZATION_NAVIGATION_RESOURCE =
     : process.env.CUSTOMIZATION_NAVIGATION_RESOURCE
 
 const USE_NAMESPACE_NAV = process.env.LOCAL === 'true' ? options?.USE_NAMESPACE_NAV : process.env.USE_NAMESPACE_NAV
+const HIDE_INSIDE = process.env.LOCAL === 'true' ? options?.HIDE_INSIDE : process.env.HIDE_INSIDE
 
 const NAVIGATE_FROM_CLUSTERLIST =
   process.env.LOCAL === 'true' ? options?.NAVIGATE_FROM_CLUSTERLIST : process.env.NAVIGATE_FROM_CLUSTERLIST
@@ -72,6 +79,36 @@ const SEARCH_TABLE_CUSTOMIZATION_PREFIX =
   process.env.LOCAL === 'true'
     ? options?.SEARCH_TABLE_CUSTOMIZATION_PREFIX
     : process.env.SEARCH_TABLE_CUSTOMIZATION_PREFIX
+
+const BASE_FACTORY_NAMESPACED_API_KEY =
+  process.env.LOCAL === 'true' ? options?.BASE_FACTORY_NAMESPACED_API_KEY : process.env.BASE_FACTORY_NAMESPACED_API_KEY
+const BASE_FACTORY_CLUSTERSCOPED_API_KEY =
+  process.env.LOCAL === 'true'
+    ? options?.BASE_FACTORY_CLUSTERSCOPED_API_KEY
+    : process.env.BASE_FACTORY_CLUSTERSCOPED_API_KEY
+const BASE_FACTORY_NAMESPACED_BUILTIN_KEY =
+  process.env.LOCAL === 'true'
+    ? options?.BASE_FACTORY_NAMESPACED_BUILTIN_KEY
+    : process.env.BASE_FACTORY_NAMESPACED_BUILTIN_KEY
+const BASE_FACTORY_CLUSTERSCOPED_BUILTIN_KEY =
+  process.env.LOCAL === 'true'
+    ? options?.BASE_FACTORY_CLUSTERSCOPED_BUILTIN_KEY
+    : process.env.BASE_FACTORY_CLUSTERSCOPED_BUILTIN_KEY
+const BASE_NAMESPACE_FACTORY_KEY =
+  process.env.LOCAL === 'true' ? options?.BASE_NAMESPACE_FACTORY_KEY : process.env.BASE_NAMESPACE_FACTORY_KEY
+
+const CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP =
+  process.env.LOCAL === 'true'
+    ? options?.CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP
+    : process.env.CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP
+const CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION =
+  process.env.LOCAL === 'true'
+    ? options?.CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION
+    : process.env.CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION
+const CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME =
+  process.env.LOCAL === 'true'
+    ? options?.CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME
+    : process.env.CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME
 
 const healthcheck = require('express-healthcheck')
 const promBundle = require('express-prom-bundle')
@@ -176,13 +213,34 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
     `
     window._env_ = {
     ${basePrefix ? `  BASEPREFIX: "${basePrefix}",` : ''}
+      TITLE_TEXT: ${JSON.stringify(TITLE_TEXT) || '"check envs"'},
+      LOGO_TEXT: ${LOGO_TEXT !== undefined ? JSON.stringify(LOGO_TEXT) : '"check envs"'},
+      FOOTER_TEXT: ${JSON.stringify(FOOTER_TEXT) || '"check envs"'},
+      ${CUSTOM_LOGO_SVG ? `  CUSTOM_LOGO_SVG: "${CUSTOM_LOGO_SVG}",` : ''}
+      ${CUSTOM_TENANT_TEXT ? `  CUSTOM_TENANT_TEXT: "${CUSTOM_TENANT_TEXT}",` : ''}
       CUSTOMIZATION_API_GROUP: ${JSON.stringify(CUSTOMIZATION_API_GROUP) || '"check envs"'},
       CUSTOMIZATION_API_VERSION: ${JSON.stringify(CUSTOMIZATION_API_VERSION) || '"check envs"'},
       CUSTOMIZATION_NAVIGATION_RESOURCE_NAME: ${
         JSON.stringify(CUSTOMIZATION_NAVIGATION_RESOURCE_NAME) || '"check envs"'
       },
+      ${
+        CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP
+          ? `  CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP: "${CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP}",`
+          : ''
+      }
+      ${
+        CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION
+          ? `  CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION: "${CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION}",`
+          : ''
+      }
+      ${
+        CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME
+          ? `  CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME: "${CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME}",`
+          : ''
+      }
       CUSTOMIZATION_NAVIGATION_RESOURCE: ${JSON.stringify(CUSTOMIZATION_NAVIGATION_RESOURCE) || '"check envs"'},
       USE_NAMESPACE_NAV: ${USE_NAMESPACE_NAV ? JSON.stringify(USE_NAMESPACE_NAV).toLowerCase() : '"false"'},
+      HIDE_INSIDE: ${HIDE_INSIDE ? JSON.stringify(HIDE_INSIDE).toLowerCase() : '"false"'},
       NAVIGATE_FROM_CLUSTERLIST: ${JSON.stringify(NAVIGATE_FROM_CLUSTERLIST) || '"check envs"'},
       PROJECTS_API_GROUP: ${JSON.stringify(PROJECTS_API_GROUP) || '"check envs"'},
       PROJECTS_VERSION: ${JSON.stringify(PROJECTS_VERSION) || '"check envs"'},
@@ -199,7 +257,14 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
       DOCS_URL: ${JSON.stringify(DOCS_URL) || '"/docs"'},
       SEARCH_TABLE_CUSTOMIZATION_PREFIX: ${JSON.stringify(SEARCH_TABLE_CUSTOMIZATION_PREFIX) || '"search-"'},
       REMOVE_BACKLINK: ${!!REMOVE_BACKLINK ? JSON.stringify(REMOVE_BACKLINK).toLowerCase() : '"false"'},
-      REMOVE_BACKLINK_TEXT: ${!!REMOVE_BACKLINK_TEXT ? JSON.stringify(REMOVE_BACKLINK_TEXT).toLowerCase() : '"false"'}
+      REMOVE_BACKLINK_TEXT: ${!!REMOVE_BACKLINK_TEXT ? JSON.stringify(REMOVE_BACKLINK_TEXT).toLowerCase() : '"false"'},
+      BASE_FACTORY_NAMESPACED_API_KEY: ${JSON.stringify(BASE_FACTORY_NAMESPACED_API_KEY) || '"check envs"'},
+      BASE_FACTORY_CLUSTERSCOPED_API_KEY: ${JSON.stringify(BASE_FACTORY_CLUSTERSCOPED_API_KEY) || '"check envs"'},
+      BASE_FACTORY_NAMESPACED_BUILTIN_KEY: ${JSON.stringify(BASE_FACTORY_NAMESPACED_BUILTIN_KEY) || '"check envs"'},
+      BASE_FACTORY_CLUSTERSCOPED_BUILTIN_KEY: ${
+        JSON.stringify(BASE_FACTORY_CLUSTERSCOPED_BUILTIN_KEY) || '"check envs"'
+      },
+      BASE_NAMESPACE_FACTORY_KEY: ${JSON.stringify(BASE_NAMESPACE_FACTORY_KEY) || '"check envs"'}
     }
     `,
   )
