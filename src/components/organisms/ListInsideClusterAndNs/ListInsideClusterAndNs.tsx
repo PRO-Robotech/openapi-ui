@@ -1,6 +1,14 @@
+/* eslint-disable no-nested-ternary */
 import React, { FC, useState } from 'react'
 import { Button, Alert, Spin, Typography } from 'antd'
-import { filterSelectOptions, Spacer, useBuiltinResources, useApiResources } from '@prorobotech/openapi-k8s-toolkit'
+import {
+  filterSelectOptions,
+  Spacer,
+  TSingleResource,
+  //  useBuiltinResources,
+  // useApiResources,
+  useK8sSmartResource,
+} from '@prorobotech/openapi-k8s-toolkit'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from 'store/store'
@@ -33,20 +41,39 @@ export const ListInsideClusterAndNs: FC = () => {
     typeof CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME === 'string' &&
     CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME.length > 0
 
-  const namespacesData = useBuiltinResources({
-    clusterName: selectedCluster || '',
-    typeName: 'namespaces',
-    limit: null,
+  // const namespacesData = useBuiltinResources({
+  //   clusterName: selectedCluster || '',
+  //   typeName: 'namespaces',
+  //   limit: null,
+  //   isEnabled: Boolean(selectedCluster !== undefined && !isCustomNamespaceResource),
+  // })
+
+  const namespacesData = useK8sSmartResource<{
+    items: TSingleResource[]
+  }>({
+    cluster: selectedCluster || '',
+    version: 'v1',
+    plural: 'namespaces',
     isEnabled: Boolean(selectedCluster !== undefined && !isCustomNamespaceResource),
   })
 
-  const namespacesDataCustom = useApiResources({
-    clusterName: selectedCluster || '',
-    apiGroup: CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP,
-    apiVersion: CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION,
-    typeName: CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME,
-    limit: null,
-    isEnabled: Boolean(selectedCluster !== undefined && isCustomNamespaceResource),
+  // const namespacesDataCustom = useApiResources({
+  //   clusterName: selectedCluster || '',
+  //   apiGroup: CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP,
+  //   apiVersion: CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION,
+  //   typeName: CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME,
+  //   limit: null,
+  //   isEnabled: Boolean(selectedCluster !== undefined && isCustomNamespaceResource),
+  // })
+
+  const namespacesDataCustom = useK8sSmartResource<{
+    items: TSingleResource[]
+  }>({
+    cluster: selectedCluster || '',
+    group: CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP,
+    version: CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION,
+    plural: CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME,
+    isEnabled: Boolean(selectedCluster !== undefined && !isCustomNamespaceResource),
   })
 
   return (
@@ -80,13 +107,19 @@ export const ListInsideClusterAndNs: FC = () => {
         />
       )}
       <Spacer $space={8} $samespace />
-      {selectedCluster && (isCustomNamespaceResource ? namespacesDataCustom.isPending : namespacesData.isPending) && (
+      {selectedCluster && (isCustomNamespaceResource ? namespacesDataCustom.isLoading : namespacesData.isLoading) && (
         <Spin />
       )}
       {selectedCluster && (isCustomNamespaceResource ? namespacesDataCustom.error : namespacesData.error) && (
         <Alert
           message={`An error has occurred: ${
-            isCustomNamespaceResource ? namespacesDataCustom.error?.message : namespacesData.error?.message
+            isCustomNamespaceResource
+              ? typeof namespacesDataCustom.error === 'string'
+                ? namespacesDataCustom.error
+                : namespacesDataCustom.error?.message
+              : typeof namespacesData.error === 'string'
+              ? namespacesData.error
+              : namespacesData.error?.message
           } `}
           type="error"
         />
