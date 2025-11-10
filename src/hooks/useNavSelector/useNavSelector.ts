@@ -2,7 +2,8 @@ import {
   useApiResources,
   TClusterList,
   TSingleResource,
-  useDirectUnknownResource,
+  // useDirectUnknownResource,
+  useK8sSmartResource,
 } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store/store'
@@ -50,14 +51,30 @@ const mappedInstanceToOptionInSidebar = ({
 export const useNavSelector = (clusterName?: string, projectName?: string) => {
   const clusterList = useSelector((state: RootState) => state.clusterList.clusterList)
 
-  const { data: navigationData } = useDirectUnknownResource<{
-    spec: { instances: { mapOptionsPattern: string } }
+  // const { data: navigationData } = useDirectUnknownResource<{
+  //   spec: { instances: { mapOptionsPattern: string } }
+  // }>({
+  //   uri: `/api/clusters/${clusterName}/k8s/apis/${BASE_API_GROUP}/${BASE_API_VERSION}/${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME}/${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE}`,
+  //   refetchInterval: false,
+  //   queryKey: ['navigation', clusterName || 'no-cluster'],
+  //   isEnabled: clusterName !== undefined,
+  // })
+
+  const { data: navigationDataArr } = useK8sSmartResource<{
+    items: {
+      spec: { instances: { mapOptionsPattern: string } }
+    }[]
   }>({
-    uri: `/api/clusters/${clusterName}/k8s/apis/${BASE_API_GROUP}/${BASE_API_VERSION}/${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME}/${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE}`,
-    refetchInterval: false,
-    queryKey: ['navigation', clusterName || 'no-cluster'],
+    cluster: clusterName || '',
+    group: BASE_API_GROUP,
+    version: BASE_API_VERSION,
+    plural: BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME,
+    fieldSelector: `metadata.name=${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE}`,
     isEnabled: clusterName !== undefined,
   })
+
+  const navigationData =
+    navigationDataArr?.items && navigationDataArr.items.length > 0 ? navigationDataArr.items[0] : undefined
 
   const { data: projects } = useApiResources({
     clusterName: clusterName || '',

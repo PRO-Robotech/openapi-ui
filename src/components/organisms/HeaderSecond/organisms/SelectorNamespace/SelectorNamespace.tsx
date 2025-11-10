@@ -1,7 +1,10 @@
 import React, { FC, useState } from 'react'
 import { Flex, Typography } from 'antd'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useDirectUnknownResource } from '@prorobotech/openapi-k8s-toolkit'
+import {
+  // useDirectUnknownResource,
+  useK8sSmartResource,
+} from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
 import { useNavSelectorInside } from 'hooks/useNavSelectorInside'
@@ -31,14 +34,30 @@ export const SelectorNamespace: FC<TSelectorNamespaceProps> = ({ clusterName, na
 
   const { namespacesInSidebar } = useNavSelectorInside(selectedClusterName)
 
-  const { data: navigationData } = useDirectUnknownResource<{
-    spec: { namespaces: { clear: string; change: string } }
+  // const { data: navigationData } = useDirectUnknownResource<{
+  //   spec: { namespaces: { clear: string; change: string } }
+  // }>({
+  //   uri: `/api/clusters/${clusterName}/k8s/apis/${BASE_API_GROUP}/${BASE_API_VERSION}/${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME}/${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE}`,
+  //   refetchInterval: false,
+  //   queryKey: ['navigation', clusterName || 'no-cluster'],
+  //   isEnabled: clusterName !== undefined,
+  // })
+
+  const { data: navigationDataArr } = useK8sSmartResource<{
+    items: {
+      spec: { namespaces: { clear: string; change: string } }
+    }[]
   }>({
-    uri: `/api/clusters/${clusterName}/k8s/apis/${BASE_API_GROUP}/${BASE_API_VERSION}/${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME}/${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE}`,
-    refetchInterval: false,
-    queryKey: ['navigation', clusterName || 'no-cluster'],
+    cluster: clusterName || '',
+    group: BASE_API_GROUP,
+    version: BASE_API_VERSION,
+    plural: BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME,
+    fieldSelector: `metadata.name=${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE}`,
     isEnabled: clusterName !== undefined,
   })
+
+  const navigationData =
+    navigationDataArr?.items && navigationDataArr.items.length > 0 ? navigationDataArr.items[0] : undefined
 
   const isSearchPage = useIsSearchPage(baseprefix || '')
 
