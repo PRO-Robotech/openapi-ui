@@ -1,44 +1,23 @@
-import React, { FC, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { ManageableBreadcrumbs, ManageableSidebar, Factory, NavigationContainer } from 'components'
-import { getBreadcrumbsIdPrefix } from 'utils/getBreadcrumbsIdPrefix'
-import { getSidebarIdPrefix } from 'utils/getSidebarIdPrefix'
-import { BaseTemplate } from 'templates'
+import React, { FC, useEffect } from 'react'
+import { useParams, useOutletContext } from 'react-router-dom'
+import { Factory } from 'components'
+import { TChromeCtx } from 'templates'
 
 export const FactoryPage: FC = () => {
-  const { namespace, syntheticProject, key } = useParams()
+  const { key } = useParams()
 
-  const [currentTags, setCurrentTags] = useState<string[]>()
+  const { setCurrentTags, setSidebarSuffix, setBreadcrumbsSuffix } = useOutletContext<TChromeCtx>()
 
-  const possibleProject = syntheticProject && namespace ? syntheticProject : namespace
-  const possibleInstance = syntheticProject && namespace ? namespace : undefined
+  useEffect(() => {
+    setSidebarSuffix(`factory-${key}`)
+    setBreadcrumbsSuffix(`factory-${key}`)
 
-  const breadcrumbsId = `${getBreadcrumbsIdPrefix({
-    instance: !!syntheticProject,
-    project: !!namespace,
-  })}factory-${key}`
+    return () => {
+      setCurrentTags(undefined)
+      setSidebarSuffix(undefined)
+      setBreadcrumbsSuffix(undefined)
+    }
+  }, [key, setSidebarSuffix, setBreadcrumbsSuffix, setCurrentTags])
 
-  const sidebarId = `${getSidebarIdPrefix({
-    instance: !!syntheticProject,
-    project: !!namespace,
-  })}factory-${key}`
-
-  return (
-    <BaseTemplate
-      sidebar={
-        <ManageableSidebar
-          instanceName={possibleInstance}
-          projectName={possibleProject}
-          idToCompare={sidebarId}
-          currentTags={currentTags}
-        />
-      }
-      // withNoCluster
-    >
-      <NavigationContainer>
-        <ManageableBreadcrumbs idToCompare={breadcrumbsId} />
-      </NavigationContainer>
-      <Factory setSidebarTags={setCurrentTags} key={key} />
-    </BaseTemplate>
-  )
+  return <Factory setSidebarTags={setCurrentTags} key={key} />
 }
