@@ -30,7 +30,7 @@ export const ListInsideClusterAndNs: FC = () => {
   const [selectedCluster, setSelectedCluster] = useState<string>()
   const [selectedNamespace, setSelectedNamespace] = useState<string>()
 
-  const isCustomNamespaceResource =
+  const isCustomNamespaceResource: boolean =
     CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP &&
     typeof CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP === 'string' &&
     CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP.length > 0 &&
@@ -73,7 +73,7 @@ export const ListInsideClusterAndNs: FC = () => {
     group: CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP,
     version: CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION,
     plural: CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME,
-    isEnabled: Boolean(selectedCluster !== undefined && !isCustomNamespaceResource),
+    isEnabled: Boolean(selectedCluster !== undefined && isCustomNamespaceResource),
   })
 
   return (
