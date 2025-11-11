@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { RedirectProjectInfo } from 'components'
 import { BaseTemplate } from 'templates'
 
-export const ProjectInfoPage: FC = () => {
+export const RedirectProjectInfoPage: FC = () => {
   return (
     <BaseTemplate>
       <RedirectProjectInfo />

@@ -12,6 +12,8 @@ export type TChromeCtx = {
   setBreadcrumbsSuffix: (suffix?: string) => void
   setBacklinkTo: (backlinkTo?: string) => void
   setBacklinkTitle: (backlinkTitle?: string) => void
+  setUseOnlyNamespace: (flag: boolean) => void
+  setBaseTemplateSearchBoolean: (flag: boolean) => void
 }
 
 export const AppShell: FC<{ inside?: boolean }> = ({ inside }) => {
@@ -25,6 +27,8 @@ export const AppShell: FC<{ inside?: boolean }> = ({ inside }) => {
   const [breadcrumbsSuffix, setBreadcrumbsSuffix] = useState<string | undefined>()
   const [backlinkTo, setBacklinkTo] = useState<string | undefined>()
   const [backlinkTitle, setBacklinkTitle] = useState<string | undefined>()
+  const [useOnlyNamespace, setUseOnlyNamespace] = useState<boolean>(false)
+  const [baseTemplateSearchBoolean, setBaseTemplateSearchBoolean] = useState<boolean>(false)
 
   // Commit tags only on actual content change to avoid sidebar refetch
   const setCurrentTags = React.useCallback((next?: string[]) => {
@@ -39,18 +43,22 @@ export const AppShell: FC<{ inside?: boolean }> = ({ inside }) => {
 
   const sidebarId = useMemo(
     () =>
-      `${getSidebarIdPrefix({ instance: !!syntheticProject, project: !!namespace, inside })}${
+      `${getSidebarIdPrefix({ instance: !!syntheticProject, project: !!namespace, useOnlyNamespace, inside })}${
         sidebarSuffix ?? 'app-shell'
       }`,
-    [syntheticProject, namespace, inside, sidebarSuffix],
+    [syntheticProject, namespace, sidebarSuffix, useOnlyNamespace, inside],
   )
 
   const breadcrumbsId = useMemo(
     () =>
-      `${getBreadcrumbsIdPrefix({ instance: !!syntheticProject, project: !!namespace, inside })}${
-        breadcrumbsSuffix ?? 'app-shell'
-      }`,
-    [syntheticProject, namespace, inside, breadcrumbsSuffix],
+      `${getBreadcrumbsIdPrefix({
+        namespace: !!namespace,
+        instance: !!syntheticProject,
+        project: !!namespace,
+        useOnlyNamespace,
+        inside,
+      })}${breadcrumbsSuffix ?? 'app-shell'}`,
+    [syntheticProject, namespace, breadcrumbsSuffix, useOnlyNamespace, inside],
   )
 
   const sidebarEl = React.useMemo(
@@ -72,12 +80,14 @@ export const AppShell: FC<{ inside?: boolean }> = ({ inside }) => {
       setBreadcrumbsSuffix,
       setBacklinkTo,
       setBacklinkTitle,
+      setUseOnlyNamespace,
+      setBaseTemplateSearchBoolean,
     }),
     [setCurrentTags],
   )
 
   return (
-    <BaseTemplate inside={inside} sidebar={sidebarEl}>
+    <BaseTemplate inside={inside} sidebar={sidebarEl} isSearch={baseTemplateSearchBoolean}>
       <NavigationContainer>
         <ManageableBreadcrumbs idToCompare={breadcrumbsId} inside={inside} />
         {backlinkTo && backlinkTitle && <BackLink to={backlinkTo} title={backlinkTitle} />}

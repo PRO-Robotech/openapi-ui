@@ -1,15 +1,6 @@
-export { MainPage } from './MainPage'
 /* main routing */
+export { MainPage } from './MainPage'
 export { ListClustersPage } from './ListClustersPage'
-export { ListProjectsPage } from './ListProjectsPage'
-export { ProjectInfoPage } from './ProjectInfoPage'
-/* inside routing */
-export {
-  ListInsideClustersAndNsPage,
-  ListInsideApiPage,
-  ListInsideCrdByApiGroupPage,
-  ListInsideApiByApiGroupPage,
-} from './Insides'
 /* tables */
 export {
   // TableCrdPage,
@@ -26,3 +17,13 @@ export {
 export { FactoryPage } from './FactoryPage'
 /* search */
 export { SearchPage } from './SearchPage'
+/* inside routing */
+export {
+  ListInsideClustersAndNsPage,
+  ListInsideApiPage,
+  ListInsideCrdByApiGroupPage,
+  ListInsideApiByApiGroupPage,
+} from './Insides'
+/* redirects */
+export { RedirectProjectsPage } from './RedirectProjectsPage'
+export { RedirectProjectInfoPage } from './RedirectProjectInfoPage'

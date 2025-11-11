@@ -12,8 +12,8 @@ import { setBaseprefix } from 'store/federation/federation/baseprefix'
 import {
   MainPage,
   ListClustersPage,
-  ListProjectsPage,
-  ProjectInfoPage,
+  RedirectProjectsPage,
+  RedirectProjectInfoPage,
   ListInsideClustersAndNsPage,
   ListInsideApiPage,
   ListInsideCrdByApiGroupPage,
@@ -58,19 +58,18 @@ export const App: FC<TAppProps> = ({ isFederation, forcedTheme }) => {
       <Route element={<MainLayout forcedTheme={forcedTheme} />}>
         <Route path={`${prefix}/`} element={<MainPage />} />
         <Route path={`${prefix}/clusters`} element={<ListClustersPage />} />
-        <Route path={`${prefix}/clusters/:clusterName`} element={<ListProjectsPage />} />
-        <Route path={`${prefix}/inside/`} element={<MainPage />} />
-        <Route path={`${prefix}/clusters/:clusterName/projects/:namespace`} element={<ProjectInfoPage />} />
 
         <Route path={`${prefix}/:clusterName/:namespace?/:syntheticProject?/*`} element={<AppShell />}>
           {/* <Route path="crd-table/:apiGroup/:apiVersion/:apiExtensionVersion/:crdName" element={<TableCrdPage />} /> */}
           <Route path="api-table/:apiGroup/:apiVersion/:typeName" element={<TableApiPage />} />
           <Route path="builtin-table/:typeName" element={<TableBuiltinPage />} />
           {/* <Route path="forms/crds/:apiGroup/:apiVersion/:typeName/:entryName?/"" element={<FormCrdPage />} /> */}
-          <Route path="forms/builtin/:apiVersion/:typeName/:entryName?/" element={<FormBuiltinPage />} />
           <Route path="forms/apis/:apiGroup/:apiVersion/:typeName/:entryName?/" element={<FormApiPage />} />
+          <Route path="forms/builtin/:apiVersion/:typeName/:entryName?/" element={<FormBuiltinPage />} />
           <Route path="factory/:key/*" element={<FactoryPage />} />
+          <Route path="search/*" element={<SearchPage />} />
         </Route>
+
         <Route path={`${prefix}/inside/:clusterName/:namespace?/:syntheticProject?/*`} element={<AppShell inside />}>
           {/* <Route path="crd-table/:apiGroup/:apiVersion/:apiExtensionVersion/:crdName" element={<TableCrdPage inside />} /> */}
           <Route path="api-table/:apiGroup/:apiVersion/:typeName" element={<TableApiPage inside />} />
@@ -80,18 +79,19 @@ export const App: FC<TAppProps> = ({ isFederation, forcedTheme }) => {
           <Route path="forms/apis/:apiGroup/:apiVersion/:typeName/:entryName?/" element={<FormApiPage />} />
         </Route>
 
+        <Route path={`${prefix}/inside/`} element={<MainPage />} />
         <Route path={`${prefix}/inside/clusters`} element={<ListInsideClustersAndNsPage inside />} />
-        <Route path={`${prefix}/inside/:clusterName/:namespace?/apis`} element={<ListInsideApiPage inside />} />
-        <Route
-          path={`${prefix}/inside/:clusterName/:namespace?/crds-by-api/:apiGroup/:apiVersion/:apiExtensionVersion`}
-          element={<ListInsideCrdByApiGroupPage inside />}
-        />
-        <Route
-          path={`${prefix}/inside/:clusterName/:namespace?/apis-by-api/:apiGroup/:apiVersion/`}
-          element={<ListInsideApiByApiGroupPage inside />}
-        />
+        <Route path={`${prefix}/inside/:clusterName/:namespace?/*`} element={<AppShell inside />}>
+          <Route path="apis" element={<ListInsideApiPage />} />
+          <Route
+            path="crds-by-api/:apiGroup/:apiVersion/:apiExtensionVersion"
+            element={<ListInsideCrdByApiGroupPage />}
+          />
+          <Route path="apis-by-api/:apiGroup/:apiVersion/" element={<ListInsideApiByApiGroupPage />} />
+        </Route>
 
-        <Route path={`${prefix}/:clusterName/:namespace?/:syntheticProject?/search/*`} element={<SearchPage />} />
+        <Route path={`${prefix}/clusters/:clusterName`} element={<RedirectProjectsPage />} />
+        <Route path={`${prefix}/clusters/:clusterName/projects/:namespace`} element={<RedirectProjectInfoPage />} />
       </Route>
     </Routes>
   )
