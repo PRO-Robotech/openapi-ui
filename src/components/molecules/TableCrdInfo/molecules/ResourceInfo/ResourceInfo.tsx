@@ -10,7 +10,9 @@ import {
   DeleteModal,
   DeleteModalMany,
   TAdditionalPrinterColumns,
-  useCrdResources,
+  // useCrdResources,
+  useK8sSmartResource,
+  TJSON,
 } from '@prorobotech/openapi-k8s-toolkit'
 import { FlexGrow, OverflowMaxHeightContainer, PaddingContainer } from 'components'
 import { TABLE_PROPS } from 'constants/tableProps'
@@ -92,12 +94,25 @@ export const ResourceInfo: FC<TResourceInfoProps> = ({
     }
   }, [])
 
-  const { isPending, error, data } = useCrdResources({
-    clusterName,
-    namespace,
-    apiGroup,
-    apiVersion,
-    crdName: crdPluralName,
+  // const { isPending, error, data } = useCrdResources({
+  //   clusterName,
+  //   namespace,
+  //   apiGroup,
+  //   apiVersion,
+  //   crdName: crdPluralName,
+  // })
+
+  const {
+    data,
+    isLoading: isPending,
+    error,
+  } = useK8sSmartResource<{
+    items: TJSON[]
+  }>({
+    cluster: clusterName,
+    group: apiGroup,
+    version: apiVersion,
+    plural: crdPluralName,
   })
 
   let resourceSchema = {}

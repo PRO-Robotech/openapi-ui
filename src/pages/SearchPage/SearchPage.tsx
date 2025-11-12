@@ -1,47 +1,32 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import { ContentCard } from '@prorobotech/openapi-k8s-toolkit'
-import { useParams } from 'react-router-dom'
-import { BackLink, ManageableBreadcrumbs, ManageableSidebar, NavigationContainer, Search } from 'components'
-import { getSidebarIdPrefix } from 'utils/getSidebarIdPrefix'
-import { getBreadcrumbsIdPrefix } from 'utils/getBreadcrumbsIdPrefix'
-import { BaseTemplate } from 'templates'
+import { useOutletContext } from 'react-router-dom'
+import { Search } from 'components'
+import { TChromeCtx } from 'templates'
 
 export const SearchPage: FC = () => {
-  const { namespace, syntheticProject } = useParams()
+  const { setCurrentTags, setSidebarSuffix, setBreadcrumbsSuffix, setUseOnlyNamespace, setBaseTemplateSearchBoolean } =
+    useOutletContext<TChromeCtx>()
 
-  const possibleProject = syntheticProject && namespace ? syntheticProject : namespace
-  const possibleInstance = syntheticProject && namespace ? namespace : undefined
+  useEffect(() => {
+    setCurrentTags(['search'])
+    setSidebarSuffix('search-page')
+    setBreadcrumbsSuffix('search-page')
+    setUseOnlyNamespace(true)
+    setBaseTemplateSearchBoolean(true)
 
-  // const sidebarId = `${getSidebarIdPrefix({ instance: !!syntheticProject, project: !!namespace })}search-page`
-  // const breadcrumbsId = `${getBreadcrumbsIdPrefix({
-  //   instance: !!syntheticProject,
-  //   project: !!namespace,
-  // })}search-page`
-  const sidebarId = `${getSidebarIdPrefix({ namespace: !!namespace })}search-page`
-  const breadcrumbsId = `${getBreadcrumbsIdPrefix({
-    namespace: !!namespace,
-  })}search-page`
+    return () => {
+      setCurrentTags(undefined)
+      setSidebarSuffix(undefined)
+      setBreadcrumbsSuffix(undefined)
+      setUseOnlyNamespace(false)
+      setBaseTemplateSearchBoolean(false)
+    }
+  }, [setSidebarSuffix, setBreadcrumbsSuffix, setCurrentTags, setUseOnlyNamespace, setBaseTemplateSearchBoolean])
 
   return (
-    <BaseTemplate
-      inside={false}
-      isSearch
-      sidebar={
-        <ManageableSidebar
-          instanceName={possibleInstance}
-          projectName={possibleProject}
-          idToCompare={sidebarId}
-          currentTags={['search']}
-        />
-      }
-    >
-      <NavigationContainer>
-        <ManageableBreadcrumbs idToCompare={breadcrumbsId} inside={false} />
-        <BackLink title="Search" />
-      </NavigationContainer>
-      <ContentCard flexGrow={1} displayFlex flexFlow="column">
-        <Search />
-      </ContentCard>
-    </BaseTemplate>
+    <ContentCard flexGrow={1} displayFlex flexFlow="column">
+      <Search />
+    </ContentCard>
   )
 }

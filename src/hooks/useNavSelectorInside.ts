@@ -1,4 +1,10 @@
-import { TClusterList, TSingleResource, useBuiltinResources, useApiResources } from '@prorobotech/openapi-k8s-toolkit'
+import {
+  TClusterList,
+  TSingleResource,
+  //  useBuiltinResources,
+  // useApiResources,
+  useK8sSmartResource,
+} from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store/store'
 import {
@@ -31,20 +37,39 @@ export const useNavSelectorInside = (clusterName?: string) => {
     typeof CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME === 'string' &&
     CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME.length > 0
 
-  const { data: namespaces } = useBuiltinResources({
-    clusterName: clusterName || '',
-    typeName: 'namespaces',
-    limit: null,
+  // const { data: namespaces } = useBuiltinResources({
+  //   clusterName: clusterName || '',
+  //   typeName: 'namespaces',
+  //   limit: null,
+  //   isEnabled: Boolean(clusterName !== undefined && !isCustomNamespaceResource),
+  // })
+
+  const { data: namespaces } = useK8sSmartResource<{
+    items: TSingleResource[]
+  }>({
+    cluster: clusterName || '',
+    version: 'v1',
+    plural: 'namespaces',
     isEnabled: Boolean(clusterName !== undefined && !isCustomNamespaceResource),
   })
 
-  const { data: namespacesCustom } = useApiResources({
-    clusterName: clusterName || '',
-    apiGroup: CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP,
-    apiVersion: CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION,
-    typeName: CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME,
-    limit: null,
-    isEnabled: Boolean(clusterName !== undefined && isCustomNamespaceResource),
+  // const { data: namespacesCustom } = useApiResources({
+  //   clusterName: clusterName || '',
+  //   apiGroup: CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP,
+  //   apiVersion: CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION,
+  //   typeName: CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME,
+  //   limit: null,
+  //   isEnabled: Boolean(clusterName !== undefined && isCustomNamespaceResource),
+  // })
+
+  const { data: namespacesCustom } = useK8sSmartResource<{
+    items: TSingleResource[]
+  }>({
+    cluster: clusterName || '',
+    group: CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP,
+    version: CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION,
+    plural: CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME,
+    isEnabled: Boolean(clusterName !== undefined && !isCustomNamespaceResource),
   })
 
   const clustersInSidebar = clusterList ? clusterList.map(mappedClusterToOptionInSidebar) : []

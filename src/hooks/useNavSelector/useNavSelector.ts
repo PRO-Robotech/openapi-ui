@@ -1,8 +1,9 @@
 import {
-  useApiResources,
+  // useApiResources,
   TClusterList,
   TSingleResource,
-  useDirectUnknownResource,
+  // useDirectUnknownResource,
+  useK8sSmartResource,
 } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store/store'
@@ -50,34 +51,78 @@ const mappedInstanceToOptionInSidebar = ({
 export const useNavSelector = (clusterName?: string, projectName?: string) => {
   const clusterList = useSelector((state: RootState) => state.clusterList.clusterList)
 
-  const { data: navigationData } = useDirectUnknownResource<{
-    spec: { instances: { mapOptionsPattern: string } }
+  // const { data: navigationData } = useDirectUnknownResource<{
+  //   spec: { instances: { mapOptionsPattern: string } }
+  // }>({
+  //   uri: `/api/clusters/${clusterName}/k8s/apis/${BASE_API_GROUP}/${BASE_API_VERSION}/${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME}/${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE}`,
+  //   refetchInterval: false,
+  //   queryKey: ['navigation', clusterName || 'no-cluster'],
+  //   isEnabled: clusterName !== undefined,
+  // })
+
+  const { data: navigationDataArr } = useK8sSmartResource<{
+    items: {
+      spec: { instances: { mapOptionsPattern: string } }
+    }[]
   }>({
-    uri: `/api/clusters/${clusterName}/k8s/apis/${BASE_API_GROUP}/${BASE_API_VERSION}/${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME}/${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE}`,
-    refetchInterval: false,
-    queryKey: ['navigation', clusterName || 'no-cluster'],
+    cluster: clusterName || '',
+    group: BASE_API_GROUP,
+    version: BASE_API_VERSION,
+    plural: BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME,
+    fieldSelector: `metadata.name=${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE}`,
     isEnabled: clusterName !== undefined,
   })
 
-  const { data: projects } = useApiResources({
-    clusterName: clusterName || '',
-    namespace: '',
-    apiGroup: BASE_PROJECTS_API_GROUP,
-    apiVersion: BASE_PROJECTS_VERSION,
-    typeName: BASE_PROJECTS_RESOURCE_NAME,
-    limit: null,
+  const navigationData =
+    navigationDataArr?.items && navigationDataArr.items.length > 0 ? navigationDataArr.items[0] : undefined
+
+  // const { data: projects } = useApiResources({
+  //   clusterName: clusterName || '',
+  //   namespace: '',
+  //   apiGroup: BASE_PROJECTS_API_GROUP,
+  //   apiVersion: BASE_PROJECTS_VERSION,
+  //   typeName: BASE_PROJECTS_RESOURCE_NAME,
+  //   limit: null,
+  //   isEnabled: clusterName !== undefined,
+  // })
+
+  const { data: projects } = useK8sSmartResource<{
+    items: TSingleResource[]
+  }>({
+    cluster: clusterName || '',
+    group: BASE_PROJECTS_API_GROUP,
+    version: BASE_PROJECTS_VERSION,
+    plural: BASE_PROJECTS_RESOURCE_NAME,
     isEnabled: clusterName !== undefined,
   })
 
-  const { data: instances, isSuccess: allInstancesLoadingSuccess } = useApiResources({
-    clusterName: clusterName || '',
-    namespace: '',
-    apiGroup: BASE_INSTANCES_API_GROUP,
-    apiVersion: BASE_INSTANCES_VERSION,
-    typeName: BASE_INSTANCES_RESOURCE_NAME,
-    limit: null,
+  // const { data: instances, isSuccess: allInstancesLoadingSuccess } = useApiResources({
+  //   clusterName: clusterName || '',
+  //   namespace: '',
+  //   apiGroup: BASE_INSTANCES_API_GROUP,
+  //   apiVersion: BASE_INSTANCES_VERSION,
+  //   typeName: BASE_INSTANCES_RESOURCE_NAME,
+  //   limit: null,
+  //   isEnabled: clusterName !== undefined,
+  // })
+
+  const {
+    data: instances,
+    isLoading: isInstancesLoading,
+    isError: isInstancesError,
+  } = useK8sSmartResource<{
+    items: TSingleResource[]
+  }>({
+    cluster: clusterName || '',
+    group: BASE_INSTANCES_API_GROUP,
+    version: BASE_INSTANCES_VERSION,
+    plural: BASE_INSTANCES_RESOURCE_NAME,
     isEnabled: clusterName !== undefined,
   })
+
+  const allInstancesLoadingSuccess: boolean = Boolean(
+    instances && instances.items && !isInstancesError && !isInstancesLoading,
+  )
 
   const clustersInSidebar = clusterList ? clusterList.map(mappedClusterToOptionInSidebar) : []
   const projectsInSidebar = clusterName && projects ? projects.items.map(mappedProjectToOptionInSidebar) : []

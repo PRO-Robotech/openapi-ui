@@ -1,7 +1,10 @@
 import React, { FC, useState } from 'react'
 import { Flex, Typography } from 'antd'
 import { useNavigate } from 'react-router-dom'
-import { useDirectUnknownResource } from '@prorobotech/openapi-k8s-toolkit'
+import {
+  // useDirectUnknownResource,
+  useK8sSmartResource,
+} from '@prorobotech/openapi-k8s-toolkit'
 import { useNavSelector } from 'hooks/useNavSelector'
 import { useMountEffect } from 'hooks/useMountEffect'
 import { EntrySelect } from 'components/atoms'
@@ -31,14 +34,28 @@ export const Selector: FC<TSelectorProps> = ({ clusterName, projectName, instanc
     projectName,
   )
 
-  const { data: navigationData } = useDirectUnknownResource<{
-    spec: { projects: { clear: string; change: string }; instances: { clear: string; change: string } }
+  // const { data: navigationData } = useDirectUnknownResource<{
+  //   spec: { projects: { clear: string; change: string }; instances: { clear: string; change: string } }
+  // }>({
+  //   uri: `/api/clusters/${clusterName}/k8s/apis/${BASE_API_GROUP}/${BASE_API_VERSION}/${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME}/${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE}`,
+  //   refetchInterval: false,
+  //   queryKey: ['navigation', clusterName || 'no-cluster'],
+  //   isEnabled: clusterName !== undefined,
+  // })
+
+  const { data: navigationDataArr } = useK8sSmartResource<{
+    items: { spec: { projects: { clear: string; change: string }; instances: { clear: string; change: string } } }[]
   }>({
-    uri: `/api/clusters/${clusterName}/k8s/apis/${BASE_API_GROUP}/${BASE_API_VERSION}/${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME}/${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE}`,
-    refetchInterval: false,
-    queryKey: ['navigation', clusterName || 'no-cluster'],
+    cluster: clusterName || '',
+    group: BASE_API_GROUP,
+    version: BASE_API_VERSION,
+    plural: BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME,
+    fieldSelector: `metadata.name=${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE}`,
     isEnabled: clusterName !== undefined,
   })
+
+  const navigationData =
+    navigationDataArr?.items && navigationDataArr.items.length > 0 ? navigationDataArr.items[0] : undefined
 
   // const handleClusterChange = (value: string) => {
   //   setSelectedClusterName(value)

@@ -4,7 +4,8 @@ import {
   DynamicComponents,
   DynamicRendererWithProviders,
   TDynamicComponentsAppTypeMap,
-  useDirectUnknownResource,
+  // useDirectUnknownResource,
+  useK8sSmartResource,
   TFactoryResponse,
   ContentCard,
 } from '@prorobotech/openapi-k8s-toolkit'
@@ -44,11 +45,17 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags }) => {
     }
   }, [])
 
-  const { data: factoryData } = useDirectUnknownResource<TFactoryResponse<TDynamicComponentsAppTypeMap>>({
-    uri: `/api/clusters/${cluster}/k8s/apis/${BASE_API_GROUP}/${BASE_API_VERSION}/factories/`,
-    refetchInterval: false,
-    queryKey: ['factories', cluster || 'no-cluster'],
-    isEnabled: cluster !== undefined,
+  // const { data: factoryData } = useDirectUnknownResource<TFactoryResponse<TDynamicComponentsAppTypeMap>>({
+  //   uri: `/api/clusters/${cluster}/k8s/apis/${BASE_API_GROUP}/${BASE_API_VERSION}/factories/`,
+  //   refetchInterval: false,
+  //   queryKey: ['factories', cluster || 'no-cluster'],
+  //   isEnabled: cluster !== undefined,
+  // })
+  const { data: factoryData } = useK8sSmartResource<TFactoryResponse<TDynamicComponentsAppTypeMap>>({
+    cluster,
+    group: BASE_API_GROUP,
+    version: BASE_API_VERSION,
+    plural: 'factories',
   })
 
   const { spec } = factoryData?.items.find(({ spec }) => spec.key === key) ?? { spec: undefined }
