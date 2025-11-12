@@ -1,9 +1,33 @@
 import path from 'path'
 import dotenv from 'dotenv'
-import { defineConfig } from 'vite'
+import { defineConfig, Plugin } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import federation from '@originjs/vite-plugin-federation'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
+
+// Plugin to handle dynamic imports of @novnc/novnc from toolkit
+// This ensures that when toolkit's dynamic import is encountered,
+// Vite resolves it to the actual module and bundles it properly
+const handleNovncDynamicImports: Plugin = {
+  name: 'handle-novnc-dynamic-imports',
+  resolveId(id, importer) {
+    // If importing @novnc/novnc (especially from toolkit bundle), resolve it to node_modules
+    // This allows Vite to bundle it properly instead of leaving it as external
+    if (id.includes('@novnc/novnc') || id.includes('/novnc/')) {
+      // Resolve to actual module path so Vite can bundle it
+      return path.resolve(__dirname, './node_modules/@novnc/novnc/lib/rfb.js')
+    }
+    return null
+  },
+  renderDynamicImport({ moduleId }) {
+    // Transform dynamic imports of @novnc/novnc to ensure they're bundled
+    if (moduleId && (moduleId.includes('@novnc/novnc') || moduleId.includes('/novnc/'))) {
+      // Return null to let Vite handle it normally - it will bundle it
+      return null
+    }
+    return null
+  },
+}
 
 // const { VITE_BASEPREFIX } = process.env
 const { parsed: options } = dotenv.config({ path: './.env.options' })
@@ -19,6 +43,9 @@ export default defineConfig({
     minify: false,
     cssCodeSplit: false,
     rollupOptions: {
+      // Don't externalize @novnc/novnc - let Vite handle it properly
+      // Dynamic imports will create separate chunks, avoiding top-level await issues
+      // The module will be bundled and available at runtime
       output: {
         entryFileNames: `[name]-react.js`,
         chunkFileNames: `[name]-react.js`,
@@ -45,6 +72,7 @@ export default defineConfig({
         process: true,
       },
     }),
+    handleNovncDynamicImports,
   ],
   resolve: {
     alias: {
@@ -58,7 +86,12 @@ export default defineConfig({
       templates: path.resolve(__dirname, './src/templates'),
       utils: path.resolve(__dirname, './src/utils'),
       hooks: path.resolve(__dirname, './src/hooks'),
+      // Alias for @novnc/novnc to ensure it resolves correctly during dev and build
+      '@novnc/novnc/lib/rfb.js': path.resolve(__dirname, './node_modules/@novnc/novnc/lib/rfb.js'),
     },
+  },
+  optimizeDeps: {
+    include: ['@novnc/novnc'],
   },
   server: {
     host: '0.0.0.0',
