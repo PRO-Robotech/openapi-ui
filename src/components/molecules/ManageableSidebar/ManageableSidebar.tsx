@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect } from 'react'
 import { theme as antdtheme } from 'antd'
 import { useLocation, useParams } from 'react-router-dom'
-import { ManageableSidebarWithDataProvider } from '@prorobotech/openapi-k8s-toolkit'
+import { ManageableSidebarProvider } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
 // import { HEAD_FIRST_ROW, SIDEBAR_CLUSTER_HEIGHT } from 'constants/blocksSizes'
@@ -66,7 +66,7 @@ export const ManageableSidebar: FC<TManageableSidebarProps> = ({
       $colorBorder={token.colorBorder}
       $maxHeight={height}
     >
-      <ManageableSidebarWithDataProvider
+      <ManageableSidebarProvider
         cluster={clusterName}
         apiGroup={BASE_API_GROUP}
         apiVersion={BASE_API_VERSION}

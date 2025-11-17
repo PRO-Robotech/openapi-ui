@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import {
   // useDirectUnknownResource,
   useK8sSmartResource,
+  TNavigationResource,
 } from '@prorobotech/openapi-k8s-toolkit'
 import { useNavSelector } from 'hooks/useNavSelector'
 import { useMountEffect } from 'hooks/useMountEffect'
@@ -44,7 +45,7 @@ export const Selector: FC<TSelectorProps> = ({ clusterName, projectName, instanc
   // })
 
   const { data: navigationDataArr } = useK8sSmartResource<{
-    items: { spec: { projects: { clear: string; change: string }; instances: { clear: string; change: string } } }[]
+    items: TNavigationResource[]
   }>({
     cluster: clusterName || '',
     group: BASE_API_GROUP,
@@ -66,13 +67,13 @@ export const Selector: FC<TSelectorProps> = ({ clusterName, projectName, instanc
     if (value && value !== 'all') {
       setSelectedProjectName(value)
       const changeUrl =
-        navigationData?.spec.projects.change
+        navigationData?.spec?.projects?.change
           .replace('{selectedCluster}', selectedClusterName || 'no-cluster')
           .replace('{value}', value) || 'no navigation data'
       navigate(changeUrl)
     } else {
       const clearUrl =
-        navigationData?.spec.projects.clear.replace('{selectedCluster}', selectedClusterName || 'no-cluster') ||
+        navigationData?.spec?.projects?.clear.replace('{selectedCluster}', selectedClusterName || 'no-cluster') ||
         'no navigation data'
       navigate(clearUrl)
     }
@@ -82,14 +83,14 @@ export const Selector: FC<TSelectorProps> = ({ clusterName, projectName, instanc
     if (value && value !== 'all') {
       setSelectedInstanceName(value)
       const changeUrl =
-        navigationData?.spec.instances.change
+        navigationData?.spec?.instances?.change
           .replace('{selectedCluster}', selectedClusterName || 'no-cluster')
           .replace('{selectedProject}', selectedProjectName || 'no-project')
           .replace('{value}', value) || 'no navigation data'
       navigate(changeUrl)
     } else {
       const clearUrl =
-        navigationData?.spec.instances.clear
+        navigationData?.spec?.instances?.clear
           .replace('{selectedCluster}', selectedClusterName || 'no-cluster')
           .replace('{selectedProject}', selectedProjectName || 'no-project') || 'no navigation data'
       navigate(clearUrl)

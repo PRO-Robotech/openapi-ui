@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
-import { ManageableBreadcrumbsWithDataProvider } from '@prorobotech/openapi-k8s-toolkit'
+import { ManageableBreadcrumbsProvider } from '@prorobotech/openapi-k8s-toolkit'
 import { BASE_API_GROUP, BASE_API_VERSION } from 'constants/customizationApiGroupAndVersion'
 
 type TManageableBreadCrumbsProps = {
@@ -30,7 +30,7 @@ export const ManageableBreadcrumbs: FC<TManageableBreadCrumbsProps> = ({ idToCom
     }, {})
 
   return (
-    <ManageableBreadcrumbsWithDataProvider
+    <ManageableBreadcrumbsProvider
       idToCompare={idToCompare}
       cluster={clusterName}
       apiGroup={BASE_API_GROUP}

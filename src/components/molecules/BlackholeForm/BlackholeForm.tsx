@@ -1,6 +1,6 @@
 import React, { FC, useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { BlackholeFormDataProvider, TJSON } from '@prorobotech/openapi-k8s-toolkit'
+import { BlackholeFormProvider, TJSON } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
 import {
@@ -83,7 +83,7 @@ export const BlackholeForm: FC<TBlackholeFormProps> = ({ data, customizationId, 
   }
 
   return (
-    <BlackholeFormDataProvider
+    <BlackholeFormProvider
       theme={theme}
       cluster={cluster}
       urlParams={urlParams}

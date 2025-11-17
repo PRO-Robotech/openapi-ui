@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import {
   // useDirectUnknownResource,
   useK8sSmartResource,
+  TNavigationResource,
 } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
@@ -44,9 +45,7 @@ export const SelectorNamespace: FC<TSelectorNamespaceProps> = ({ clusterName, na
   // })
 
   const { data: navigationDataArr } = useK8sSmartResource<{
-    items: {
-      spec: { namespaces: { clear: string; change: string } }
-    }[]
+    items: TNavigationResource[]
   }>({
     cluster: clusterName || '',
     group: BASE_API_GROUP,
@@ -101,13 +100,13 @@ export const SelectorNamespace: FC<TSelectorNamespaceProps> = ({ clusterName, na
     if (value && value !== 'all') {
       setSelectedNamespace(value)
       const changeUrl =
-        navigationData?.spec.namespaces.change
+        navigationData?.spec?.namespaces?.change
           .replace('{selectedCluster}', selectedClusterName || 'no-cluster')
           .replace('{value}', value) || 'no navigation data'
       navigate(changeUrl)
     } else {
       const clearUrl =
-        navigationData?.spec.namespaces.clear.replace('{selectedCluster}', selectedClusterName || 'no-cluster') ||
+        navigationData?.spec?.namespaces?.clear.replace('{selectedCluster}', selectedClusterName || 'no-cluster') ||
         'no navigation data'
       navigate(clearUrl)
     }

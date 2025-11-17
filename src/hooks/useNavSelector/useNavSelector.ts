@@ -4,6 +4,7 @@ import {
   TSingleResource,
   // useDirectUnknownResource,
   useK8sSmartResource,
+  TNavigationResource,
 } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store/store'
@@ -61,9 +62,7 @@ export const useNavSelector = (clusterName?: string, projectName?: string) => {
   // })
 
   const { data: navigationDataArr } = useK8sSmartResource<{
-    items: {
-      spec: { instances: { mapOptionsPattern: string } }
-    }[]
+    items: TNavigationResource[]
   }>({
     cluster: clusterName || '',
     group: BASE_API_GROUP,
@@ -133,7 +132,7 @@ export const useNavSelector = (clusterName?: string, projectName?: string) => {
           .map(item =>
             mappedInstanceToOptionInSidebar({
               instance: item,
-              templateString: navigationData?.spec.instances.mapOptionsPattern,
+              templateString: navigationData?.spec?.instances?.mapOptionsPattern,
             }),
           )
       : []
