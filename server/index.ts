@@ -38,6 +38,11 @@ const CUSTOMIZATION_NAVIGATION_RESOURCE =
     ? options?.CUSTOMIZATION_NAVIGATION_RESOURCE
     : process.env.CUSTOMIZATION_NAVIGATION_RESOURCE
 
+const CUSTOMIZATION_SIDEBAR_FALLBACK_ID =
+  process.env.LOCAL === 'true'
+    ? options?.CUSTOMIZATION_SIDEBAR_FALLBACK_ID
+    : process.env.CUSTOMIZATION_SIDEBAR_FALLBACK_ID
+
 const USE_NAMESPACE_NAV = process.env.LOCAL === 'true' ? options?.USE_NAMESPACE_NAV : process.env.USE_NAMESPACE_NAV
 const HIDE_INSIDE = process.env.LOCAL === 'true' ? options?.HIDE_INSIDE : process.env.HIDE_INSIDE
 
@@ -239,6 +244,7 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
           : ''
       }
       CUSTOMIZATION_NAVIGATION_RESOURCE: ${JSON.stringify(CUSTOMIZATION_NAVIGATION_RESOURCE) || '"check envs"'},
+      CUSTOMIZATION_SIDEBAR_FALLBACK_ID: ${JSON.stringify(CUSTOMIZATION_SIDEBAR_FALLBACK_ID) || '"check envs"'},
       USE_NAMESPACE_NAV: ${USE_NAMESPACE_NAV ? JSON.stringify(USE_NAMESPACE_NAV).toLowerCase() : '"false"'},
       HIDE_INSIDE: ${HIDE_INSIDE ? JSON.stringify(HIDE_INSIDE).toLowerCase() : '"false"'},
       NAVIGATE_FROM_CLUSTERLIST: ${JSON.stringify(NAVIGATE_FROM_CLUSTERLIST) || '"check envs"'},
