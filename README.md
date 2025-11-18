@@ -27,6 +27,7 @@ This app can be configured through environment variables.
 | `CUSTOMIZATION_API_VERSION`                   | `string`  | API version for customization resources. `v1alpha1`                                     |
 | `CUSTOMIZATION_NAVIGATION_RESOURCE_NAME`      | `string`  | Resource plural name for navigation settings. `navigations`                             |
 | `CUSTOMIZATION_NAVIGATION_RESOURCE`           | `string`  | Resource name for navigation settings. `navigation`                                     |
+| `CUSTOMIZATION_SIDEBAR_FALLBACK_ID`           | `string`  | `spec.id` to find in `sidebars` to fallback. Use `-namespaced` for NS-pages             |
 | `USE_NAMESPACE_NAV`                           | `boolean` | Use namespaces instead of project/instances. `true`                                     |
 | `HIDE_INSIDE`                                 | `boolean` | Use namespaces instead of project/instances. `true`                                     |
 | `NAVIGATE_FROM_CLUSTERLIST`                   | `string`  | Location to be navigated after selecting cluster. `/openapi-ui/clusters/~recordValue~`  |

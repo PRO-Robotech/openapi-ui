@@ -60,8 +60,6 @@ export const ManageableSidebar: FC<TManageableSidebarProps> = ({
       return acc
     }, {})
 
-  console.log(namespace ? `${CUSTOMIZATION_SIDEBAR_FALLBACK_ID}-namespaced` : CUSTOMIZATION_SIDEBAR_FALLBACK_ID)
-
   return (
     <Styled.Container
       $isDark={theme === 'dark'}
