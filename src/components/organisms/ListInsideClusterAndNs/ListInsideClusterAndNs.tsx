@@ -1,14 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { FC, useState } from 'react'
 import { Button, Alert, Spin, Typography } from 'antd'
-import {
-  filterSelectOptions,
-  Spacer,
-  TSingleResource,
-  //  useBuiltinResources,
-  // useApiResources,
-  useK8sSmartResource,
-} from '@prorobotech/openapi-k8s-toolkit'
+import { filterSelectOptions, Spacer, TSingleResource, useK8sSmartResource } from '@prorobotech/openapi-k8s-toolkit'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from 'store/store'
@@ -16,7 +9,7 @@ import { setCluster } from 'store/cluster/cluster/cluster'
 import {
   CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP,
   CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION,
-  CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME,
+  CUSTOM_NAMESPACE_API_RESOURCE_PLURAL,
 } from 'constants/customizationApiGroupAndVersion'
 import { Styled } from './styled'
 
@@ -37,42 +30,26 @@ export const ListInsideClusterAndNs: FC = () => {
     CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION &&
     typeof CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION === 'string' &&
     CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION.length > 0 &&
-    CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME &&
-    typeof CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME === 'string' &&
-    CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME.length > 0
-
-  // const namespacesData = useBuiltinResources({
-  //   clusterName: selectedCluster || '',
-  //   typeName: 'namespaces',
-  //   limit: null,
-  //   isEnabled: Boolean(selectedCluster !== undefined && !isCustomNamespaceResource),
-  // })
+    CUSTOM_NAMESPACE_API_RESOURCE_PLURAL &&
+    typeof CUSTOM_NAMESPACE_API_RESOURCE_PLURAL === 'string' &&
+    CUSTOM_NAMESPACE_API_RESOURCE_PLURAL.length > 0
 
   const namespacesData = useK8sSmartResource<{
     items: TSingleResource[]
   }>({
     cluster: selectedCluster || '',
-    version: 'v1',
+    apiVersion: 'v1',
     plural: 'namespaces',
     isEnabled: Boolean(selectedCluster !== undefined && !isCustomNamespaceResource),
   })
-
-  // const namespacesDataCustom = useApiResources({
-  //   clusterName: selectedCluster || '',
-  //   apiGroup: CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP,
-  //   apiVersion: CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION,
-  //   typeName: CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME,
-  //   limit: null,
-  //   isEnabled: Boolean(selectedCluster !== undefined && isCustomNamespaceResource),
-  // })
 
   const namespacesDataCustom = useK8sSmartResource<{
     items: TSingleResource[]
   }>({
     cluster: selectedCluster || '',
-    group: CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP,
-    version: CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION,
-    plural: CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME,
+    apiGroup: CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP,
+    apiVersion: CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION,
+    plural: CUSTOM_NAMESPACE_API_RESOURCE_PLURAL,
     isEnabled: Boolean(selectedCluster !== undefined && isCustomNamespaceResource),
   })
 
@@ -97,7 +74,6 @@ export const ListInsideClusterAndNs: FC = () => {
             if (typeof value === 'string') {
               dispatch(setCluster(value))
               setSelectedCluster(value)
-              // navigate(`/${value}/apis`)
             }
           }}
           onClear={() => {

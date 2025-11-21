@@ -7,11 +7,11 @@ type TCreateCrdsFormProps = {
   namespace?: string
   apiGroup: string
   apiVersion: string
-  typeName: string
+  plural: string
   backLink?: string | null
 }
 
-export const CreateCrdsForm: FC<TCreateCrdsFormProps> = ({ namespace, apiGroup, apiVersion, typeName, backLink }) => {
+export const CreateCrdsForm: FC<TCreateCrdsFormProps> = ({ namespace, apiGroup, apiVersion, plural, backLink }) => {
   const [currentMode, setCurrentMode] = useState<string>('OpenAPI')
   const [currentModeDisabled, setCurrentModeDisabled] = useState<boolean>(false)
 
@@ -45,10 +45,10 @@ export const CreateCrdsForm: FC<TCreateCrdsFormProps> = ({ namespace, apiGroup, 
           type: 'apis',
           apiGroup,
           apiVersion,
-          typeName,
+          plural,
           prefillValueNamespaceOnly: namespace,
         }}
-        customizationId={`default-/${apiGroup}/${apiVersion}/${typeName}`}
+        customizationId={`default-/${apiGroup}/${apiVersion}/${plural}`}
         isCreate
         backlink={backLink}
         modeData={modeData}

@@ -4,24 +4,24 @@ import { useSelector } from 'react-redux'
 import { RootState } from 'store/store'
 import {
   BASE_PROJECTS_API_GROUP,
-  BASE_PROJECTS_VERSION,
-  BASE_PROJECTS_RESOURCE_NAME,
+  BASE_PROJECTS_API_VERSION,
+  BASE_PROJECTS_PLURAL,
 } from 'constants/customizationApiGroupAndVersion'
 
 export const RedirectProjectList: FC = () => {
-  const { clusterName } = useParams()
+  const { cluster } = useParams()
   const navigate = useNavigate()
   const baseprefix = useSelector((state: RootState) => state.baseprefix.baseprefix)
 
   navigate(
-    `${baseprefix}/${clusterName}/api-table/${BASE_PROJECTS_API_GROUP}/${BASE_PROJECTS_VERSION}/${BASE_PROJECTS_RESOURCE_NAME}`,
+    `${baseprefix}/${cluster}/api-table/${BASE_PROJECTS_API_GROUP}/${BASE_PROJECTS_API_VERSION}/${BASE_PROJECTS_PLURAL}`,
   )
 
   useEffect(() => {
     navigate(
-      `${baseprefix}/${clusterName}/api-table/${BASE_PROJECTS_API_GROUP}/${BASE_PROJECTS_VERSION}/${BASE_PROJECTS_RESOURCE_NAME}`,
+      `${baseprefix}/${cluster}/api-table/${BASE_PROJECTS_API_GROUP}/${BASE_PROJECTS_API_VERSION}/${BASE_PROJECTS_PLURAL}`,
     )
-  }, [clusterName, baseprefix, navigate])
+  }, [cluster, baseprefix, navigate])
 
   return null
 }

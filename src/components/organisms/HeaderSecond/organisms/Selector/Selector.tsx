@@ -1,79 +1,60 @@
 import React, { FC, useState } from 'react'
 import { Flex, Typography } from 'antd'
 import { useNavigate } from 'react-router-dom'
-import {
-  // useDirectUnknownResource,
-  useK8sSmartResource,
-  TNavigationResource,
-} from '@prorobotech/openapi-k8s-toolkit'
+import { useK8sSmartResource, TNavigationResource } from '@prorobotech/openapi-k8s-toolkit'
 import { useNavSelector } from 'hooks/useNavSelector'
 import { useMountEffect } from 'hooks/useMountEffect'
 import { EntrySelect } from 'components/atoms'
 import {
   BASE_API_GROUP,
   BASE_API_VERSION,
+  BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_PLURAL,
   BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME,
-  BASE_CUSTOMIZATION_NAVIGATION_RESOURCE,
 } from 'constants/customizationApiGroupAndVersion'
 
 type TSelectorProps = {
-  clusterName?: string
+  cluster?: string
   projectName?: string
   instanceName?: string
 }
 
-export const Selector: FC<TSelectorProps> = ({ clusterName, projectName, instanceName }) => {
+export const Selector: FC<TSelectorProps> = ({ cluster, projectName, instanceName }) => {
   const navigate = useNavigate()
 
-  const [selectedClusterName, setSelectedClusterName] = useState(clusterName)
+  const [selectedCluster, setSelectedCluster] = useState(cluster)
   const [selectedProjectName, setSelectedProjectName] = useState(projectName)
   const [selectedInstanceName, setSelectedInstanceName] = useState(instanceName)
 
-  // const { projectsInSidebar, instancesInSidebar, allInstancesLoadingSuccess, clustersInSidebar } = useNavSelector(
   const { projectsInSidebar, instancesInSidebar, allInstancesLoadingSuccess } = useNavSelector(
-    selectedClusterName,
+    selectedCluster,
     projectName,
   )
-
-  // const { data: navigationData } = useDirectUnknownResource<{
-  //   spec: { projects: { clear: string; change: string }; instances: { clear: string; change: string } }
-  // }>({
-  //   uri: `/api/clusters/${clusterName}/k8s/apis/${BASE_API_GROUP}/${BASE_API_VERSION}/${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME}/${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE}`,
-  //   refetchInterval: false,
-  //   queryKey: ['navigation', clusterName || 'no-cluster'],
-  //   isEnabled: clusterName !== undefined,
-  // })
 
   const { data: navigationDataArr } = useK8sSmartResource<{
     items: TNavigationResource[]
   }>({
-    cluster: clusterName || '',
-    group: BASE_API_GROUP,
-    version: BASE_API_VERSION,
-    plural: BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME,
-    fieldSelector: `metadata.name=${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE}`,
-    isEnabled: clusterName !== undefined,
+    cluster: cluster || '',
+    apiGroup: BASE_API_GROUP,
+    apiVersion: BASE_API_VERSION,
+    plural: BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_PLURAL,
+    fieldSelector: `metadata.name=${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME}`,
+    isEnabled: cluster !== undefined,
   })
 
   const navigationData =
     navigationDataArr?.items && navigationDataArr.items.length > 0 ? navigationDataArr.items[0] : undefined
-
-  // const handleClusterChange = (value: string) => {
-  //   setSelectedClusterName(value)
-  //   navigate(`${baseprefix}/clusters/${value}`)
-  // }
 
   const handleProjectChange = (value?: string) => {
     if (value && value !== 'all') {
       setSelectedProjectName(value)
       const changeUrl =
         navigationData?.spec?.projects?.change
-          .replace('{selectedCluster}', selectedClusterName || 'no-cluster')
+          .replace('{selectedCluster}', selectedCluster || 'no-cluster')
           .replace('{value}', value) || 'no navigation data'
       navigate(changeUrl)
     } else {
       const clearUrl =
-        navigationData?.spec?.projects?.clear.replace('{selectedCluster}', selectedClusterName || 'no-cluster') ||
+        navigationData?.spec?.projects?.clear.replace('{selectedCluster}', selectedCluster || 'no-cluster') ||
         'no navigation data'
       navigate(clearUrl)
     }
@@ -84,31 +65,31 @@ export const Selector: FC<TSelectorProps> = ({ clusterName, projectName, instanc
       setSelectedInstanceName(value)
       const changeUrl =
         navigationData?.spec?.instances?.change
-          .replace('{selectedCluster}', selectedClusterName || 'no-cluster')
+          .replace('{selectedCluster}', selectedCluster || 'no-cluster')
           .replace('{selectedProject}', selectedProjectName || 'no-project')
           .replace('{value}', value) || 'no navigation data'
       navigate(changeUrl)
     } else {
       const clearUrl =
         navigationData?.spec?.instances?.clear
-          .replace('{selectedCluster}', selectedClusterName || 'no-cluster')
+          .replace('{selectedCluster}', selectedCluster || 'no-cluster')
           .replace('{selectedProject}', selectedProjectName || 'no-project') || 'no navigation data'
       navigate(clearUrl)
     }
   }
 
   useMountEffect(() => {
-    setSelectedClusterName(clusterName)
+    setSelectedCluster(cluster)
     setSelectedProjectName(projectName)
     setSelectedInstanceName(instanceName)
-  }, [projectName, instanceName, clusterName])
+  }, [projectName, instanceName, cluster])
 
   return (
     <Flex gap={18} justify="start" align="center">
       {/* <EntrySelect
         placeholder="Cluster"
         options={clustersInSidebar}
-        value={selectedClusterName}
+        value={selectedCluster}
         onChange={handleClusterChange}
       /> */}
       <Typography.Text>Project: </Typography.Text>
@@ -117,7 +98,7 @@ export const Selector: FC<TSelectorProps> = ({ clusterName, projectName, instanc
         options={[{ value: 'all', label: 'All Namespaces' }, ...projectsInSidebar]}
         value={selectedProjectName || 'all'}
         onChange={handleProjectChange}
-        disabled={selectedClusterName === undefined || projectsInSidebar.length === 0}
+        disabled={selectedCluster === undefined || projectsInSidebar.length === 0}
       />
       <Typography.Text>Instance: </Typography.Text>
       <EntrySelect
@@ -126,7 +107,7 @@ export const Selector: FC<TSelectorProps> = ({ clusterName, projectName, instanc
         value={selectedInstanceName || 'all'}
         onChange={handleInstanceChange}
         disabled={
-          selectedClusterName === undefined ||
+          selectedCluster === undefined ||
           selectedProjectName === undefined ||
           (allInstancesLoadingSuccess && instancesInSidebar.length === 0)
         }

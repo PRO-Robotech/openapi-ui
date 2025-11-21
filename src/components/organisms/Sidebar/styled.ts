@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-// import { HEAD_FIRST_ROW, SIDEBAR_CLUSTER_HEIGHT } from 'constants/blocksSizes'
 import { HEAD_FIRST_ROW } from 'constants/blocksSizes'
 
 type TBackgroundContainerProps = {
@@ -16,15 +15,6 @@ const BackgroundContainer = styled.div<TBackgroundContainerProps>`
   height: calc(100vh - ${HEAD_FIRST_ROW}px);
 `
 
-// const ClusterSelectorContainer = styled.div`
-//   height: ${SIDEBAR_CLUSTER_HEIGHT}px;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   padding: 12px;
-// `
-
 export const Styled = {
   BackgroundContainer,
-  // ClusterSelectorContainer,
 }

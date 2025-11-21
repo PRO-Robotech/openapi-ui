@@ -8,20 +8,20 @@ import { useMountEffect } from 'hooks/useMountEffect'
 import { EntrySelect } from 'components/atoms'
 
 type TSelectorClusterInsideProps = {
-  clusterName?: string
+  cluster?: string
 }
 
-export const SelectorClusterInside: FC<TSelectorClusterInsideProps> = ({ clusterName }) => {
+export const SelectorClusterInside: FC<TSelectorClusterInsideProps> = ({ cluster }) => {
   const navigate = useNavigate()
   const baseprefix = useSelector((state: RootState) => state.baseprefix.baseprefix)
 
-  const [selectedClusterName, setSelectedClusterName] = useState(clusterName)
+  const [selectedCluster, setSelectedCluster] = useState(cluster)
 
-  const { clustersInSidebar } = useNavSelectorInside(selectedClusterName)
+  const { clustersInSidebar } = useNavSelectorInside(selectedCluster)
 
   const handleClusterChange = (value?: string) => {
     if (value) {
-      setSelectedClusterName(value)
+      setSelectedCluster(value)
       navigate(`${baseprefix}/inside/${value}/apis`)
     } else {
       navigate(`${baseprefix}/inside/`)
@@ -29,8 +29,8 @@ export const SelectorClusterInside: FC<TSelectorClusterInsideProps> = ({ cluster
   }
 
   useMountEffect(() => {
-    setSelectedClusterName(clusterName)
-  }, [clusterName])
+    setSelectedCluster(cluster)
+  }, [cluster])
 
   return (
     <Flex gap={18} justify="start" align="center">
@@ -38,9 +38,8 @@ export const SelectorClusterInside: FC<TSelectorClusterInsideProps> = ({ cluster
       <EntrySelect
         placeholder="Select Cluster"
         options={clustersInSidebar}
-        value={selectedClusterName}
+        value={selectedCluster}
         onChange={handleClusterChange}
-        // fullwidth
       />
     </Flex>
   )

@@ -9,7 +9,7 @@ import { BASE_USE_NAMESPACE_NAV } from 'constants/customizationApiGroupAndVersio
 import { TChromeCtx } from 'templates'
 
 export const FormApiPage: FC = () => {
-  const { clusterName, syntheticProject, namespace, apiGroup, apiVersion, typeName, entryName } = useParams()
+  const { cluster, syntheticProject, namespace, apiGroup, apiVersion, plural, name } = useParams()
   const [searchParams] = useSearchParams()
   const baseprefix = useSelector((state: RootState) => state.baseprefix.baseprefix)
 
@@ -20,7 +20,7 @@ export const FormApiPage: FC = () => {
 
   const preparedBacklink = getFormsBackLink({
     backLink,
-    clusterName,
+    cluster,
     possibleProject,
     possibleInstance,
     baseprefix,
@@ -32,12 +32,10 @@ export const FormApiPage: FC = () => {
 
   useEffect(() => {
     setSidebarSuffix('api-form')
-    setBreadcrumbsSuffix(`api-form${entryName ? '-edit' : ''}`)
-    setCurrentTags([`${apiGroup}/${apiVersion}/${typeName}`])
+    setBreadcrumbsSuffix(`api-form${name ? '-edit' : ''}`)
+    setCurrentTags([`${apiGroup}/${apiVersion}/${plural}`])
     setBacklinkTo(preparedBacklink)
-    setBacklinkTitle(
-      `${entryName ? 'Update' : 'Create'} ${apiGroup}/${apiVersion}/${typeName}${entryName ? `/${entryName}` : ''}`,
-    )
+    setBacklinkTitle(`${name ? 'Update' : 'Create'} ${apiGroup}/${apiVersion}/${plural}${name ? `/${name}` : ''}`)
 
     return () => {
       setCurrentTags(undefined)
@@ -49,8 +47,8 @@ export const FormApiPage: FC = () => {
   }, [
     apiGroup,
     apiVersion,
-    typeName,
-    entryName,
+    plural,
+    name,
     preparedBacklink,
     setSidebarSuffix,
     setBreadcrumbsSuffix,
@@ -58,19 +56,19 @@ export const FormApiPage: FC = () => {
     setBacklinkTo,
     setBacklinkTitle,
   ])
-  if (!typeName || !apiGroup || !apiVersion) {
+  if (!plural || !apiGroup || !apiVersion) {
     return null
   }
 
   return (
     <ContentCard flexGrow={1} displayFlex flexFlow="column">
-      {entryName ? (
+      {name ? (
         <UpdateApisForm
           namespace={namespace}
           apiGroup={apiGroup}
           apiVersion={apiVersion}
-          typeName={typeName}
-          entryName={entryName}
+          plural={plural}
+          name={name}
           backLink={backLink}
         />
       ) : (
@@ -78,7 +76,7 @@ export const FormApiPage: FC = () => {
           namespace={namespace}
           apiGroup={apiGroup}
           apiVersion={apiVersion}
-          typeName={typeName}
+          plural={plural}
           backLink={backLink}
         />
       )}

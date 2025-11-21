@@ -30,13 +30,13 @@ export const ListInsideCrdsByApiGroup: FC<TListInsideCrdsByApiGroupProps> = ({
   const [filteredResources, setFilteredResources] = useState<TApiGroupResourceTypeList['resources']>()
 
   const { isPending, error, data } = useApiResourceTypesByGroup({
-    clusterName: cluster,
+    cluster,
     apiGroup,
     apiVersion,
   })
 
   useEffect(() => {
-    filterIfApiInstanceNamespaceScoped({ namespace, data, apiGroup, apiVersion, clusterName: cluster }).then(data =>
+    filterIfApiInstanceNamespaceScoped({ namespace, data, apiGroup, apiVersion, cluster }).then(data =>
       setFilteredResources(data),
     )
   }, [namespace, data, apiGroup, apiVersion, cluster])

@@ -1,4 +1,3 @@
-// AppShell.tsx
 import React, { FC, useState, useMemo } from 'react'
 import { Outlet, useParams } from 'react-router-dom'
 import { BaseTemplate } from 'templates'

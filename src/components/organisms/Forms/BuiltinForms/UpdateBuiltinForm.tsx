@@ -6,13 +6,13 @@ import { RootState } from 'store/store'
 import { BlackholeForm } from 'components'
 
 type TUpdateBuiltinFormProps = {
-  typeName: string
-  entryName: string
+  plural: string
+  name: string
   namespace?: string
   backLink?: string | null
 }
 
-export const UpdateBuiltinForm: FC<TUpdateBuiltinFormProps> = ({ typeName, entryName, namespace, backLink }) => {
+export const UpdateBuiltinForm: FC<TUpdateBuiltinFormProps> = ({ plural, name, namespace, backLink }) => {
   const cluster = useSelector((state: RootState) => state.cluster.cluster)
 
   const [currentMode, setCurrentMode] = useState<string>('OpenAPI')
@@ -33,10 +33,10 @@ export const UpdateBuiltinForm: FC<TUpdateBuiltinFormProps> = ({ typeName, entry
   }
 
   const { data, isPending, error } = useBuiltinResourceSingle({
-    clusterName: cluster,
+    cluster,
     namespace,
-    typeName,
-    entryName,
+    plural,
+    name,
     refetchInterval: false,
   })
 
@@ -48,8 +48,6 @@ export const UpdateBuiltinForm: FC<TUpdateBuiltinFormProps> = ({ typeName, entry
     return <Alert message={`An error has occurred: ${error?.message} `} type="error" />
   }
 
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-  // const { status: _, ...noStatusData } = data
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   const { managedFields: __, ...metadata } = data.metadata
 
@@ -67,11 +65,10 @@ export const UpdateBuiltinForm: FC<TUpdateBuiltinFormProps> = ({ typeName, entry
       <BlackholeForm
         data={{
           type: 'builtin',
-          typeName,
-          // prefillValuesSchema: { ...noStatusData, metadata },
+          plural,
           prefillValuesSchema: { ...data, metadata },
         }}
-        customizationId={`default-/v1/${typeName}`}
+        customizationId={`default-/v1/${plural}`}
         backlink={backLink}
         modeData={modeData}
       />

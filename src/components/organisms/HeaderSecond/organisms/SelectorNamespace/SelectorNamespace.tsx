@@ -1,11 +1,7 @@
 import React, { FC, useState } from 'react'
 import { Flex, Typography } from 'antd'
 import { useLocation, useNavigate } from 'react-router-dom'
-import {
-  // useDirectUnknownResource,
-  useK8sSmartResource,
-  TNavigationResource,
-} from '@prorobotech/openapi-k8s-toolkit'
+import { useK8sSmartResource, TNavigationResource } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
 import { useNavSelectorInside } from 'hooks/useNavSelectorInside'
@@ -15,44 +11,35 @@ import { EntrySelect } from 'components/atoms'
 import {
   BASE_API_GROUP,
   BASE_API_VERSION,
+  BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_PLURAL,
   BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME,
-  BASE_CUSTOMIZATION_NAVIGATION_RESOURCE,
 } from 'constants/customizationApiGroupAndVersion'
 
 type TSelectorNamespaceProps = {
-  clusterName?: string
+  cluster?: string
   namespace?: string
 }
 
-export const SelectorNamespace: FC<TSelectorNamespaceProps> = ({ clusterName, namespace }) => {
+export const SelectorNamespace: FC<TSelectorNamespaceProps> = ({ cluster, namespace }) => {
   const navigate = useNavigate()
   const location = useLocation()
 
   const baseprefix = useSelector((state: RootState) => state.baseprefix.baseprefix)
 
-  const [selectedClusterName, setSelectedClusterName] = useState(clusterName)
+  const [selectedCluster, setSelectedCluster] = useState(cluster)
   const [selectedNamespace, setSelectedNamespace] = useState(namespace)
 
-  const { namespacesInSidebar } = useNavSelectorInside(selectedClusterName)
-
-  // const { data: navigationData } = useDirectUnknownResource<{
-  //   spec: { namespaces: { clear: string; change: string } }
-  // }>({
-  //   uri: `/api/clusters/${clusterName}/k8s/apis/${BASE_API_GROUP}/${BASE_API_VERSION}/${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME}/${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE}`,
-  //   refetchInterval: false,
-  //   queryKey: ['navigation', clusterName || 'no-cluster'],
-  //   isEnabled: clusterName !== undefined,
-  // })
+  const { namespacesInSidebar } = useNavSelectorInside(selectedCluster)
 
   const { data: navigationDataArr } = useK8sSmartResource<{
     items: TNavigationResource[]
   }>({
-    cluster: clusterName || '',
-    group: BASE_API_GROUP,
-    version: BASE_API_VERSION,
-    plural: BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME,
-    fieldSelector: `metadata.name=${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE}`,
-    isEnabled: clusterName !== undefined,
+    cluster: cluster || '',
+    apiGroup: BASE_API_GROUP,
+    apiVersion: BASE_API_VERSION,
+    plural: BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_PLURAL,
+    fieldSelector: `metadata.name=${BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME}`,
+    isEnabled: cluster !== undefined,
   })
 
   const navigationData =
@@ -65,10 +52,10 @@ export const SelectorNamespace: FC<TSelectorNamespaceProps> = ({ clusterName, na
       const { pathname, search, hash } = location
       const segs = pathname.split('/')
 
-      // Assume pattern: /prefix/:clusterName/:namespace?/:syntheticProject?/search/*
+      // Assume pattern: /prefix/:cluster/:namespace?/:syntheticProject?/search/*
       // Find the "search" segment index
       const searchIdx = segs.indexOf('search')
-      const clusterIdx = segs.indexOf(selectedClusterName || '')
+      const clusterIdx = segs.indexOf(selectedCluster || '')
       if (clusterIdx === -1) {
         return
       } // bail if we can't find the cluster
@@ -101,21 +88,21 @@ export const SelectorNamespace: FC<TSelectorNamespaceProps> = ({ clusterName, na
       setSelectedNamespace(value)
       const changeUrl =
         navigationData?.spec?.namespaces?.change
-          .replace('{selectedCluster}', selectedClusterName || 'no-cluster')
+          .replace('{selectedCluster}', selectedCluster || 'no-cluster')
           .replace('{value}', value) || 'no navigation data'
       navigate(changeUrl)
     } else {
       const clearUrl =
-        navigationData?.spec?.namespaces?.clear.replace('{selectedCluster}', selectedClusterName || 'no-cluster') ||
+        navigationData?.spec?.namespaces?.clear.replace('{selectedCluster}', selectedCluster || 'no-cluster') ||
         'no navigation data'
       navigate(clearUrl)
     }
   }
 
   useMountEffect(() => {
-    setSelectedClusterName(clusterName)
+    setSelectedCluster(cluster)
     setSelectedNamespace(namespace)
-  }, [namespace, clusterName])
+  }, [namespace, cluster])
 
   return (
     <Flex gap={18} justify="start" align="center">
@@ -125,7 +112,7 @@ export const SelectorNamespace: FC<TSelectorNamespaceProps> = ({ clusterName, na
         options={[{ value: 'all', label: 'All Namespaces' }, ...namespacesInSidebar]}
         value={selectedNamespace || 'all'}
         onChange={handleNamepsaceChange}
-        disabled={selectedClusterName === undefined || namespacesInSidebar.length === 0}
+        disabled={selectedCluster === undefined || namespacesInSidebar.length === 0}
       />
     </Flex>
   )

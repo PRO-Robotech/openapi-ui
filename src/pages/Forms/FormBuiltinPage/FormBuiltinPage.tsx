@@ -9,7 +9,7 @@ import { BASE_USE_NAMESPACE_NAV } from 'constants/customizationApiGroupAndVersio
 import { TChromeCtx } from 'templates'
 
 export const FormBuiltinPage: FC = () => {
-  const { clusterName, syntheticProject, namespace, typeName, entryName } = useParams()
+  const { cluster, syntheticProject, namespace, plural, name } = useParams()
   const [searchParams] = useSearchParams()
   const baseprefix = useSelector((state: RootState) => state.baseprefix.baseprefix)
 
@@ -20,7 +20,7 @@ export const FormBuiltinPage: FC = () => {
 
   const preparedBacklink = getFormsBackLink({
     backLink,
-    clusterName,
+    cluster,
     possibleProject,
     possibleInstance,
     baseprefix,
@@ -32,10 +32,10 @@ export const FormBuiltinPage: FC = () => {
 
   useEffect(() => {
     setSidebarSuffix('builtin-form')
-    setBreadcrumbsSuffix(`builtin-form${entryName ? '-edit' : ''}`)
-    setCurrentTags([`${typeName}`])
+    setBreadcrumbsSuffix(`builtin-form${name ? '-edit' : ''}`)
+    setCurrentTags([`${plural}`])
     setBacklinkTo(preparedBacklink)
-    setBacklinkTitle(`${entryName ? 'Update' : 'Create'} ${typeName}${entryName ? `/${entryName}` : ''}`)
+    setBacklinkTitle(`${name ? 'Update' : 'Create'} ${plural}${name ? `/${name}` : ''}`)
 
     return () => {
       setCurrentTags(undefined)
@@ -45,8 +45,8 @@ export const FormBuiltinPage: FC = () => {
       setBacklinkTitle(undefined)
     }
   }, [
-    typeName,
-    entryName,
+    plural,
+    name,
     preparedBacklink,
     setSidebarSuffix,
     setBreadcrumbsSuffix,
@@ -55,16 +55,16 @@ export const FormBuiltinPage: FC = () => {
     setBacklinkTitle,
   ])
 
-  if (!typeName) {
+  if (!plural) {
     return null
   }
 
   return (
     <ContentCard flexGrow={1} displayFlex flexFlow="column">
-      {entryName ? (
-        <UpdateBuiltinForm namespace={namespace} typeName={typeName} entryName={entryName} backLink={backLink} />
+      {name ? (
+        <UpdateBuiltinForm namespace={namespace} plural={plural} name={name} backLink={backLink} />
       ) : (
-        <CreateBuiltinForm namespace={namespace} typeName={typeName} backLink={backLink} />
+        <CreateBuiltinForm namespace={namespace} plural={plural} backLink={backLink} />
       )}
     </ContentCard>
   )

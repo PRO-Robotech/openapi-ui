@@ -6,24 +6,18 @@ import { useMountEffect } from 'hooks/useMountEffect'
 import { EntrySelect } from 'components/atoms'
 
 type TSelectorInsideProps = {
-  clusterName?: string
+  cluster?: string
   namespace?: string
 }
 
-export const SelectorInside: FC<TSelectorInsideProps> = ({ clusterName, namespace }) => {
+export const SelectorInside: FC<TSelectorInsideProps> = ({ cluster, namespace }) => {
   const navigate = useNavigate()
   const params = useParams()
 
-  const [selectedClusterName, setSelectedClusterName] = useState<string | undefined>(clusterName)
+  const [selectedCluster, setSelectedCluster] = useState<string | undefined>(cluster)
   const [selectedNamespace, setSelectedNamespace] = useState<string | undefined>(namespace)
 
-  // const { namespacesInSidebar, clustersInSidebar } = useNavSelectorInside(selectedClusterName)
-  const { namespacesInSidebar } = useNavSelectorInside(selectedClusterName)
-
-  // const handleClusterChange = (value: string) => {
-  //   setSelectedClusterName(value)
-  //   navigate(`${baseprefix}/inside/${value}/apis`)
-  // }
+  const { namespacesInSidebar } = useNavSelectorInside(selectedCluster)
 
   const handleNamepsaceChange = (value?: string) => {
     if (value && value !== 'all' && params.namespace) {
@@ -44,25 +38,19 @@ export const SelectorInside: FC<TSelectorInsideProps> = ({ clusterName, namespac
   }
 
   useMountEffect(() => {
-    setSelectedClusterName(clusterName)
+    setSelectedCluster(cluster)
     setSelectedNamespace(namespace)
-  }, [namespace, clusterName])
+  }, [namespace, cluster])
 
   return (
     <Flex gap={18} justify="start" align="center">
-      {/* <EntrySelect
-        placeholder="Cluster"
-        options={clustersInSidebar}
-        value={selectedClusterName}
-        onChange={handleClusterChange}
-      /> */}
       <Typography.Text>Namespace: </Typography.Text>
       <EntrySelect
         placeholder="Namespace"
         options={[{ value: 'all', label: 'All Namespaces' }, ...namespacesInSidebar]}
         value={selectedNamespace || 'all'}
         onChange={handleNamepsaceChange}
-        disabled={selectedClusterName === undefined || namespacesInSidebar.length === 0}
+        disabled={selectedCluster === undefined || namespacesInSidebar.length === 0}
       />
     </Flex>
   )
