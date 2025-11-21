@@ -5,7 +5,6 @@ import type { RootState } from 'store/store'
 import { DefaultLayout, HeaderSecond, Footer, Sidebar, RowFlexGrow, FlexCol } from 'components'
 
 type TBaseTemplateProps = {
-  // withNoCluster?: boolean
   children?: ReactNode | undefined
   inside?: boolean
   isSearch?: boolean

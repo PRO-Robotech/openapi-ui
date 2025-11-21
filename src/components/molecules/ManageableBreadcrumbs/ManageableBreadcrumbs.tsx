@@ -12,13 +12,13 @@ export const ManageableBreadcrumbs: FC<TManageableBreadCrumbsProps> = ({ idToCom
   const location = useLocation()
   const { pathname } = useLocation()
   const params = useParams()
-  const clusterName = params?.clusterName || ''
+  const cluster = params?.cluster || ''
   const namespace = params?.namespace || ''
   const syntheticProject = params?.syntheticProject || ''
   const apiGroup = params?.apiGroup || ''
   const apiVersion = params?.apiVersion || ''
-  const typeName = params?.typeName || ''
-  const entryName = params?.entryName || ''
+  const plural = params?.plural || ''
+  const name = params?.name || ''
   const apiExtensionVersion = params?.apiExtensionVersion || ''
   const crdName = params?.crdName || ''
 
@@ -32,13 +32,13 @@ export const ManageableBreadcrumbs: FC<TManageableBreadCrumbsProps> = ({ idToCom
   return (
     <ManageableBreadcrumbsProvider
       idToCompare={idToCompare}
-      cluster={clusterName}
+      cluster={cluster}
       apiGroup={BASE_API_GROUP}
       apiVersion={BASE_API_VERSION}
       plural={inside ? 'breadcrumbsinsides' : 'breadcrumbs'}
-      isEnabled={clusterName !== undefined}
+      isEnabled={cluster !== undefined}
       replaceValues={{
-        clusterName,
+        cluster,
         projectName: '',
         instanceName: '',
         namespace,
@@ -46,8 +46,8 @@ export const ManageableBreadcrumbs: FC<TManageableBreadCrumbsProps> = ({ idToCom
         entryType: '',
         apiGroup,
         apiVersion,
-        typeName,
-        entryName,
+        plural,
+        name,
         apiExtensionVersion,
         crdName,
         ...replaceValuesPartsOfUrls,

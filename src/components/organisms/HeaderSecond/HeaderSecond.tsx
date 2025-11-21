@@ -12,8 +12,7 @@ type THeaderProps = {
 }
 
 export const HeaderSecond: FC<THeaderProps> = ({ inside, isSearch }) => {
-  // const { projectName, instanceName, clusterName, entryType, namespace, syntheticProject } = useParams()
-  const { projectName, instanceName, clusterName, namespace, syntheticProject } = useParams()
+  const { projectName, instanceName, cluster, namespace, syntheticProject } = useParams()
   const { token } = theme.useToken()
 
   const possibleProject = syntheticProject && namespace ? syntheticProject : namespace
@@ -23,17 +22,17 @@ export const HeaderSecond: FC<THeaderProps> = ({ inside, isSearch }) => {
     <Styled.BackgroundContainer $bgColor={token.colorFillSecondary} $borderRadius={token.borderRadius}>
       <Styled.PaddingContainer $height={HEAD_SECOND_ROW}>
         <Flex gap={18}>
-          {inside ? <SelectorClusterInside clusterName={clusterName} /> : <SelectorCluster clusterName={clusterName} />}
-          {inside && <SelectorInside clusterName={clusterName} namespace={namespace} />}
+          {inside ? <SelectorClusterInside cluster={cluster} /> : <SelectorCluster cluster={cluster} />}
+          {inside && <SelectorInside cluster={cluster} namespace={namespace} />}
           {!inside && !isSearch && BASE_USE_NAMESPACE_NAV !== 'true' && (
             <Selector
-              clusterName={clusterName}
+              cluster={cluster}
               projectName={projectName || possibleProject}
               instanceName={instanceName || possibleInstance}
             />
           )}
           {!inside && (isSearch || BASE_USE_NAMESPACE_NAV === 'true') && (
-            <SelectorNamespace clusterName={clusterName} namespace={namespace} />
+            <SelectorNamespace cluster={cluster} namespace={namespace} />
           )}
         </Flex>
       </Styled.PaddingContainer>

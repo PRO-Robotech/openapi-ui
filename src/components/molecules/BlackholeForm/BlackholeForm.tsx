@@ -17,7 +17,7 @@ type TBlackholeFormProps = {
   data:
     | {
         type: 'builtin'
-        typeName: string
+        plural: string
         prefillValuesSchema?: TJSON
         prefillValueNamespaceOnly?: string
       }
@@ -25,7 +25,7 @@ type TBlackholeFormProps = {
         type: 'apis'
         apiGroup: string
         apiVersion: string
-        typeName: string
+        plural: string
         prefillValuesSchema?: TJSON
         prefillValueNamespaceOnly?: string
       }
@@ -71,15 +71,15 @@ export const BlackholeForm: FC<TBlackholeFormProps> = ({ data, customizationId, 
   }, [])
 
   const urlParams = {
-    clusterName: params.clusterName,
+    cluster: params.cluster,
     namespace: params.namespace,
     syntheticProject: params.syntheticProject,
-    entryName: params.entryName,
+    name: params.name,
   }
 
   const urlParamsForPermissions = {
     apiGroup: params.apiGroup,
-    typeName: params.typeName,
+    plural: params.plural,
   }
 
   return (

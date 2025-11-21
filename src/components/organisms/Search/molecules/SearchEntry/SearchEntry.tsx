@@ -40,7 +40,7 @@ export const SearchEntry: FC<TSearchEntryProps> = ({ resource, labels, fields, f
 
   const { FIELD_NAME } = constants
 
-  const [apiGroup, apiVersion, typeName] = resource.split('~')
+  const [apiGroup, apiVersion, plural] = resource.split('~')
 
   const kindName = kindByGvr(kindsWithVersion)(resource)
   const abbr = getUppercase(kindName && kindName.length ? kindName : 'Loading')
@@ -91,13 +91,13 @@ export const SearchEntry: FC<TSearchEntryProps> = ({ resource, labels, fields, f
       {isOpen && (
         <>
           <Spacer $space={12} $samespace />
-          {typeName && (
+          {plural && (
             <TableApiBuiltin
               resourceType={apiGroup.length > 0 ? 'api' : 'builtin'}
               namespace={isNamespaceResource ? namespace : undefined}
               apiGroup={apiGroup.length > 0 ? apiGroup : undefined}
               apiVersion={apiVersion}
-              typeName={typeName}
+              plural={plural}
               labels={labels?.length ? labels : undefined}
               fields={fields?.length ? fields : undefined}
               limit={limitSp && limitSp.length > 0 ? Number(limitSp) : undefined}

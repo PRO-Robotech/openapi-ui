@@ -1,19 +1,19 @@
 import {
   BASE_INSTANCES_API_GROUP,
-  BASE_INSTANCES_VERSION,
-  BASE_INSTANCES_RESOURCE_NAME,
+  BASE_INSTANCES_API_VERSION,
+  BASE_INSTANCES_PLURAL,
 } from 'constants/customizationApiGroupAndVersion'
 
 export const getFormsBackLink = ({
   backLink,
-  clusterName,
+  cluster,
   possibleProject,
   possibleInstance,
   baseprefix,
   namespacesMode,
 }: {
   backLink?: string | null
-  clusterName?: string
+  cluster?: string
   possibleProject?: string
   possibleInstance?: string
   baseprefix?: string
@@ -24,22 +24,22 @@ export const getFormsBackLink = ({
   }
 
   if (possibleInstance) {
-    return `${baseprefix}/${clusterName}/${possibleInstance}/${possibleProject}/api-table/apps/v1/deployments`
+    return `${baseprefix}/${cluster}/${possibleInstance}/${possibleProject}/api-table/apps/v1/deployments`
   }
 
   if (namespacesMode) {
-    return `${baseprefix}/${clusterName}/builtin-table/namespaces`
+    return `${baseprefix}/${cluster}/builtin-table/namespaces`
   }
 
   if (possibleProject) {
-    return `${baseprefix}/clusters/${clusterName}/projects/${possibleProject}`
+    return `${baseprefix}/clusters/${cluster}/projects/${possibleProject}`
   }
 
   return `${baseprefix}/clusters`
 }
 
 export const getTablesBackLink = ({
-  clusterName,
+  cluster,
   possibleProject,
   possibleInstance,
   namespace,
@@ -47,7 +47,7 @@ export const getTablesBackLink = ({
   inside,
   namespacesMode,
 }: {
-  clusterName?: string
+  cluster?: string
   possibleProject?: string
   possibleInstance?: string
   namespace?: string
@@ -56,19 +56,19 @@ export const getTablesBackLink = ({
   namespacesMode?: boolean
 }): string => {
   if (inside) {
-    return `${baseprefix}/inside/${clusterName}${namespace ? `/${namespace}` : ''}/apis`
+    return `${baseprefix}/inside/${cluster}${namespace ? `/${namespace}` : ''}/apis`
   }
 
   if (possibleInstance) {
-    return `${baseprefix}/${clusterName}/${possibleProject}/api-table/${BASE_INSTANCES_API_GROUP}/${BASE_INSTANCES_VERSION}/${BASE_INSTANCES_RESOURCE_NAME}`
+    return `${baseprefix}/${cluster}/${possibleProject}/api-table/${BASE_INSTANCES_API_GROUP}/${BASE_INSTANCES_API_VERSION}/${BASE_INSTANCES_PLURAL}`
   }
 
   if (namespacesMode) {
-    return `${baseprefix}/${clusterName}/builtin-table/namespaces`
+    return `${baseprefix}/${cluster}/builtin-table/namespaces`
   }
 
   if (possibleProject) {
-    return `${baseprefix}/clusters/${clusterName}/projects/${possibleProject}`
+    return `${baseprefix}/clusters/${cluster}/projects/${possibleProject}`
   }
 
   return `${baseprefix}/clusters`

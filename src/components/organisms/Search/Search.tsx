@@ -100,7 +100,7 @@ export const Search: FC = () => {
   useEffect(() => {
     setIsLoading(true)
     setError(undefined)
-    getKinds({ clusterName: cluster })
+    getKinds({ cluster })
       .then(data => {
         setKindIndex(data)
         setKindWithVersion(getSortedKindsAll(data))

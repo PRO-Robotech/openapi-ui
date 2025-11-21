@@ -26,7 +26,7 @@ import {
 } from 'constants/blocksSizes'
 
 type TResourceInfoProps = {
-  clusterName: string
+  cluster: string
   namespace?: string
   crdName: string
   crdPluralName: string
@@ -44,7 +44,7 @@ type TResourceInfoProps = {
 }
 
 export const ResourceInfo: FC<TResourceInfoProps> = ({
-  clusterName,
+  cluster,
   namespace,
   crdName,
   crdPluralName,
@@ -59,7 +59,6 @@ export const ResourceInfo: FC<TResourceInfoProps> = ({
   const location = useLocation()
   const navigate = useNavigate()
   const params = useParams()
-  const cluster = useSelector((state: RootState) => state.cluster.cluster)
   const theme = useSelector((state: RootState) => state.openapiTheme.theme)
   const baseprefix = useSelector((state: RootState) => state.baseprefix.baseprefix)
 
@@ -94,14 +93,6 @@ export const ResourceInfo: FC<TResourceInfoProps> = ({
     }
   }, [])
 
-  // const { isPending, error, data } = useCrdResources({
-  //   clusterName,
-  //   namespace,
-  //   apiGroup,
-  //   apiVersion,
-  //   crdName: crdPluralName,
-  // })
-
   const {
     data,
     isLoading: isPending,
@@ -109,9 +100,9 @@ export const ResourceInfo: FC<TResourceInfoProps> = ({
   } = useK8sSmartResource<{
     items: TJSON[]
   }>({
-    cluster: clusterName,
-    group: apiGroup,
-    version: apiVersion,
+    cluster,
+    apiGroup,
+    apiVersion,
     plural: crdPluralName,
   })
 
@@ -158,7 +149,7 @@ export const ResourceInfo: FC<TResourceInfoProps> = ({
   //           key={`/${apiGroup}/${apiVersion}/${crdPluralName}`}
   //           customizationId={`${customizationIdPrefix}/${apiGroup}/${apiVersion}/${crdPluralName}`}
   //           tableMappingsReplaceValues={{
-  //             clusterName: params.clusterName,
+  //             cluster: params.cluster,
   //             projectName: params.projectName,
   //             instanceName: params.instanceName,
   //             namespace: params.namespace,
@@ -166,8 +157,8 @@ export const ResourceInfo: FC<TResourceInfoProps> = ({
   //             entryType: params.entryType,
   //             apiGroup: params.apiGroup,
   //             apiVersion: params.apiVersion,
-  //             typeName: params.typeName,
-  //             entryName: params.entryName,
+  //             plural: params.plural,
+  //             name: params.name,
   //             apiExtensionVersion: params.apiExtensionVersion,
   //             crdName: params.crdName,
   //             ...replaceValuesPartsOfUrls,
@@ -182,12 +173,12 @@ export const ResourceInfo: FC<TResourceInfoProps> = ({
   //             cluster,
   //             syntheticProject: params.syntheticProject,
   //             pathPrefix: 'forms/crds',
-  //             typeName: crdPluralName,
+  //             plural: crdPluralName,
   //             apiVersion: `${apiGroup}/${apiVersion}`,
   //             backlink: `${baseprefix}${inside ? '/inside' : ''}/${cluster}${namespace ? `/${namespace}` : ''}${
   //               params.syntheticProject ? `/${params.syntheticProject}` : ''
   //             }/crd-table/${apiGroup}/${apiVersion}/${apiExtensionVersion}/${crdName}`,
-  //             deletePathPrefix: `/api/clusters/${clusterName}/k8s/apis`,
+  //             deletePathPrefix: `/api/clusters/${cluster}/k8s/apis`,
   //             onDeleteHandle,
   //             permissions: {
   //               canUpdate: permissions.canUpdate,

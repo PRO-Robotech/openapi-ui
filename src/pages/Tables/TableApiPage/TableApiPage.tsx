@@ -10,8 +10,8 @@ import { TChromeCtx } from 'templates'
 import {
   BASE_USE_NAMESPACE_NAV,
   BASE_PROJECTS_API_GROUP,
-  BASE_PROJECTS_VERSION,
-  BASE_PROJECTS_RESOURCE_NAME,
+  BASE_PROJECTS_API_VERSION,
+  BASE_PROJECTS_PLURAL,
 } from 'constants/customizationApiGroupAndVersion'
 
 type TTableApiPageProps = {
@@ -19,22 +19,22 @@ type TTableApiPageProps = {
 }
 
 export const TableApiPage: FC<TTableApiPageProps> = ({ inside }) => {
-  const { clusterName, namespace, syntheticProject, apiGroup, apiVersion, typeName } = useParams()
+  const { cluster, namespace, syntheticProject, apiGroup, apiVersion, plural } = useParams()
   const [searchParams] = useSearchParams()
   const baseprefix = useSelector((state: RootState) => state.baseprefix.baseprefix)
 
   const isProjectList =
     !namespace &&
     apiGroup === BASE_PROJECTS_API_GROUP &&
-    apiVersion === BASE_PROJECTS_VERSION &&
-    typeName === BASE_PROJECTS_RESOURCE_NAME
+    apiVersion === BASE_PROJECTS_API_VERSION &&
+    plural === BASE_PROJECTS_PLURAL
   const breadcrumbsIdProjectList = 'projects-list'
 
   const possibleProject = syntheticProject && namespace ? syntheticProject : namespace
   const possibleInstance = syntheticProject && namespace ? namespace : undefined
 
   const preparedBacklink = getTablesBackLink({
-    clusterName,
+    cluster,
     possibleProject,
     possibleInstance,
     namespace,
@@ -49,7 +49,7 @@ export const TableApiPage: FC<TTableApiPageProps> = ({ inside }) => {
   useEffect(() => {
     setSidebarSuffix('builtin-table')
     setBreadcrumbsSuffix(isProjectList ? breadcrumbsIdProjectList : 'api-table')
-    setCurrentTags([`${typeName}`])
+    setCurrentTags([`${plural}`])
     setBacklinkTo(preparedBacklink)
     setBacklinkTitle(undefined)
 
@@ -58,10 +58,10 @@ export const TableApiPage: FC<TTableApiPageProps> = ({ inside }) => {
       setSidebarSuffix(undefined)
       setBreadcrumbsSuffix(undefined)
       setBacklinkTo(undefined)
-      setBacklinkTitle(`${apiGroup}/${apiVersion}/${typeName}`)
+      setBacklinkTitle(`${apiGroup}/${apiVersion}/${plural}`)
     }
   }, [
-    typeName,
+    plural,
     isProjectList,
     breadcrumbsIdProjectList,
     preparedBacklink,
@@ -85,14 +85,14 @@ export const TableApiPage: FC<TTableApiPageProps> = ({ inside }) => {
 
   return (
     <ContentCard flexGrow={1} displayFlex flexFlow="column">
-      {typeName && apiGroup && apiVersion && (
+      {plural && apiGroup && apiVersion && (
         <TableApiBuiltin
           resourceType="api"
           namespace={namespace}
           apiGroup={apiGroup}
           apiVersion={apiVersion}
-          typeName={typeName}
-          key={`${apiGroup}-${apiVersion}-${namespace}-${typeName}`}
+          plural={plural}
+          key={`${apiGroup}-${apiVersion}-${namespace}-${plural}`}
           limit={limitSp && limitSp.length > 0 ? Number(limitSp) : undefined}
           inside={inside}
           customizationIdPrefix={tableCustomizationIdPrefix}

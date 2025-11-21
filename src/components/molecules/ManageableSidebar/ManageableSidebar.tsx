@@ -4,7 +4,6 @@ import { useLocation, useParams } from 'react-router-dom'
 import { ManageableSidebarProvider } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
-// import { HEAD_FIRST_ROW, SIDEBAR_CLUSTER_HEIGHT } from 'constants/blocksSizes'
 import { HEAD_FIRST_ROW } from 'constants/blocksSizes'
 import {
   BASE_API_GROUP,
@@ -29,7 +28,7 @@ export const ManageableSidebar: FC<TManageableSidebarProps> = ({
   const location = useLocation()
   const { pathname } = useLocation()
   const params = useParams()
-  const clusterName = params?.clusterName || ''
+  const cluster = params?.cluster || ''
   const namespace = params?.namespace || ''
   const syntheticProject = params?.syntheticProject || ''
   const theme = useSelector((state: RootState) => state.openapiTheme.theme)
@@ -38,7 +37,6 @@ export const ManageableSidebar: FC<TManageableSidebarProps> = ({
   const [height, setHeight] = useState(0)
 
   useEffect(() => {
-    // const height = window.innerHeight - HEAD_FIRST_ROW - SIDEBAR_CLUSTER_HEIGHT - 2
     const height = window.innerHeight - HEAD_FIRST_ROW - 2
     setHeight(height)
 
@@ -71,13 +69,13 @@ export const ManageableSidebar: FC<TManageableSidebarProps> = ({
       $maxHeight={height}
     >
       <ManageableSidebarProvider
-        cluster={clusterName}
+        cluster={cluster}
         apiGroup={BASE_API_GROUP}
         apiVersion={BASE_API_VERSION}
         plural="sidebars"
-        isEnabled={clusterName !== undefined}
+        isEnabled={cluster !== undefined}
         replaceValues={{
-          clusterName,
+          cluster,
           projectName,
           instanceName,
           namespace,

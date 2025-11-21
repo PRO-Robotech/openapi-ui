@@ -5,11 +5,11 @@ import { BlackholeForm } from 'components'
 
 type TCreateBuiltinFormProps = {
   namespace?: string
-  typeName: string
+  plural: string
   backLink?: string | null
 }
 
-export const CreateBuiltinForm: FC<TCreateBuiltinFormProps> = ({ namespace, typeName, backLink }) => {
+export const CreateBuiltinForm: FC<TCreateBuiltinFormProps> = ({ namespace, plural, backLink }) => {
   const [currentMode, setCurrentMode] = useState<string>('OpenAPI')
   const [currentModeDisabled, setCurrentModeDisabled] = useState<boolean>(false)
 
@@ -41,10 +41,10 @@ export const CreateBuiltinForm: FC<TCreateBuiltinFormProps> = ({ namespace, type
       <BlackholeForm
         data={{
           type: 'builtin',
-          typeName,
+          plural,
           prefillValueNamespaceOnly: namespace,
         }}
-        customizationId={`default-/v1/${typeName}`}
+        customizationId={`default-/v1/${plural}`}
         isCreate
         backlink={backLink}
         modeData={modeData}

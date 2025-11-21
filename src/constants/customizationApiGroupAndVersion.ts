@@ -27,12 +27,13 @@ export const BASE_API_VERSION = import.meta.env.DEV
   ? window._env_.CUSTOMIZATION_API_VERSION || import.meta.env.VITE_CUSTOMIZATION_API_VERSION
   : window._env_.CUSTOMIZATION_API_VERSION
 
+export const BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_PLURAL = import.meta.env.DEV
+  ? window._env_.CUSTOMIZATION_NAVIGATION_RESOURCE_PLURAL ||
+    import.meta.env.VITE_CUSTOMIZATION_NAVIGATION_RESOURCE_PLURAL
+  : window._env_.CUSTOMIZATION_NAVIGATION_RESOURCE_PLURAL
 export const BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME = import.meta.env.DEV
   ? window._env_.CUSTOMIZATION_NAVIGATION_RESOURCE_NAME || import.meta.env.VITE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME
   : window._env_.CUSTOMIZATION_NAVIGATION_RESOURCE_NAME
-export const BASE_CUSTOMIZATION_NAVIGATION_RESOURCE = import.meta.env.DEV
-  ? window._env_.CUSTOMIZATION_NAVIGATION_RESOURCE || import.meta.env.VITE_CUSTOMIZATION_NAVIGATION_RESOURCE
-  : window._env_.CUSTOMIZATION_NAVIGATION_RESOURCE
 
 export const CUSTOMIZATION_SIDEBAR_FALLBACK_ID = import.meta.env.DEV
   ? window._env_.CUSTOMIZATION_SIDEBAR_FALLBACK_ID || import.meta.env.VITE_CUSTOMIZATION_SIDEBAR_FALLBACK_ID
@@ -53,29 +54,29 @@ export const BASE_NAVIGATE_FROM_CLUSTERLIST = import.meta.env.DEV
 export const BASE_PROJECTS_API_GROUP = import.meta.env.DEV
   ? window._env_.PROJECTS_API_GROUP || import.meta.env.VITE_PROJECTS_API_GROUP
   : window._env_.PROJECTS_API_GROUP
-export const BASE_PROJECTS_VERSION = import.meta.env.DEV
-  ? window._env_.PROJECTS_VERSION || import.meta.env.VITE_PROJECTS_VERSION
-  : window._env_.PROJECTS_VERSION
-export const BASE_PROJECTS_RESOURCE_NAME = import.meta.env.DEV
-  ? window._env_.PROJECTS_RESOURCE_NAME || import.meta.env.VITE_PROJECTS_RESOURCE_NAME
-  : window._env_.PROJECTS_RESOURCE_NAME
+export const BASE_PROJECTS_API_VERSION = import.meta.env.DEV
+  ? window._env_.PROJECTS_API_VERSION || import.meta.env.VITE_PROJECTS_API_VERSION
+  : window._env_.PROJECTS_API_VERSION
+export const BASE_PROJECTS_PLURAL = import.meta.env.DEV
+  ? window._env_.PROJECTS_PLURAL || import.meta.env.VITE_PROJECTS_PLURAL
+  : window._env_.PROJECTS_PLURAL
 
-export const BASE_MARKETPLACE_RESOURCE_NAME = import.meta.env.DEV
-  ? window._env_.MARKETPLACE_RESOURCE_NAME || import.meta.env.VITE_MARKETPLACE_RESOURCE_NAME
-  : window._env_.MARKETPLACE_RESOURCE_NAME
+export const BASE_MARKETPLACE_PLURAL = import.meta.env.DEV
+  ? window._env_.MARKETPLACE_PLURAL || import.meta.env.VITE_MARKETPLACE_PLURAL
+  : window._env_.MARKETPLACE_PLURAL
 export const BASE_MARKETPLACE_KIND = import.meta.env.DEV
   ? import.meta.env.VITE_MARKETPLACE_KIND
   : window._env_.MARKETPLACE_KIND
 
-export const BASE_INSTANCES_API_GROUP = import.meta.env.DEV
+export const BASE_INSTANCES_API_GROUP: string | undefined = import.meta.env.DEV
   ? window._env_.INSTANCES_API_GROUP || import.meta.env.VITE_INSTANCES_API_GROUP
   : window._env_.INSTANCES_API_GROUP
-export const BASE_INSTANCES_VERSION = import.meta.env.DEV
-  ? window._env_.INSTANCES_VERSION || import.meta.env.VITE_INSTANCES_VERSION
-  : window._env_.INSTANCES_VERSION
-export const BASE_INSTANCES_RESOURCE_NAME = import.meta.env.DEV
-  ? window._env_.INSTANCES_RESOURCE_NAME || import.meta.env.VITE_INSTANCES_RESOURCE_NAME
-  : window._env_.INSTANCES_RESOURCE_NAME
+export const BASE_INSTANCES_API_VERSION = import.meta.env.DEV
+  ? window._env_.INSTANCES_API_VERSION || import.meta.env.VITE_INSTANCES_API_VERSION
+  : window._env_.INSTANCES_API_VERSION
+export const BASE_INSTANCES_PLURAL = import.meta.env.DEV
+  ? window._env_.INSTANCES_PLURAL || import.meta.env.VITE_INSTANCES_PLURAL
+  : window._env_.INSTANCES_PLURAL
 
 export const NODE_TERMINAL_DEFAULT_PROFILE = import.meta.env.DEV
   ? window._env_.NODE_TERMINAL_DEFAULT_PROFILE || import.meta.env.VITE_NODE_TERMINAL_DEFAULT_PROFILE
@@ -123,14 +124,13 @@ export const BASE_NAMESPACE_FACTORY_KEY = import.meta.env.DEV
   ? window._env_.BASE_NAMESPACE_FACTORY_KEY || import.meta.env.VITE_BASE_NAMESPACE_FACTORY_KEY
   : window._env_.BASE_NAMESPACE_FACTORY_KEY
 
-export const CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP = import.meta.env.DEV
+export const CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP: string | undefined = import.meta.env.DEV
   ? window._env_.CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP || import.meta.env.VITE_CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP
   : window._env_.CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP
 export const CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION = import.meta.env.DEV
   ? window._env_.CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION ||
     import.meta.env.VITE_CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION
   : window._env_.CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION
-export const CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME = import.meta.env.DEV
-  ? window._env_.CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME ||
-    import.meta.env.VITE_CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME
-  : window._env_.CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME
+export const CUSTOM_NAMESPACE_API_RESOURCE_PLURAL = import.meta.env.DEV
+  ? window._env_.CUSTOM_NAMESPACE_API_RESOURCE_PLURAL || import.meta.env.VITE_CUSTOM_NAMESPACE_API_RESOURCE_PLURAL
+  : window._env_.CUSTOM_NAMESPACE_API_RESOURCE_PLURAL

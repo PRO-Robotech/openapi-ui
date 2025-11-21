@@ -14,14 +14,14 @@ type TTableCrdPageProps = {
 }
 
 export const TableCrdPage: FC<TTableCrdPageProps> = ({ inside }) => {
-  const { clusterName, namespace, syntheticProject, apiGroup, apiVersion, apiExtensionVersion, crdName } = useParams()
+  const { cluster, namespace, syntheticProject, apiGroup, apiVersion, apiExtensionVersion, crdName } = useParams()
   const baseprefix = useSelector((state: RootState) => state.baseprefix.baseprefix)
 
   const possibleProject = syntheticProject && namespace ? syntheticProject : namespace
   const possibleInstance = syntheticProject && namespace ? namespace : undefined
 
   const preparedBacklink = getTablesBackLink({
-    clusterName,
+    cluster,
     possibleProject,
     possibleInstance,
     namespace,

@@ -14,7 +14,7 @@ type TTableBuiltinPageProps = {
 }
 
 export const TableBuiltinPage: FC<TTableBuiltinPageProps> = ({ inside }) => {
-  const { clusterName, namespace, syntheticProject, typeName } = useParams()
+  const { cluster, namespace, syntheticProject, plural } = useParams()
   const [searchParams] = useSearchParams()
   const baseprefix = useSelector((state: RootState) => state.baseprefix.baseprefix)
 
@@ -22,7 +22,7 @@ export const TableBuiltinPage: FC<TTableBuiltinPageProps> = ({ inside }) => {
   const possibleInstance = syntheticProject && namespace ? namespace : undefined
 
   const preparedBacklink = getTablesBackLink({
-    clusterName,
+    cluster,
     possibleProject,
     possibleInstance,
     namespace,
@@ -37,9 +37,9 @@ export const TableBuiltinPage: FC<TTableBuiltinPageProps> = ({ inside }) => {
   useEffect(() => {
     setSidebarSuffix('builtin-table')
     setBreadcrumbsSuffix('builtin-table')
-    setCurrentTags([`${typeName}`])
+    setCurrentTags([`${plural}`])
     setBacklinkTo(preparedBacklink)
-    setBacklinkTitle(typeName)
+    setBacklinkTitle(plural)
 
     return () => {
       setCurrentTags(undefined)
@@ -49,7 +49,7 @@ export const TableBuiltinPage: FC<TTableBuiltinPageProps> = ({ inside }) => {
       setBacklinkTitle(undefined)
     }
   }, [
-    typeName,
+    plural,
     preparedBacklink,
     setSidebarSuffix,
     setBreadcrumbsSuffix,
@@ -69,13 +69,13 @@ export const TableBuiltinPage: FC<TTableBuiltinPageProps> = ({ inside }) => {
 
   return (
     <ContentCard flexGrow={1} displayFlex flexFlow="column">
-      {typeName && (
+      {plural && (
         <TableApiBuiltin
           resourceType="builtin"
           apiVersion="v1"
-          key={`${namespace}-${typeName}`}
+          key={`${namespace}-${plural}`}
           namespace={namespace}
-          typeName={typeName}
+          plural={plural}
           limit={limitSp && limitSp.length > 0 ? Number(limitSp) : undefined}
           inside={inside}
           customizationIdPrefix={tableCustomizationIdPrefix}
