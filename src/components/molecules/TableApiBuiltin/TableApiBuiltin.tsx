@@ -14,6 +14,9 @@ import {
   Spacer,
   getLinkToForm,
   TSingleResource,
+  TJSON,
+  useSmartResourceParams,
+  useManyK8sSmartResource,
 } from '@prorobotech/openapi-k8s-toolkit'
 import { FlexGrow, PaddingContainer } from 'components'
 import { TABLE_PROPS } from 'constants/tableProps'
@@ -118,6 +121,16 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
     limit,
   })
 
+  const moreResourcesParams = useSmartResourceParams({ cluster, namespace })
+  const moreResources = useManyK8sSmartResource(moreResourcesParams)
+  const additionalReqsData =
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    moreResourcesParams.length > 0 ? moreResources.map(el => el?.data) : undefined
+  const dataItemsWithAdditionalData = dataItems?.items?.map(el => ({
+    ...el,
+    ...(additionalReqsData ? { additionalReqsData } : {}),
+  }))
+
   const onDeleteHandle = (name: string, endpoint: string) => {
     setIsDeleteModalOpen({ name, endpoint })
   }
@@ -168,7 +181,7 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
             namespace={namespace}
             theme={theme}
             baseprefix={inside ? `${baseprefix}/inside` : baseprefix}
-            dataItems={dataItems.items}
+            dataItems={(dataItemsWithAdditionalData as TJSON[] | undefined) || []}
             k8sResource={{
               plural,
               apiGroup,
