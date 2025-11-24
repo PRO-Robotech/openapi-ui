@@ -1,6 +1,6 @@
 import React, { FC, useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { BlackholeFormDataProvider, TJSON } from '@prorobotech/openapi-k8s-toolkit'
+import { BlackholeFormProvider, TJSON } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
 import {
@@ -17,7 +17,7 @@ type TBlackholeFormProps = {
   data:
     | {
         type: 'builtin'
-        typeName: string
+        plural: string
         prefillValuesSchema?: TJSON
         prefillValueNamespaceOnly?: string
       }
@@ -25,7 +25,7 @@ type TBlackholeFormProps = {
         type: 'apis'
         apiGroup: string
         apiVersion: string
-        typeName: string
+        plural: string
         prefillValuesSchema?: TJSON
         prefillValueNamespaceOnly?: string
       }
@@ -71,19 +71,19 @@ export const BlackholeForm: FC<TBlackholeFormProps> = ({ data, customizationId, 
   }, [])
 
   const urlParams = {
-    clusterName: params.clusterName,
+    cluster: params.cluster,
     namespace: params.namespace,
     syntheticProject: params.syntheticProject,
-    entryName: params.entryName,
+    name: params.name,
   }
 
   const urlParamsForPermissions = {
     apiGroup: params.apiGroup,
-    typeName: params.typeName,
+    plural: params.plural,
   }
 
   return (
-    <BlackholeFormDataProvider
+    <BlackholeFormProvider
       theme={theme}
       cluster={cluster}
       urlParams={urlParams}

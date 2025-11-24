@@ -3,17 +3,19 @@ export const getBreadcrumbsIdPrefix = ({
   instance,
   namespace,
   inside,
+  useOnlyNamespace,
 }: {
   project?: boolean
   instance?: boolean
   namespace?: boolean
   inside?: boolean
+  useOnlyNamespace?: boolean
 }): string => {
   let result = inside ? 'inside-' : 'stock-'
 
-  if (instance) {
+  if (instance && !useOnlyNamespace) {
     result += 'instance-'
-  } else if (project) {
+  } else if (project && !useOnlyNamespace) {
     result += 'project-'
   } else if (namespace) {
     result += 'namespace-'

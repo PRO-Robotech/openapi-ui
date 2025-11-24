@@ -20,10 +20,6 @@ export const User: FC = () => {
       placement="top"
       menu={{
         items: [
-          // {
-          //   key: '1',
-          //   label: <ThemeSelector />,
-          // },
           ...(BASE_HIDE_INSIDE === 'true'
             ? []
             : [

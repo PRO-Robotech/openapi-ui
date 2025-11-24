@@ -1,6 +1,12 @@
 import React, { FC, useState, useEffect } from 'react'
 import { Spin, Alert } from 'antd'
-import { usePermissions, checkIfApiInstanceNamespaceScoped, useCrdData } from '@prorobotech/openapi-k8s-toolkit'
+import {
+  usePermissions,
+  checkIfApiInstanceNamespaceScoped,
+  // useCrdData,
+  useK8sSmartResource,
+  TCRD,
+} from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store/store'
 import { ResourceInfo } from './molecules'
@@ -28,19 +34,29 @@ export const TableCrdInfo: FC<TTableCrdInfoProps> = ({
 
   const [isNamespaced, setIsNamespaced] = useState<boolean>()
 
-  const { isPending, error, data } = useCrdData({
-    clusterName: cluster,
-    crdName,
-    apiExtensionVersion,
+  const {
+    data: dataArr,
+    isLoading: isPending,
+    error,
+  } = useK8sSmartResource<{
+    items: TCRD[]
+  }>({
+    cluster,
+    apiGroup: 'apiextensions.k8s.io',
+    apiVersion: apiExtensionVersion,
+    plural: 'customresourcedefinitions',
+    fieldSelector: `metadata.name=${crdName}`,
   })
+
+  const data = dataArr?.items && dataArr.items.length > 0 ? dataArr.items[0] : undefined
 
   useEffect(() => {
     if (data && !isPending && !error) {
       checkIfApiInstanceNamespaceScoped({
         apiGroup,
         apiVersion,
-        typeName: data.spec.names.plural,
-        clusterName: cluster,
+        plural: data.spec.names.plural,
+        cluster,
       }).then(({ isNamespaceScoped }) => {
         if (isNamespaceScoped) {
           setIsNamespaced(true)
@@ -50,28 +66,28 @@ export const TableCrdInfo: FC<TTableCrdInfoProps> = ({
   }, [cluster, data, isPending, error, apiGroup, apiVersion])
 
   const createPermission = usePermissions({
-    group: apiGroup,
-    resource: data ? data.spec.names.singular : '',
+    apiGroup,
+    plural: data ? data.spec.names.singular : '',
     namespace: '',
-    clusterName: cluster,
+    cluster,
     verb: 'create',
     refetchInterval: false,
   })
 
   const updatePermission = usePermissions({
-    group: apiGroup,
-    resource: data ? data.spec.names.singular : '',
+    apiGroup,
+    plural: data ? data.spec.names.singular : '',
     namespace: '',
-    clusterName: cluster,
+    cluster,
     verb: 'update',
     refetchInterval: false,
   })
 
   const deletePermission = usePermissions({
-    group: apiGroup,
-    resource: data ? data.spec.names.singular : '',
+    apiGroup,
+    plural: data ? data.spec.names.singular : '',
     namespace: '',
-    clusterName: cluster,
+    cluster,
     verb: 'delete',
     refetchInterval: false,
   })
@@ -79,10 +95,12 @@ export const TableCrdInfo: FC<TTableCrdInfoProps> = ({
   return (
     <>
       {isPending && <Spin />}
-      {error && <Alert message={`An error has occurred: ${error?.message} `} type="error" />}
+      {error && (
+        <Alert message={`An error has occurred: ${typeof error === 'string' ? error : error?.message} `} type="error" />
+      )}
       {!error && data && data.spec && (
         <ResourceInfo
-          clusterName={cluster}
+          cluster={cluster}
           namespace={namespace}
           crdName={crdName}
           crdPluralName={data.spec.names.plural}

@@ -29,14 +29,19 @@ const CUSTOMIZATION_API_GROUP =
 const CUSTOMIZATION_API_VERSION =
   process.env.LOCAL === 'true' ? options?.CUSTOMIZATION_API_VERSION : process.env.CUSTOMIZATION_API_VERSION
 
+const CUSTOMIZATION_NAVIGATION_RESOURCE_PLURAL =
+  process.env.LOCAL === 'true'
+    ? options?.CUSTOMIZATION_NAVIGATION_RESOURCE_PLURAL
+    : process.env.CUSTOMIZATION_NAVIGATION_RESOURCE_PLURAL
 const CUSTOMIZATION_NAVIGATION_RESOURCE_NAME =
   process.env.LOCAL === 'true'
     ? options?.CUSTOMIZATION_NAVIGATION_RESOURCE_NAME
     : process.env.CUSTOMIZATION_NAVIGATION_RESOURCE_NAME
-const CUSTOMIZATION_NAVIGATION_RESOURCE =
+
+const CUSTOMIZATION_SIDEBAR_FALLBACK_ID =
   process.env.LOCAL === 'true'
-    ? options?.CUSTOMIZATION_NAVIGATION_RESOURCE
-    : process.env.CUSTOMIZATION_NAVIGATION_RESOURCE
+    ? options?.CUSTOMIZATION_SIDEBAR_FALLBACK_ID
+    : process.env.CUSTOMIZATION_SIDEBAR_FALLBACK_ID
 
 const USE_NAMESPACE_NAV = process.env.LOCAL === 'true' ? options?.USE_NAMESPACE_NAV : process.env.USE_NAMESPACE_NAV
 const HIDE_INSIDE = process.env.LOCAL === 'true' ? options?.HIDE_INSIDE : process.env.HIDE_INSIDE
@@ -45,19 +50,18 @@ const NAVIGATE_FROM_CLUSTERLIST =
   process.env.LOCAL === 'true' ? options?.NAVIGATE_FROM_CLUSTERLIST : process.env.NAVIGATE_FROM_CLUSTERLIST
 
 const PROJECTS_API_GROUP = process.env.LOCAL === 'true' ? options?.PROJECTS_API_GROUP : process.env.PROJECTS_API_GROUP
-const PROJECTS_VERSION = process.env.LOCAL === 'true' ? options?.PROJECTS_VERSION : process.env.PROJECTS_VERSION
-const PROJECTS_RESOURCE_NAME =
-  process.env.LOCAL === 'true' ? options?.PROJECTS_RESOURCE_NAME : process.env.PROJECTS_RESOURCE_NAME
+const PROJECTS_API_VERSION =
+  process.env.LOCAL === 'true' ? options?.PROJECTS_API_VERSION : process.env.PROJECTS_API_VERSION
+const PROJECTS_PLURAL = process.env.LOCAL === 'true' ? options?.PROJECTS_PLURAL : process.env.PROJECTS_PLURAL
 
-const MARKETPLACE_RESOURCE_NAME =
-  process.env.LOCAL === 'true' ? options?.MARKETPLACE_RESOURCE_NAME : process.env.MARKETPLACE_RESOURCE_NAME
+const MARKETPLACE_PLURAL = process.env.LOCAL === 'true' ? options?.MARKETPLACE_PLURAL : process.env.MARKETPLACE_PLURAL
 const MARKETPLACE_KIND = process.env.LOCAL === 'true' ? options?.MARKETPLACE_KIND : process.env.MARKETPLACE_KIND
 
 const INSTANCES_API_GROUP =
   process.env.LOCAL === 'true' ? options?.INSTANCES_API_GROUP : process.env.INSTANCES_API_GROUP
-const INSTANCES_VERSION = process.env.LOCAL === 'true' ? options?.INSTANCES_VERSION : process.env.INSTANCES_VERSION
-const INSTANCES_RESOURCE_NAME =
-  process.env.LOCAL === 'true' ? options?.INSTANCES_RESOURCE_NAME : process.env.INSTANCES_RESOURCE_NAME
+const INSTANCES_API_VERSION =
+  process.env.LOCAL === 'true' ? options?.INSTANCES_API_VERSION : process.env.INSTANCES_API_VERSION
+const INSTANCES_PLURAL = process.env.LOCAL === 'true' ? options?.INSTANCES_PLURAL : process.env.INSTANCES_PLURAL
 
 const BFF_URL = process.env.LOCAL === 'true' ? options?.BFF_URL : process.env.BFF_URL
 
@@ -105,10 +109,10 @@ const CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION =
   process.env.LOCAL === 'true'
     ? options?.CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION
     : process.env.CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION
-const CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME =
+const CUSTOM_NAMESPACE_API_RESOURCE_PLURAL =
   process.env.LOCAL === 'true'
-    ? options?.CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME
-    : process.env.CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME
+    ? options?.CUSTOM_NAMESPACE_API_RESOURCE_PLURAL
+    : process.env.CUSTOM_NAMESPACE_API_RESOURCE_PLURAL
 
 const healthcheck = require('express-healthcheck')
 const promBundle = require('express-prom-bundle')
@@ -220,6 +224,9 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
       ${CUSTOM_TENANT_TEXT ? `  CUSTOM_TENANT_TEXT: "${CUSTOM_TENANT_TEXT}",` : ''}
       CUSTOMIZATION_API_GROUP: ${JSON.stringify(CUSTOMIZATION_API_GROUP) || '"check envs"'},
       CUSTOMIZATION_API_VERSION: ${JSON.stringify(CUSTOMIZATION_API_VERSION) || '"check envs"'},
+      CUSTOMIZATION_NAVIGATION_RESOURCE_PLURAL: ${
+        JSON.stringify(CUSTOMIZATION_NAVIGATION_RESOURCE_PLURAL) || '"check envs"'
+      },
       CUSTOMIZATION_NAVIGATION_RESOURCE_NAME: ${
         JSON.stringify(CUSTOMIZATION_NAVIGATION_RESOURCE_NAME) || '"check envs"'
       },
@@ -234,22 +241,22 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
           : ''
       }
       ${
-        CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME
-          ? `  CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME: "${CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME}",`
+        CUSTOM_NAMESPACE_API_RESOURCE_PLURAL
+          ? `  CUSTOM_NAMESPACE_API_RESOURCE_PLURAL: "${CUSTOM_NAMESPACE_API_RESOURCE_PLURAL}",`
           : ''
       }
-      CUSTOMIZATION_NAVIGATION_RESOURCE: ${JSON.stringify(CUSTOMIZATION_NAVIGATION_RESOURCE) || '"check envs"'},
+      CUSTOMIZATION_SIDEBAR_FALLBACK_ID: ${JSON.stringify(CUSTOMIZATION_SIDEBAR_FALLBACK_ID) || '"check envs"'},
       USE_NAMESPACE_NAV: ${USE_NAMESPACE_NAV ? JSON.stringify(USE_NAMESPACE_NAV).toLowerCase() : '"false"'},
       HIDE_INSIDE: ${HIDE_INSIDE ? JSON.stringify(HIDE_INSIDE).toLowerCase() : '"false"'},
       NAVIGATE_FROM_CLUSTERLIST: ${JSON.stringify(NAVIGATE_FROM_CLUSTERLIST) || '"check envs"'},
       PROJECTS_API_GROUP: ${JSON.stringify(PROJECTS_API_GROUP) || '"check envs"'},
-      PROJECTS_VERSION: ${JSON.stringify(PROJECTS_VERSION) || '"check envs"'},
-      PROJECTS_RESOURCE_NAME: ${JSON.stringify(PROJECTS_RESOURCE_NAME) || '"check envs"'},
-      MARKETPLACE_RESOURCE_NAME: ${JSON.stringify(MARKETPLACE_RESOURCE_NAME) || '"check envs"'},
+      PROJECTS_API_VERSION: ${JSON.stringify(PROJECTS_API_VERSION) || '"check envs"'},
+      PROJECTS_PLURAL: ${JSON.stringify(PROJECTS_PLURAL) || '"check envs"'},
+      MARKETPLACE_PLURAL: ${JSON.stringify(MARKETPLACE_PLURAL) || '"check envs"'},
       MARKETPLACE_KIND: ${JSON.stringify(MARKETPLACE_KIND) || '"check envs"'},
       INSTANCES_API_GROUP: ${JSON.stringify(INSTANCES_API_GROUP) || '"check envs"'},
-      INSTANCES_VERSION: ${JSON.stringify(INSTANCES_VERSION) || '"check envs"'},
-      INSTANCES_RESOURCE_NAME: ${JSON.stringify(INSTANCES_RESOURCE_NAME) || '"check envs"'},
+      INSTANCES_API_VERSION: ${JSON.stringify(INSTANCES_API_VERSION) || '"check envs"'},
+      INSTANCES_PLURAL: ${JSON.stringify(INSTANCES_PLURAL) || '"check envs"'},
       NODE_TERMINAL_DEFAULT_PROFILE: ${JSON.stringify(NODE_TERMINAL_DEFAULT_PROFILE) || '"general"'},
       LOGIN_URL: ${JSON.stringify(LOGIN_URL) || '"check envs"'},
       LOGOUT_URL: ${JSON.stringify(LOGOUT_URL) || '"check envs"'},

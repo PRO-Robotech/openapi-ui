@@ -1,6 +1,7 @@
+/* eslint-disable no-nested-ternary */
 import React, { FC, useState } from 'react'
 import { Button, Alert, Spin, Typography } from 'antd'
-import { filterSelectOptions, Spacer, useBuiltinResources, useApiResources } from '@prorobotech/openapi-k8s-toolkit'
+import { filterSelectOptions, Spacer, TSingleResource, useK8sSmartResource } from '@prorobotech/openapi-k8s-toolkit'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from 'store/store'
@@ -8,7 +9,7 @@ import { setCluster } from 'store/cluster/cluster/cluster'
 import {
   CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP,
   CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION,
-  CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME,
+  CUSTOM_NAMESPACE_API_RESOURCE_PLURAL,
 } from 'constants/customizationApiGroupAndVersion'
 import { Styled } from './styled'
 
@@ -22,30 +23,33 @@ export const ListInsideClusterAndNs: FC = () => {
   const [selectedCluster, setSelectedCluster] = useState<string>()
   const [selectedNamespace, setSelectedNamespace] = useState<string>()
 
-  const isCustomNamespaceResource =
+  const isCustomNamespaceResource: boolean =
     CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP &&
     typeof CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP === 'string' &&
     CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP.length > 0 &&
     CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION &&
     typeof CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION === 'string' &&
     CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION.length > 0 &&
-    CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME &&
-    typeof CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME === 'string' &&
-    CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME.length > 0
+    CUSTOM_NAMESPACE_API_RESOURCE_PLURAL &&
+    typeof CUSTOM_NAMESPACE_API_RESOURCE_PLURAL === 'string' &&
+    CUSTOM_NAMESPACE_API_RESOURCE_PLURAL.length > 0
 
-  const namespacesData = useBuiltinResources({
-    clusterName: selectedCluster || '',
-    typeName: 'namespaces',
-    limit: null,
+  const namespacesData = useK8sSmartResource<{
+    items: TSingleResource[]
+  }>({
+    cluster: selectedCluster || '',
+    apiVersion: 'v1',
+    plural: 'namespaces',
     isEnabled: Boolean(selectedCluster !== undefined && !isCustomNamespaceResource),
   })
 
-  const namespacesDataCustom = useApiResources({
-    clusterName: selectedCluster || '',
+  const namespacesDataCustom = useK8sSmartResource<{
+    items: TSingleResource[]
+  }>({
+    cluster: selectedCluster || '',
     apiGroup: CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP,
     apiVersion: CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION,
-    typeName: CUSTOM_NAMESPACE_API_RESOURCE_RESOURCE_NAME,
-    limit: null,
+    plural: CUSTOM_NAMESPACE_API_RESOURCE_PLURAL,
     isEnabled: Boolean(selectedCluster !== undefined && isCustomNamespaceResource),
   })
 
@@ -70,7 +74,6 @@ export const ListInsideClusterAndNs: FC = () => {
             if (typeof value === 'string') {
               dispatch(setCluster(value))
               setSelectedCluster(value)
-              // navigate(`/${value}/apis`)
             }
           }}
           onClear={() => {
@@ -80,13 +83,19 @@ export const ListInsideClusterAndNs: FC = () => {
         />
       )}
       <Spacer $space={8} $samespace />
-      {selectedCluster && (isCustomNamespaceResource ? namespacesDataCustom.isPending : namespacesData.isPending) && (
+      {selectedCluster && (isCustomNamespaceResource ? namespacesDataCustom.isLoading : namespacesData.isLoading) && (
         <Spin />
       )}
       {selectedCluster && (isCustomNamespaceResource ? namespacesDataCustom.error : namespacesData.error) && (
         <Alert
           message={`An error has occurred: ${
-            isCustomNamespaceResource ? namespacesDataCustom.error?.message : namespacesData.error?.message
+            isCustomNamespaceResource
+              ? typeof namespacesDataCustom.error === 'string'
+                ? namespacesDataCustom.error
+                : namespacesDataCustom.error?.message
+              : typeof namespacesData.error === 'string'
+              ? namespacesData.error
+              : namespacesData.error?.message
           } `}
           type="error"
         />

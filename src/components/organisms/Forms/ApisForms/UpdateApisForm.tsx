@@ -8,8 +8,8 @@ import { BlackholeForm } from 'components'
 type TUpdateApisFormProps = {
   apiGroup: string
   apiVersion: string
-  typeName: string
-  entryName: string
+  plural: string
+  name: string
   namespace?: string
   backLink?: string | null
 }
@@ -17,8 +17,8 @@ type TUpdateApisFormProps = {
 export const UpdateApisForm: FC<TUpdateApisFormProps> = ({
   apiGroup,
   apiVersion,
-  typeName,
-  entryName,
+  plural,
+  name,
   namespace,
   backLink,
 }) => {
@@ -42,12 +42,12 @@ export const UpdateApisForm: FC<TUpdateApisFormProps> = ({
   }
 
   const { data, isPending, error } = useApiResourceSingle({
-    clusterName: cluster,
+    cluster,
     namespace,
     apiGroup,
     apiVersion,
-    typeName,
-    entryName,
+    plural,
+    name,
     refetchInterval: false,
   })
 
@@ -59,8 +59,6 @@ export const UpdateApisForm: FC<TUpdateApisFormProps> = ({
     return <Alert message={`An error has occurred: ${error?.message} `} type="error" />
   }
 
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-  // const { status: _, ...noStatusData } = data
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   const { managedFields: __, ...metadata } = data.metadata
 
@@ -80,11 +78,10 @@ export const UpdateApisForm: FC<TUpdateApisFormProps> = ({
           type: 'apis',
           apiGroup,
           apiVersion,
-          typeName,
-          // prefillValuesSchema: { ...noStatusData, metadata },
+          plural,
           prefillValuesSchema: { ...data, metadata },
         }}
-        customizationId={`default-/${apiGroup}/${apiVersion}/${typeName}`}
+        customizationId={`default-/${apiGroup}/${apiVersion}/${plural}`}
         backlink={backLink}
         modeData={modeData}
       />

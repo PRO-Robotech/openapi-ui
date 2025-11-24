@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
-import { ManageableBreadcrumbsWithDataProvider } from '@prorobotech/openapi-k8s-toolkit'
+import { ManageableBreadcrumbsProvider } from '@prorobotech/openapi-k8s-toolkit'
 import { BASE_API_GROUP, BASE_API_VERSION } from 'constants/customizationApiGroupAndVersion'
 
 type TManageableBreadCrumbsProps = {
@@ -12,13 +12,13 @@ export const ManageableBreadcrumbs: FC<TManageableBreadCrumbsProps> = ({ idToCom
   const location = useLocation()
   const { pathname } = useLocation()
   const params = useParams()
-  const clusterName = params?.clusterName || ''
+  const cluster = params?.cluster || ''
   const namespace = params?.namespace || ''
   const syntheticProject = params?.syntheticProject || ''
   const apiGroup = params?.apiGroup || ''
   const apiVersion = params?.apiVersion || ''
-  const typeName = params?.typeName || ''
-  const entryName = params?.entryName || ''
+  const plural = params?.plural || ''
+  const name = params?.name || ''
   const apiExtensionVersion = params?.apiExtensionVersion || ''
   const crdName = params?.crdName || ''
 
@@ -30,15 +30,15 @@ export const ManageableBreadcrumbs: FC<TManageableBreadCrumbsProps> = ({ idToCom
     }, {})
 
   return (
-    <ManageableBreadcrumbsWithDataProvider
+    <ManageableBreadcrumbsProvider
       idToCompare={idToCompare}
-      uri={`/api/clusters/${clusterName}/k8s/apis/${BASE_API_GROUP}/${BASE_API_VERSION}/${
-        inside ? 'breadcrumbsinsides' : 'breadcrumbs'
-      }/`}
-      refetchInterval={5000}
-      isEnabled={clusterName !== undefined}
+      cluster={cluster}
+      apiGroup={BASE_API_GROUP}
+      apiVersion={BASE_API_VERSION}
+      plural={inside ? 'breadcrumbsinsides' : 'breadcrumbs'}
+      isEnabled={cluster !== undefined}
       replaceValues={{
-        clusterName,
+        cluster,
         projectName: '',
         instanceName: '',
         namespace,
@@ -46,8 +46,8 @@ export const ManageableBreadcrumbs: FC<TManageableBreadCrumbsProps> = ({ idToCom
         entryType: '',
         apiGroup,
         apiVersion,
-        typeName,
-        entryName,
+        plural,
+        name,
         apiExtensionVersion,
         crdName,
         ...replaceValuesPartsOfUrls,

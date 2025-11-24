@@ -1,12 +1,15 @@
 import React, { FC, useState, useEffect } from 'react'
 import { theme as antdtheme } from 'antd'
 import { useLocation, useParams } from 'react-router-dom'
-import { ManageableSidebarWithDataProvider } from '@prorobotech/openapi-k8s-toolkit'
+import { ManageableSidebarProvider } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
-// import { HEAD_FIRST_ROW, SIDEBAR_CLUSTER_HEIGHT } from 'constants/blocksSizes'
 import { HEAD_FIRST_ROW } from 'constants/blocksSizes'
-import { BASE_API_GROUP, BASE_API_VERSION } from 'constants/customizationApiGroupAndVersion'
+import {
+  BASE_API_GROUP,
+  BASE_API_VERSION,
+  CUSTOMIZATION_SIDEBAR_FALLBACK_ID,
+} from 'constants/customizationApiGroupAndVersion'
 import { Styled } from './styled'
 
 type TManageableSidebarProps = {
@@ -25,7 +28,7 @@ export const ManageableSidebar: FC<TManageableSidebarProps> = ({
   const location = useLocation()
   const { pathname } = useLocation()
   const params = useParams()
-  const clusterName = params?.clusterName || ''
+  const cluster = params?.cluster || ''
   const namespace = params?.namespace || ''
   const syntheticProject = params?.syntheticProject || ''
   const theme = useSelector((state: RootState) => state.openapiTheme.theme)
@@ -34,7 +37,6 @@ export const ManageableSidebar: FC<TManageableSidebarProps> = ({
   const [height, setHeight] = useState(0)
 
   useEffect(() => {
-    // const height = window.innerHeight - HEAD_FIRST_ROW - SIDEBAR_CLUSTER_HEIGHT - 2
     const height = window.innerHeight - HEAD_FIRST_ROW - 2
     setHeight(height)
 
@@ -66,12 +68,14 @@ export const ManageableSidebar: FC<TManageableSidebarProps> = ({
       $colorBorder={token.colorBorder}
       $maxHeight={height}
     >
-      <ManageableSidebarWithDataProvider
-        uri={`/api/clusters/${clusterName}/k8s/apis/${BASE_API_GROUP}/${BASE_API_VERSION}/sidebars/`}
-        refetchInterval={5000}
-        isEnabled={clusterName !== undefined}
+      <ManageableSidebarProvider
+        cluster={cluster}
+        apiGroup={BASE_API_GROUP}
+        apiVersion={BASE_API_VERSION}
+        plural="sidebars"
+        isEnabled={cluster !== undefined}
         replaceValues={{
-          clusterName,
+          cluster,
           projectName,
           instanceName,
           namespace,
@@ -80,6 +84,9 @@ export const ManageableSidebar: FC<TManageableSidebarProps> = ({
         }}
         pathname={pathname}
         idToCompare={idToCompare}
+        fallbackIdToCompare={
+          namespace ? `${CUSTOMIZATION_SIDEBAR_FALLBACK_ID}-namespaced` : CUSTOMIZATION_SIDEBAR_FALLBACK_ID
+        }
         currentTags={currentTags}
         noMarginTop
       />

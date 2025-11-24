@@ -10,12 +10,10 @@ import {
   usePermissions,
   DeleteModal,
   DeleteModalMany,
-  // checkIfBuiltInInstanceNamespaceScoped,
-  // checkIfApiInstanceNamespaceScoped,
-  useBuiltinResources,
-  useApiResources,
+  useK8sSmartResource,
   Spacer,
   getLinkToForm,
+  TSingleResource,
 } from '@prorobotech/openapi-k8s-toolkit'
 import { FlexGrow, PaddingContainer } from 'components'
 import { TABLE_PROPS } from 'constants/tableProps'
@@ -28,17 +26,16 @@ import {
   TABLE_ADD_BUTTON_HEIGHT,
 } from 'constants/blocksSizes'
 import { OverflowContainer } from './atoms'
-import { getDataItems } from './utils'
 
 type TTableApiBuiltinProps = {
   namespace?: string
   resourceType: 'builtin' | 'api'
   apiGroup?: string // api
   apiVersion: string // api
-  typeName: string
+  plural: string
   labels?: string[]
   fields?: string[]
-  limit: string | null
+  limit?: number
   inside?: boolean
   customizationIdPrefix: string
   searchMount?: boolean
@@ -50,7 +47,7 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
   resourceType,
   apiGroup,
   apiVersion,
-  typeName,
+  plural,
   labels,
   fields,
   limit,
@@ -72,8 +69,6 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
   )
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const [selectedRowsData, setSelectedRowsData] = useState<{ name: string; endpoint: string }[]>([])
-  // const [isNamespaced, setIsNamespaced] = useState<boolean>()
-  // const [isNamespacedLoading, setIsNamespacedLoading] = useState<boolean>()
 
   const [height, setHeight] = useState(0)
 
@@ -99,77 +94,28 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
     }
   }, [])
 
-  // useEffect(() => {
-  //   setIsNamespacedLoading(true)
-  //   if (resourceType === 'builtin') {
-  //     checkIfBuiltInInstanceNamespaceScoped({
-  //       typeName,
-  //       clusterName: cluster,
-  //     })
-  //       .then(({ isNamespaceScoped }) => {
-  //         if (isNamespaceScoped) {
-  //           setIsNamespaced(isNamespaceScoped)
-  //         } else {
-  //           setIsNamespaced(false)
-  //         }
-  //       })
-  //       .finally(() => setIsNamespacedLoading(false))
-  //   }
-  //   if (resourceType === 'api' && apiGroup && apiVersion) {
-  //     checkIfApiInstanceNamespaceScoped({
-  //       apiGroup,
-  //       apiVersion,
-  //       typeName,
-  //       clusterName: cluster,
-  //     })
-  //       .then(({ isNamespaceScoped }) => {
-  //         if (isNamespaceScoped) {
-  //           setIsNamespaced(true)
-  //         } else {
-  //           setIsNamespaced(false)
-  //         }
-  //       })
-  //       .finally(() => setIsNamespacedLoading(false))
-  //   }
-  // }, [resourceType, cluster, typeName, apiGroup, apiVersion])
-
   const createPermission = usePermissions({
-    group: apiGroup || undefined,
-    resource: typeName,
+    apiGroup: apiGroup || undefined,
+    plural,
     namespace: params.namespace,
-    clusterName: cluster,
+    cluster,
     verb: 'create',
     refetchInterval: false,
   })
 
   const {
-    isPending: isPendingBuiltin,
-    error: errorBuiltin,
-    data: dataBuiltin,
-  } = useBuiltinResources({
-    clusterName: cluster,
+    data: dataItems,
+    isLoading,
+    error,
+  } = useK8sSmartResource<{ items: TSingleResource[] }>({
+    cluster,
     namespace,
-    typeName,
-    labels,
-    fields,
-    limit,
-    isEnabled: resourceType === 'builtin',
-  })
-
-  const {
-    isPending: isPendingApi,
-    error: errorApi,
-    data: dataApi,
-  } = useApiResources({
-    clusterName: cluster,
-    namespace,
-    apiGroup: apiGroup || '',
+    apiGroup,
     apiVersion: apiVersion || '',
-    typeName,
-    labels,
-    fields,
+    plural,
+    labelSelector: labels ? encodeURIComponent(labels.join(',')) : undefined,
+    fieldSelector: fields ? encodeURIComponent(fields.join(',')) : undefined,
     limit,
-    isEnabled: resourceType === 'api' && !!apiGroup && !!apiVersion,
   })
 
   const onDeleteHandle = (name: string, endpoint: string) => {
@@ -192,86 +138,62 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
 
   return (
     <>
-      {((resourceType === 'builtin' && isPendingBuiltin) || (resourceType === 'api' && isPendingApi)) && <Spin />}
-      {resourceType === 'builtin' && errorBuiltin && (
-        <Alert message={`An error has occurred: ${errorBuiltin?.message} `} type="error" />
-      )}
-      {resourceType === 'api' && errorApi && (
-        <Alert message={`An error has occurred: ${errorApi?.message} `} type="error" />
-      )}
+      {isLoading && <Spin />}
+      {error && <Alert message={`An error has occurred: ${error} `} type="error" />}
       <OverflowContainer height={height} searchMount={searchMount}>
-        {!errorBuiltin &&
-          !errorApi &&
-          ((resourceType === 'builtin' && dataBuiltin) || (resourceType === 'api' && dataApi)) && (
-            <EnrichedTableProvider
-              key={resourceType === 'builtin' ? `/v1/${typeName}` : `/${apiGroup}/${apiVersion}/${typeName}`}
-              customizationId={
-                resourceType === 'builtin'
-                  ? `${customizationIdPrefix}/v1/${typeName}`
-                  : `${customizationIdPrefix}/${apiGroup}/${apiVersion}/${typeName}`
-              }
-              tableMappingsReplaceValues={{
-                clusterName: params.clusterName,
-                projectName: params.projectName,
-                instanceName: params.instanceName,
-                namespace: params.namespace,
-                syntheticProject: params.syntheticProject,
-                entryType: params.entryType,
-                apiGroup: params.apiGroup,
-                apiVersion: params.apiVersion,
-                typeName: params.typeName,
-                entryName: params.entryName,
-                apiExtensionVersion: params.apiExtensionVersion,
-                crdName: params.crdName,
-                ...replaceValuesPartsOfUrls,
-              }}
-              cluster={cluster}
-              namespace={namespace}
-              theme={theme}
-              baseprefix={inside ? `${baseprefix}/inside` : baseprefix}
-              dataItems={getDataItems({ resourceType, dataBuiltin, dataApi })}
-              k8sResource={{
-                resource: typeName,
-                apiGroup,
-                apiVersion,
-              }}
-              // isNamespaced={isNamespaced}
-              // isNamespacedLoading={isNamespacedLoading}
-              dataForControls={{
-                cluster,
-                syntheticProject: params.syntheticProject,
-                resource: typeName,
-                apiGroup,
-                apiVersion,
-              }}
-              dataForControlsInternal={{
-                onDeleteHandle,
-              }}
-              selectData={{
-                selectedRowKeys,
-                onChange: (selectedRowKeys: React.Key[], selectedRowsData: { name: string; endpoint: string }[]) => {
-                  setSelectedRowKeys(selectedRowKeys)
-                  setSelectedRowsData(selectedRowsData)
-                },
-              }}
-              tableProps={{ ...TABLE_PROPS, disablePagination: !searchMount }}
-              // maxHeight={height - 65}
-            />
-          )}
-        {/* {selectedRowKeys.length > 0 && (
-          <MarginTopContainer $top={-40}>
-            <Flex gap={16}>
-              <Button type="primary" onClick={clearSelected}>
-                <ClearOutlined />
-                Clear
-              </Button>
-              <Button type="primary" onClick={() => setIsDeleteModalManyOpen(selectedRowsData)}>
-                <MinusOutlined />
-                Delete
-              </Button>
-            </Flex>
-          </MarginTopContainer>
-        )} */}
+        {!error && dataItems && (
+          <EnrichedTableProvider
+            key={resourceType === 'builtin' ? `/v1/${plural}` : `/${apiGroup}/${apiVersion}/${plural}`}
+            customizationId={
+              resourceType === 'builtin'
+                ? `${customizationIdPrefix}/v1/${plural}`
+                : `${customizationIdPrefix}/${apiGroup}/${apiVersion}/${plural}`
+            }
+            tableMappingsReplaceValues={{
+              cluster: params.cluster,
+              projectName: params.projectName,
+              instanceName: params.instanceName,
+              namespace: params.namespace,
+              syntheticProject: params.syntheticProject,
+              entryType: params.entryType,
+              apiGroup: params.apiGroup,
+              apiVersion: params.apiVersion,
+              plural: params.plural,
+              name: params.name,
+              apiExtensionVersion: params.apiExtensionVersion,
+              crdName: params.crdName,
+              ...replaceValuesPartsOfUrls,
+            }}
+            cluster={cluster}
+            namespace={namespace}
+            theme={theme}
+            baseprefix={inside ? `${baseprefix}/inside` : baseprefix}
+            dataItems={dataItems.items}
+            k8sResource={{
+              plural,
+              apiGroup,
+              apiVersion,
+            }}
+            dataForControls={{
+              cluster,
+              syntheticProject: params.syntheticProject,
+              plural,
+              apiGroup,
+              apiVersion,
+            }}
+            dataForControlsInternal={{
+              onDeleteHandle,
+            }}
+            selectData={{
+              selectedRowKeys,
+              onChange: (selectedRowKeys: React.Key[], selectedRowsData: { name: string; endpoint: string }[]) => {
+                setSelectedRowKeys(selectedRowKeys)
+                setSelectedRowsData(selectedRowsData)
+              },
+            }}
+            tableProps={{ ...TABLE_PROPS, disablePagination: !searchMount }}
+          />
+        )}
       </OverflowContainer>
       {searchMount ? <Spacer $space={12} $samespace /> : <FlexGrow />}
       <PaddingContainer $padding="4px">
@@ -286,15 +208,13 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
                 syntheticProject: params.syntheticProject,
                 apiGroup,
                 apiVersion,
-                typeName,
+                plural,
                 inside,
                 fullPath,
                 searchMount,
               })
               navigate(url)
             }}
-            // loading={isNamespaced ? false : createPermission.isPending}
-            // disabled={isNamespaced ? false : !createPermission.data?.status.allowed}
             loading={createPermission.isPending}
             disabled={!createPermission.data?.status.allowed}
           >

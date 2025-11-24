@@ -4,8 +4,6 @@ export const NAV_HEIGHT = 50
 export const FOOTER_HEIGHT = 38
 export const MAIN_CONTENT_HORIZONTAL_PADDING = 24
 export const BACKLINK_HEIGHT = 26
-/* sidebar */
-// export const SIDEBAR_CLUSTER_HEIGHT = 56
 /* computed only */
 export const BREADCRUMBS_HEIGHT = 26
 export const CONTENT_CARD_PADDING = 25

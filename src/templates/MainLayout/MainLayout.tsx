@@ -16,7 +16,7 @@ type TMainLayoutProps = {
 }
 
 export const MainLayout: FC<TMainLayoutProps> = ({ children, forcedTheme }) => {
-  const { clusterName } = useParams()
+  const { cluster } = useParams()
   const { useToken } = antdtheme
   const { token } = useToken()
   const dispatch = useDispatch()
@@ -66,13 +66,9 @@ export const MainLayout: FC<TMainLayoutProps> = ({ children, forcedTheme }) => {
     }
   }, [clusterListQuery, dispatch])
 
-  if (clusterName) {
-    dispatch(setCluster(clusterName))
-  }
-
-  if (clusterName === undefined) {
-    dispatch(setCluster(''))
-  }
+  useEffect(() => {
+    dispatch(setCluster(cluster ?? ''))
+  }, [dispatch, cluster])
 
   return (
     <DefaultColorProvider $color={token.colorText}>

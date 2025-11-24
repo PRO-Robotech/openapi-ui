@@ -33,16 +33,16 @@ export const ListInsideAllResources: FC<TListInsideAllResourcesProps> = ({ names
   }>()
 
   const apiGroupList = useApisResourceTypes({
-    clusterName: cluster,
+    cluster,
   })
 
   const builtInData = useBuiltinResourceTypes({
-    clusterName: cluster,
+    cluster,
   })
 
   useEffect(() => {
     getGroupsByCategory({
-      clusterName: cluster,
+      cluster,
       namespace,
       apiGroupListData: apiGroupList.data,
       builtinResourceTypesData: builtInData.data,
