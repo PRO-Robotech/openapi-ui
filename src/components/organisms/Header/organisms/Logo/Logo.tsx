@@ -30,7 +30,7 @@ export const Logo: FC = () => {
           </svg>
         )}
 
-        <Styled.LogoText onClick={() => navigate(`${baseprefix}`)}>{LOGO_TEXT}</Styled.LogoText>
+        <Styled.LogoText onClick={() => navigate(`${baseprefix}`)} dangerouslySetInnerHTML={{ __html: LOGO_TEXT }} />
         <Styled.TenantText $color={token.colorTextDescription}>
           {CUSTOM_TENANT_TEXT && typeof CUSTOM_TENANT_TEXT === 'string' && CUSTOM_TENANT_TEXT.length > 0
             ? CUSTOM_TENANT_TEXT
