@@ -52,3 +52,9 @@ This app can be configured through environment variables.
 | `CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP`   | `string`  | Custom namespace resource: api group                                                    |
 | `CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION` | `string`  | Custom namespace resource: api version                                                  |
 | `CUSTOM_NAMESPACE_API_RESOURCE_PLURAL`      | `string`  | Custom namespace resource: plural name                                                  |
+
+---
+
+## 🤝 Contributing
+
+[Check this out](./CONTRIBUTING.md)
