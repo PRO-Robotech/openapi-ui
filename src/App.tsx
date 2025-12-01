@@ -27,6 +27,7 @@ import {
   FactoryPage,
   // FactoryAdminPage,
   SearchPage,
+  PluginRoute,
 } from 'pages'
 import { getBasePrefix } from 'utils/getBaseprefix'
 import { colorsLight, colorsDark, sizes } from 'constants/colors'
@@ -68,6 +69,8 @@ export const App: FC<TAppProps> = ({ isFederation, forcedTheme }) => {
           <Route path="forms/builtin/:apiVersion/:plural/:name?/" element={<FormBuiltinPage />} />
           <Route path="factory/:key/*" element={<FactoryPage />} />
           <Route path="search/*" element={<SearchPage />} />
+
+          <Route path="plugins/:pluginName/*" element={<PluginRoute />} />
         </Route>
 
         <Route path={`${prefix}/inside/:cluster/:namespace?/:syntheticProject?/*`} element={<AppShell inside />}>
