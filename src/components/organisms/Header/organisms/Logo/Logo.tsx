@@ -17,7 +17,7 @@ export const Logo: FC = () => {
   const tenant = clusterList?.find(item => item.name === cluster)?.tenant
 
   return (
-    <Styled.CursorPointer $svgHoverFill={token.colorInfoActive}>
+    <Styled.CursorPointer $svgHoverFill={token.colorInfoActive} onClick={() => navigate(`${baseprefix}`)}>
       <Flex gap={8} align="center">
         {CUSTOM_LOGO_SVG && typeof CUSTOM_LOGO_SVG === 'string' && CUSTOM_LOGO_SVG.length > 0 ? (
           renderLogo(CUSTOM_LOGO_SVG, token.colorText)
@@ -30,7 +30,7 @@ export const Logo: FC = () => {
           </svg>
         )}
 
-        <Styled.LogoText onClick={() => navigate(`${baseprefix}`)} dangerouslySetInnerHTML={{ __html: LOGO_TEXT }} />
+        <Styled.LogoText dangerouslySetInnerHTML={{ __html: LOGO_TEXT }} />
         <Styled.TenantText $color={token.colorTextDescription}>
           {CUSTOM_TENANT_TEXT && typeof CUSTOM_TENANT_TEXT === 'string' && CUSTOM_TENANT_TEXT.length > 0
             ? CUSTOM_TENANT_TEXT
