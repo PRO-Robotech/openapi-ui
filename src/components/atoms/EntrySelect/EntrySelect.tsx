@@ -23,6 +23,7 @@ export const EntrySelect: FC<TEntrySelectProps> = ({ placeholder, value, disable
       disabled={disabled}
       style={{ width: fullwidth ? '100%' : '200px' }}
       allowClear
+      showSearch
     />
   )
 }

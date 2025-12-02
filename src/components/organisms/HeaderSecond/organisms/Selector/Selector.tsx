@@ -95,7 +95,7 @@ export const Selector: FC<TSelectorProps> = ({ cluster, projectName, instanceNam
       <Typography.Text>Project: </Typography.Text>
       <EntrySelect
         placeholder="Project"
-        options={[{ value: 'all', label: 'All Namespaces' }, ...projectsInSidebar]}
+        options={[{ value: 'all', label: 'All Projects' }, ...projectsInSidebar]}
         value={selectedProjectName || 'all'}
         onChange={handleProjectChange}
         disabled={selectedCluster === undefined || projectsInSidebar.length === 0}
@@ -103,7 +103,7 @@ export const Selector: FC<TSelectorProps> = ({ cluster, projectName, instanceNam
       <Typography.Text>Instance: </Typography.Text>
       <EntrySelect
         placeholder="Instance"
-        options={[{ value: 'all', label: 'All Namespaces' }, ...instancesInSidebar]}
+        options={[{ value: 'all', label: 'All Instances' }, ...instancesInSidebar]}
         value={selectedInstanceName || 'all'}
         onChange={handleInstanceChange}
         disabled={

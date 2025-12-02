@@ -27,3 +27,5 @@ export {
 /* redirects */
 export { RedirectProjectsPage } from './RedirectProjectsPage'
 export { RedirectProjectInfoPage } from './RedirectProjectInfoPage'
+/* plugins */
+export { PluginRoute } from './PluginRoute'

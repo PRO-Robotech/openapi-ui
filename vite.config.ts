@@ -35,7 +35,18 @@ export default defineConfig({
       exposes: {
         './App': './src/federation.tsx',
       },
-      shared: ['react', 'react-dom', 'react-redux', 'react-router-dom', 'antd', '@tanstack/react-query'],
+      remotes: {
+        __dummy_remote__: '',
+      },
+      shared: [
+        'react',
+        'react-dom',
+        'react-redux',
+        '@reduxjs/toolkit',
+        'react-router-dom',
+        'antd',
+        '@tanstack/react-query',
+      ],
     }),
     nodePolyfills({
       include: ['buffer', 'process', 'path'],

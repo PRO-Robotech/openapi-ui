@@ -25,17 +25,31 @@ const mappedClusterToOptionInSidebar = ({ name }: TClusterList[number]): { value
   label: name,
 })
 
-const mappedProjectToOptionInSidebar = ({ metadata }: TSingleResource): { value: string; label: string } => ({
-  value: metadata.name,
-  label: metadata.name,
+const mappedProjectToOptionInSidebar = ({
+  project,
+  aliasPath,
+}: {
+  project: TSingleResource
+  aliasPath?: string
+}): { value: string; label: string } => ({
+  value: project.metadata.name,
+  label: aliasPath
+    ? parseAll({
+        text: aliasPath,
+        replaceValues: {},
+        multiQueryData: { req0: { ...project } },
+      })
+    : project.metadata.name,
 })
 
 const mappedInstanceToOptionInSidebar = ({
   instance,
   templateString,
+  aliasPath,
 }: {
   instance: TSingleResource
   templateString?: string
+  aliasPath?: string
 }): { value: string; label: string } => ({
   value: templateString
     ? parseAll({
@@ -44,7 +58,13 @@ const mappedInstanceToOptionInSidebar = ({
         multiQueryData: { req0: { ...instance } },
       })
     : `${instance.metadata.namespace}-${instance.metadata.name}`,
-  label: instance.metadata.name,
+  label: aliasPath
+    ? parseAll({
+        text: aliasPath,
+        replaceValues: {},
+        multiQueryData: { req0: { ...instance } },
+      })
+    : instance.metadata.name,
 })
 
 export const useNavSelector = (cluster?: string, projectName?: string) => {
@@ -93,7 +113,12 @@ export const useNavSelector = (cluster?: string, projectName?: string) => {
   )
 
   const clustersInSidebar = clusterList ? clusterList.map(mappedClusterToOptionInSidebar) : []
-  const projectsInSidebar = cluster && projects ? projects.items.map(mappedProjectToOptionInSidebar) : []
+  const projectsInSidebar =
+    cluster && projects
+      ? projects.items.map(item =>
+          mappedProjectToOptionInSidebar({ project: item, aliasPath: navigationData?.spec?.projects?.aliasPath }),
+        )
+      : []
   const instancesInSidebar =
     cluster && instances
       ? instances.items
@@ -102,6 +127,7 @@ export const useNavSelector = (cluster?: string, projectName?: string) => {
             mappedInstanceToOptionInSidebar({
               instance: item,
               templateString: navigationData?.spec?.instances?.mapOptionsPattern,
+              aliasPath: navigationData?.spec?.instances?.aliasPath,
             }),
           )
       : []
