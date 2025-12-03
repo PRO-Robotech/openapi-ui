@@ -83,7 +83,7 @@ export const useNavSelectorInside = (cluster?: string) => {
     apiGroup: CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP,
     apiVersion: CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION,
     plural: CUSTOM_NAMESPACE_API_RESOURCE_PLURAL,
-    isEnabled: Boolean(cluster !== undefined && !isCustomNamespaceResource),
+    isEnabled: Boolean(cluster !== undefined && isCustomNamespaceResource),
   })
 
   const clustersInSidebar = clusterList ? clusterList.map(mappedClusterToOptionInSidebar) : []
