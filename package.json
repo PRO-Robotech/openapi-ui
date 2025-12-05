@@ -20,7 +20,7 @@
     "@ant-design/icons": "5.6.0",
     "@monaco-editor/react": "4.6.0",
     "@originjs/vite-plugin-federation": "1.4.1",
-    "@prorobotech/openapi-k8s-toolkit": "1.2.0-alpha.10",
+    "@prorobotech/openapi-k8s-toolkit": "1.2.0-alpha.11",
     "@readme/openapi-parser": "4.0.0",
     "@reduxjs/toolkit": "2.2.5",
     "@tanstack/react-query": "5.62.2",
