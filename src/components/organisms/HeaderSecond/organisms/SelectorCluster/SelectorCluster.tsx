@@ -6,7 +6,7 @@ import { RootState } from 'store/store'
 import { useNavSelectorClusters } from 'hooks/useNavSelectorClusters'
 import { useMountEffect } from 'hooks/useMountEffect'
 import { EntrySelect } from 'components/atoms'
-import { BASE_NAVIGATE_FROM_CLUSTERLIST } from 'constants/customizationApiGroupAndVersion'
+import { BASE_NAVIGATE_FROM_CLUSTERLIST, SELECTOR_WIDTH_CLUSTER } from 'constants/customizationApiGroupAndVersion'
 
 type TSelectorClusterProps = {
   cluster?: string
@@ -41,6 +41,7 @@ export const SelectorCluster: FC<TSelectorClusterProps> = ({ cluster }) => {
         options={clustersInSidebar}
         value={selectedCluster}
         onChange={handleClusterChange}
+        forcedWidth={SELECTOR_WIDTH_CLUSTER}
       />
     </Flex>
   )

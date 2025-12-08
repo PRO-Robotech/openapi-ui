@@ -13,6 +13,7 @@ import {
   BASE_API_VERSION,
   BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_PLURAL,
   BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME,
+  SELECTOR_WIDTH_NAMESPACE,
 } from 'constants/customizationApiGroupAndVersion'
 
 type TSelectorNamespaceProps = {
@@ -113,6 +114,7 @@ export const SelectorNamespace: FC<TSelectorNamespaceProps> = ({ cluster, namesp
         value={selectedNamespace || 'all'}
         onChange={handleNamepsaceChange}
         disabled={selectedCluster === undefined || namespacesInSidebar.length === 0}
+        forcedWidth={SELECTOR_WIDTH_NAMESPACE}
       />
     </Flex>
   )

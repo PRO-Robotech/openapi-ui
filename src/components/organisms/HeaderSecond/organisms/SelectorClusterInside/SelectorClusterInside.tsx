@@ -6,6 +6,7 @@ import { RootState } from 'store/store'
 import { useNavSelectorInside } from 'hooks/useNavSelectorInside'
 import { useMountEffect } from 'hooks/useMountEffect'
 import { EntrySelect } from 'components/atoms'
+import { SELECTOR_WIDTH_CLUSTER } from 'constants/customizationApiGroupAndVersion'
 
 type TSelectorClusterInsideProps = {
   cluster?: string
@@ -40,6 +41,7 @@ export const SelectorClusterInside: FC<TSelectorClusterInsideProps> = ({ cluster
         options={clustersInSidebar}
         value={selectedCluster}
         onChange={handleClusterChange}
+        forcedWidth={SELECTOR_WIDTH_CLUSTER}
       />
     </Flex>
   )

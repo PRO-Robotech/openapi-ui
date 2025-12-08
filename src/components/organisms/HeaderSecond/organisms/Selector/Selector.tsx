@@ -10,6 +10,8 @@ import {
   BASE_API_VERSION,
   BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_PLURAL,
   BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME,
+  SELECTOR_WIDTH_PROJECT,
+  SELECTOR_WIDTH_INSTANCE,
 } from 'constants/customizationApiGroupAndVersion'
 
 type TSelectorProps = {
@@ -99,6 +101,7 @@ export const Selector: FC<TSelectorProps> = ({ cluster, projectName, instanceNam
         value={selectedProjectName || 'all'}
         onChange={handleProjectChange}
         disabled={selectedCluster === undefined || projectsInSidebar.length === 0}
+        forcedWidth={SELECTOR_WIDTH_PROJECT}
       />
       <Typography.Text>Instance: </Typography.Text>
       <EntrySelect
@@ -111,6 +114,7 @@ export const Selector: FC<TSelectorProps> = ({ cluster, projectName, instanceNam
           selectedProjectName === undefined ||
           (allInstancesLoadingSuccess && instancesInSidebar.length === 0)
         }
+        forcedWidth={SELECTOR_WIDTH_INSTANCE}
       />
     </Flex>
   )

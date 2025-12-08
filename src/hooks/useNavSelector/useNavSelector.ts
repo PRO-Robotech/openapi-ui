@@ -112,12 +112,16 @@ export const useNavSelector = (cluster?: string, projectName?: string) => {
     instances && instances.items && !isInstancesError && !isInstancesLoading,
   )
 
-  const clustersInSidebar = clusterList ? clusterList.map(mappedClusterToOptionInSidebar) : []
+  const clustersInSidebar = clusterList
+    ? clusterList.map(mappedClusterToOptionInSidebar).sort((a, b) => a.label.localeCompare(b.label))
+    : []
   const projectsInSidebar =
     cluster && projects
-      ? projects.items.map(item =>
-          mappedProjectToOptionInSidebar({ project: item, aliasPath: navigationData?.spec?.projects?.aliasPath }),
-        )
+      ? projects.items
+          .map(item =>
+            mappedProjectToOptionInSidebar({ project: item, aliasPath: navigationData?.spec?.projects?.aliasPath }),
+          )
+          .sort((a, b) => a.label.localeCompare(b.label))
       : []
   const instancesInSidebar =
     cluster && instances
@@ -130,6 +134,7 @@ export const useNavSelector = (cluster?: string, projectName?: string) => {
               aliasPath: navigationData?.spec?.instances?.aliasPath,
             }),
           )
+          .sort((a, b) => a.label.localeCompare(b.label))
       : []
 
   return { clustersInSidebar, projectsInSidebar, instancesInSidebar, allInstancesLoadingSuccess }
