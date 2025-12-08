@@ -86,18 +86,30 @@ export const useNavSelectorInside = (cluster?: string) => {
     isEnabled: Boolean(cluster !== undefined && isCustomNamespaceResource),
   })
 
-  const clustersInSidebar = clusterList ? clusterList.map(mappedClusterToOptionInSidebar) : []
+  const clustersInSidebar = clusterList
+    ? clusterList.map(mappedClusterToOptionInSidebar).sort((a, b) => a.label.localeCompare(b.label))
+    : []
   const namespacesInSidebar =
     cluster && namespaces
-      ? namespaces.items.map(item =>
-          mappedNamespaceToOptionInSidebar({ namespace: item, aliasPath: navigationData?.spec?.namespaces?.aliasPath }),
-        )
+      ? namespaces.items
+          .map(item =>
+            mappedNamespaceToOptionInSidebar({
+              namespace: item,
+              aliasPath: navigationData?.spec?.namespaces?.aliasPath,
+            }),
+          )
+          .sort((a, b) => a.label.localeCompare(b.label))
       : []
   const namespacesInSidebarCustom =
     cluster && namespacesCustom
-      ? namespacesCustom.items.map(item =>
-          mappedNamespaceToOptionInSidebar({ namespace: item, aliasPath: navigationData?.spec?.namespaces?.aliasPath }),
-        )
+      ? namespacesCustom.items
+          .map(item =>
+            mappedNamespaceToOptionInSidebar({
+              namespace: item,
+              aliasPath: navigationData?.spec?.namespaces?.aliasPath,
+            }),
+          )
+          .sort((a, b) => a.label.localeCompare(b.label))
       : []
 
   return {

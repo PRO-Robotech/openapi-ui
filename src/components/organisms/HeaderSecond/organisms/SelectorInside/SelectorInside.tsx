@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useNavSelectorInside } from 'hooks/useNavSelectorInside'
 import { useMountEffect } from 'hooks/useMountEffect'
 import { EntrySelect } from 'components/atoms'
+import { SELECTOR_WIDTH_NAMESPACE } from 'constants/customizationApiGroupAndVersion'
 
 type TSelectorInsideProps = {
   cluster?: string
@@ -51,6 +52,7 @@ export const SelectorInside: FC<TSelectorInsideProps> = ({ cluster, namespace })
         value={selectedNamespace || 'all'}
         onChange={handleNamepsaceChange}
         disabled={selectedCluster === undefined || namespacesInSidebar.length === 0}
+        forcedWidth={SELECTOR_WIDTH_NAMESPACE}
       />
     </Flex>
   )
