@@ -151,6 +151,12 @@ export const App: FC<TAppProps> = ({ isFederation, forcedTheme }) => {
             Tag: {
               defaultBg: colors?.colorPrimaryBg,
             },
+            Segmented: {
+              trackBg: colors?.colorText,
+              itemColor: colors?.colorPrimaryBg,
+              itemHoverColor: colors?.colorPrimaryBg,
+              motionDurationSlow: '0.1s',
+            },
           },
         }}
       >
