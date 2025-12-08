@@ -34,6 +34,7 @@ export const EntrySelect: FC<TEntrySelectProps> = ({
       disabled={disabled}
       style={{ width: fullwidth ? '100%' : width }}
       allowClear
+      optionFilterProp="label"
       showSearch
     />
   )
