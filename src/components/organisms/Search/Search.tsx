@@ -1,16 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import React, { FC, Fragment, useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { useLocation, useSearchParams } from 'react-router-dom'
-import {
-  Search as PackageSearch,
-  Spacer,
-  TRequestError,
-  TKindIndex,
-  TKindWithVersion,
-  getKinds,
-  getSortedKindsAll,
-  LookingGlassIcon,
-} from '@prorobotech/openapi-k8s-toolkit'
+import { Search as PackageSearch, Spacer, useKinds, LookingGlassIcon } from '@prorobotech/openapi-k8s-toolkit'
 import { ConfigProvider, theme as antdtheme, Form, Spin, Alert } from 'antd'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store/store'
@@ -48,12 +39,6 @@ export const Search: FC = () => {
   const theme = useSelector((state: RootState) => state.openapiTheme.theme)
 
   const [form] = Form.useForm()
-
-  const [error, setError] = useState<TRequestError | undefined>()
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [kindIndex, setKindIndex] = useState<TKindIndex>()
-  const [kindsWithVersion, setKindWithVersion] = useState<TKindWithVersion[]>()
 
   const [height, setHeight] = useState(0)
   const [emptyHeight, setEmptyHeight] = useState(0)
@@ -97,21 +82,7 @@ export const Search: FC = () => {
     }
   }, [])
 
-  useEffect(() => {
-    setIsLoading(true)
-    setError(undefined)
-    getKinds({ cluster })
-      .then(data => {
-        setKindIndex(data)
-        setKindWithVersion(getSortedKindsAll(data))
-        setIsLoading(false)
-        setError(undefined)
-      })
-      .catch(error => {
-        setIsLoading(false)
-        setError(error)
-      })
-  }, [cluster])
+  const { data: kindsData, isLoading: kindsLoading, error: kindsError } = useKinds({ cluster })
 
   const watchedKinds = Form.useWatch<string[] | undefined>(FIELD_NAME, form)
   const watchedName = Form.useWatch<string | undefined>(FIELD_NAME_STRING, form)
@@ -250,16 +221,12 @@ export const Search: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watchedTypedSelector])
 
-  if (error) {
-    return <Alert type="error" message="Error while loading kinds" description={error?.response?.data?.message} />
-  }
-
-  if (isLoading || !kindsWithVersion) {
+  if (kindsLoading || !kindsData) {
     return <Spin />
   }
 
-  if (!kindsWithVersion) {
-    return <Alert type="error" message="Error while loading kinds" description="Empty" />
+  if (kindsError) {
+    return <Alert type="error" message="Error while loading kinds" description={kindsError?.message} />
   }
 
   return (
@@ -276,7 +243,7 @@ export const Search: FC = () => {
             FIELD_NAME_FIELDS,
             TYPE_SELECTOR,
           }}
-          kindsWithVersion={kindsWithVersion}
+          kindsWithVersion={kindsData.kindsWithVersion}
         />
         <ConfigProvider
           theme={{
@@ -293,7 +260,7 @@ export const Search: FC = () => {
               <Fragment key={item}>
                 <Spacer $space={20} $samespace />
                 <SearchEntry
-                  kindsWithVersion={kindsWithVersion}
+                  kindsWithVersion={kindsData.kindsWithVersion}
                   form={form}
                   constants={{
                     FIELD_NAME,
