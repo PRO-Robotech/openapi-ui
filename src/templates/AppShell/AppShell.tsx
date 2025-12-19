@@ -1,5 +1,6 @@
 import React, { FC, useState, useMemo } from 'react'
 import { Outlet, useParams } from 'react-router-dom'
+import { useKinds } from '@prorobotech/openapi-k8s-toolkit'
 import { BaseTemplate } from 'templates'
 import { ManageableSidebar, NavigationContainer, ManageableBreadcrumbs, BackLink } from 'components'
 import { getSidebarIdPrefix } from 'utils/getSidebarIdPrefix'
@@ -16,7 +17,15 @@ export type TChromeCtx = {
 }
 
 export const AppShell: FC<{ inside?: boolean }> = ({ inside }) => {
-  const { namespace, syntheticProject } = useParams()
+  const { cluster, namespace, syntheticProject } = useParams()
+
+  // fetch in advance
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { data: kindsData } = useKinds({
+    cluster: cluster || '',
+    isEnabled: !!cluster,
+    refetchInterval: false,
+  })
 
   const possibleProject = syntheticProject && namespace ? syntheticProject : namespace
   const possibleInstance = syntheticProject && namespace ? namespace : undefined
