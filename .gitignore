@@ -20,3 +20,6 @@ yarn-error.log*
 .env.options
 .env.local
 public/env.js
+
+.yalc/
+yalc.lock
