@@ -10,7 +10,9 @@ const mappedClusterToOptionInSidebar = ({ name }: TClusterList[number]): { value
 export const useNavSelectorClusters = () => {
   const clusterList = useSelector((state: RootState) => state.clusterList.clusterList)
 
-  const clustersInSidebar = clusterList ? clusterList.map(mappedClusterToOptionInSidebar) : []
+  const clustersInSidebar = clusterList
+    ? clusterList.map(mappedClusterToOptionInSidebar).sort((a, b) => a.label.localeCompare(b.label))
+    : []
 
   return { clustersInSidebar }
 }

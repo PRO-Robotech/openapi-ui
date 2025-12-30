@@ -52,3 +52,13 @@ This app can be configured through environment variables.
 | `CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP`   | `string`  | Custom namespace resource: api group                                                    |
 | `CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION` | `string`  | Custom namespace resource: api version                                                  |
 | `CUSTOM_NAMESPACE_API_RESOURCE_PLURAL`      | `string`  | Custom namespace resource: plural name                                                  |
+| `SELECTOR_WIDTH_CLUSTER`                    | `string`  | Selector width for cluster: `200px`                                                     |
+| `SELECTOR_WIDTH_NAMESPACE`                  | `string`  | Selector width for namespace: `200px`                                                   |
+| `SELECTOR_WIDTH_PROJECT`                    | `string`  | Selector width for project: `200px`                                                     |
+| `SELECTOR_WIDTH_INSTANCE`                   | `string`  | Selector width for instance: `200px`                                                    |
+
+---
+
+## 🤝 Contributing
+
+[Check this out](./CONTRIBUTING.md)

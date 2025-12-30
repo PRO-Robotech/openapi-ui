@@ -114,6 +114,15 @@ const CUSTOM_NAMESPACE_API_RESOURCE_PLURAL =
     ? options?.CUSTOM_NAMESPACE_API_RESOURCE_PLURAL
     : process.env.CUSTOM_NAMESPACE_API_RESOURCE_PLURAL
 
+const SELECTOR_WIDTH_CLUSTER =
+  process.env.LOCAL === 'true' ? options?.SELECTOR_WIDTH_CLUSTER : process.env.SELECTOR_WIDTH_CLUSTER
+const SELECTOR_WIDTH_NAMESPACE =
+  process.env.LOCAL === 'true' ? options?.SELECTOR_WIDTH_NAMESPACE : process.env.SELECTOR_WIDTH_NAMESPACE
+const SELECTOR_WIDTH_PROJECT =
+  process.env.LOCAL === 'true' ? options?.SELECTOR_WIDTH_PROJECT : process.env.SELECTOR_WIDTH_PROJECT
+const SELECTOR_WIDTH_INSTANCE =
+  process.env.LOCAL === 'true' ? options?.SELECTOR_WIDTH_INSTANCE : process.env.SELECTOR_WIDTH_INSTANCE
+
 const healthcheck = require('express-healthcheck')
 const promBundle = require('express-prom-bundle')
 
@@ -245,6 +254,10 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
           ? `  CUSTOM_NAMESPACE_API_RESOURCE_PLURAL: "${CUSTOM_NAMESPACE_API_RESOURCE_PLURAL}",`
           : ''
       }
+      ${SELECTOR_WIDTH_CLUSTER ? `  SELECTOR_WIDTH_CLUSTER: "${SELECTOR_WIDTH_CLUSTER}",` : ''}
+      ${SELECTOR_WIDTH_NAMESPACE ? `  SELECTOR_WIDTH_NAMESPACE: "${SELECTOR_WIDTH_NAMESPACE}",` : ''}
+      ${SELECTOR_WIDTH_PROJECT ? `  SELECTOR_WIDTH_PROJECT: "${SELECTOR_WIDTH_PROJECT}",` : ''}
+      ${SELECTOR_WIDTH_INSTANCE ? `  SELECTOR_WIDTH_INSTANCE: "${SELECTOR_WIDTH_INSTANCE}",` : ''}
       CUSTOMIZATION_SIDEBAR_FALLBACK_ID: ${JSON.stringify(CUSTOMIZATION_SIDEBAR_FALLBACK_ID) || '"check envs"'},
       USE_NAMESPACE_NAV: ${USE_NAMESPACE_NAV ? JSON.stringify(USE_NAMESPACE_NAV).toLowerCase() : '"false"'},
       HIDE_INSIDE: ${HIDE_INSIDE ? JSON.stringify(HIDE_INSIDE).toLowerCase() : '"false"'},

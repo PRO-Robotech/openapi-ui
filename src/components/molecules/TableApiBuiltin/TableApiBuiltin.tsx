@@ -14,6 +14,9 @@ import {
   Spacer,
   getLinkToForm,
   TSingleResource,
+  TJSON,
+  useSmartResourceParams,
+  useManyK8sSmartResource,
 } from '@prorobotech/openapi-k8s-toolkit'
 import { FlexGrow, PaddingContainer } from 'components'
 import { TABLE_PROPS } from 'constants/tableProps'
@@ -118,6 +121,16 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
     limit,
   })
 
+  const moreResourcesParams = useSmartResourceParams({ cluster, namespace })
+  const moreResources = useManyK8sSmartResource(moreResourcesParams.paramsList)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // const extrasTickKey = moreResources.map(r => String((r as any)?.debugTick ?? 0)).join('|')
+  const additionalReqsData = moreResourcesParams.paramsList.length > 0 ? moreResources.map(el => el?.data) : undefined
+  const dataItemsWithAdditionalData = dataItems?.items?.map(el => ({
+    ...el,
+    ...(additionalReqsData ? { additionalReqsData } : {}),
+  }))
+
   const onDeleteHandle = (name: string, endpoint: string) => {
     setIsDeleteModalOpen({ name, endpoint })
   }
@@ -136,14 +149,20 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
 
   const fullPath = `${location.pathname}${location.search}`
 
+  // const providerKey =
+  //   resourceType === 'builtin'
+  //     ? `/v1/${plural}-${extrasTickKey}`
+  //     : `/${apiGroup}/${apiVersion}/${plural}-${extrasTickKey}`
+  const providerKey = resourceType === 'builtin' ? `/v1/${plural}` : `/${apiGroup}/${apiVersion}/${plural}`
+
   return (
     <>
-      {isLoading && <Spin />}
+      {isLoading && !dataItems && <Spin />}
       {error && <Alert message={`An error has occurred: ${error} `} type="error" />}
       <OverflowContainer height={height} searchMount={searchMount}>
         {!error && dataItems && (
           <EnrichedTableProvider
-            key={resourceType === 'builtin' ? `/v1/${plural}` : `/${apiGroup}/${apiVersion}/${plural}`}
+            key={providerKey}
             customizationId={
               resourceType === 'builtin'
                 ? `${customizationIdPrefix}/v1/${plural}`
@@ -168,7 +187,7 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
             namespace={namespace}
             theme={theme}
             baseprefix={inside ? `${baseprefix}/inside` : baseprefix}
-            dataItems={dataItems.items}
+            dataItems={(dataItemsWithAdditionalData as TJSON[] | undefined) || []}
             k8sResource={{
               plural,
               apiGroup,

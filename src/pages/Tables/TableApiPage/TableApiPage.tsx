@@ -47,9 +47,9 @@ export const TableApiPage: FC<TTableApiPageProps> = ({ inside }) => {
     useOutletContext<TChromeCtx>()
 
   useEffect(() => {
-    setSidebarSuffix('builtin-table')
+    setSidebarSuffix('api-table')
     setBreadcrumbsSuffix(isProjectList ? breadcrumbsIdProjectList : 'api-table')
-    setCurrentTags([`${plural}`])
+    setCurrentTags([`${apiGroup}/${apiVersion}/${plural}`])
     setBacklinkTo(preparedBacklink)
     setBacklinkTitle(undefined)
 

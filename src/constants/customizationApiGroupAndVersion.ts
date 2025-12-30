@@ -134,3 +134,16 @@ export const CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION = import.meta.env.DEV
 export const CUSTOM_NAMESPACE_API_RESOURCE_PLURAL = import.meta.env.DEV
   ? window._env_.CUSTOM_NAMESPACE_API_RESOURCE_PLURAL || import.meta.env.VITE_CUSTOM_NAMESPACE_API_RESOURCE_PLURAL
   : window._env_.CUSTOM_NAMESPACE_API_RESOURCE_PLURAL
+
+export const SELECTOR_WIDTH_CLUSTER = import.meta.env.DEV
+  ? window._env_.SELECTOR_WIDTH_CLUSTER || import.meta.env.VITE_SELECTOR_WIDTH_CLUSTER
+  : window._env_.SELECTOR_WIDTH_CLUSTER
+export const SELECTOR_WIDTH_NAMESPACE = import.meta.env.DEV
+  ? window._env_.SELECTOR_WIDTH_NAMESPACE || import.meta.env.VITE_SELECTOR_WIDTH_NAMESPACE
+  : window._env_.SELECTOR_WIDTH_NAMESPACE
+export const SELECTOR_WIDTH_PROJECT = import.meta.env.DEV
+  ? window._env_.SELECTOR_WIDTH_PROJECT || import.meta.env.VITE_SELECTOR_WIDTH_PROJECT
+  : window._env_.SELECTOR_WIDTH_PROJECT
+export const SELECTOR_WIDTH_INSTANCE = import.meta.env.DEV
+  ? window._env_.SELECTOR_WIDTH_INSTANCE || import.meta.env.VITE_SELECTOR_WIDTH_INSTANCE
+  : window._env_.SELECTOR_WIDTH_INSTANCE

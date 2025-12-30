@@ -65,7 +65,7 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags }) => {
     return (
       <ContentCard flexGrow={1} displayFlex flexFlow="column" maxHeight={height}>
         <DynamicRendererWithProviders
-          urlsToFetch={spec.urlsToFetch}
+          urlsToFetch={spec.urlsToFetch ?? []}
           theme={theme}
           nodeTerminalDefaultProfile={NODE_TERMINAL_DEFAULT_PROFILE}
           items={spec.data}
@@ -77,7 +77,7 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags }) => {
 
   return (
     <DynamicRendererWithProviders
-      urlsToFetch={spec.urlsToFetch}
+      urlsToFetch={spec.urlsToFetch ?? []}
       theme={theme}
       nodeTerminalDefaultProfile={NODE_TERMINAL_DEFAULT_PROFILE}
       items={spec.data}
