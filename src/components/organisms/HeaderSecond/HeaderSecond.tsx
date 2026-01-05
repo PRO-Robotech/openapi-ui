@@ -2,7 +2,8 @@ import React, { FC } from 'react'
 import { Flex, theme } from 'antd'
 import { useParams } from 'react-router-dom'
 import { HEAD_SECOND_ROW } from 'constants/blocksSizes'
-import { BASE_USE_NAMESPACE_NAV } from 'constants/customizationApiGroupAndVersion'
+import { MF_PLUGINS_NO_CLUSTER, BASE_USE_NAMESPACE_NAV } from 'constants/customizationApiGroupAndVersion'
+import { PluginByManifest } from 'components/molecules'
 import { SelectorCluster, SelectorClusterInside, Selector, SelectorInside, SelectorNamespace } from './organisms'
 import { Styled } from './styled'
 
@@ -17,6 +18,10 @@ export const HeaderSecond: FC<THeaderProps> = ({ inside, isSearch }) => {
 
   const possibleProject = syntheticProject && namespace ? syntheticProject : namespace
   const possibleInstance = syntheticProject && namespace ? namespace : undefined
+
+  if (Object.keys(MF_PLUGINS_NO_CLUSTER).includes('plugin-navigation')) {
+    return <PluginByManifest manifestEntry={MF_PLUGINS_NO_CLUSTER['plugin-navigation']} />
+  }
 
   return (
     <Styled.BackgroundContainer $bgColor={token.colorFillSecondary} $borderRadius={token.borderRadius}>

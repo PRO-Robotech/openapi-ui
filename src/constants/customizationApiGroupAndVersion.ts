@@ -147,3 +147,7 @@ export const SELECTOR_WIDTH_PROJECT = import.meta.env.DEV
 export const SELECTOR_WIDTH_INSTANCE = import.meta.env.DEV
   ? window._env_.SELECTOR_WIDTH_INSTANCE || import.meta.env.VITE_SELECTOR_WIDTH_INSTANCE
   : window._env_.SELECTOR_WIDTH_INSTANCE
+
+export const MF_PLUGINS_NO_CLUSTER = import.meta.env.DEV
+  ? window._env_.MF_PLUGINS_NO_CLUSTER || import.meta.env.VITE_MF_PLUGINS_NO_CLUSTER
+  : window._env_.MF_PLUGINS_NO_CLUSTER

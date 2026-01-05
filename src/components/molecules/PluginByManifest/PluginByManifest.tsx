@@ -8,7 +8,7 @@ import {
   __federation_method_setRemote as setRemote,
   __federation_method_unwrapDefault as unwrapModule,
 } from 'virtual:__federation__'
-import { usePluginManifest, TPluginManifestEntry } from '@prorobotech/openapi-k8s-toolkit'
+import { TPluginManifestEntry } from '@prorobotech/openapi-k8s-toolkit'
 
 type TParams = {
   cluster: string
@@ -18,14 +18,12 @@ type TParams = {
   '*': string // rest of the path after pluginName
 }
 
-export const PluginRoute: FC = () => {
-  const { cluster, namespace, syntheticProject, pluginName, '*': pluginPath } = useParams<TParams>()
+type TPluginByManifestProps = {
+  manifestEntry: TPluginManifestEntry
+}
 
-  const {
-    data: manifest,
-    isLoading: manifestLoading,
-    error: manifestError,
-  } = usePluginManifest({ cluster: cluster || '', refetchInterval: 60_000, isEnabled: Boolean(cluster) })
+export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) => {
+  const { cluster, namespace, syntheticProject, '*': pluginPath } = useParams<TParams>()
 
   const [Component, setComponent] = useState<React.ComponentType<any> | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -33,7 +31,7 @@ export const PluginRoute: FC = () => {
 
   // STEP 1 – when manifest is loaded, dynamically load the plugin remote
   useEffect(() => {
-    if (!manifest || !pluginName) return undefined
+    if (!manifestEntry) return undefined
 
     let cancelled = false
 
@@ -68,40 +66,37 @@ export const PluginRoute: FC = () => {
       }
     }
 
-    const plugin = manifest.data[pluginName]
+    const plugin = manifestEntry
     if (plugin) {
       load(plugin)
     } else {
-      setLoadError(`Unknown plugin "${pluginName}"`)
+      setLoadError(`Unknown "${manifestEntry}"`)
     }
 
     return () => {
       cancelled = true
     }
-  }, [manifest, manifest?.data, pluginName])
+  }, [manifestEntry])
 
-  console.log('pluginName from URL:', pluginName)
-  console.log('manifest keys:', Object.keys(manifest || {}))
+  console.log('manifestEntry', manifestEntry)
 
   // STEP 2 – render states
 
-  if (manifestLoading) return <div>Loading plugins manifest…</div>
-  if (manifestError) return <div>Manifest error: {(manifestError as Error).message}</div>
-  if (remoteLoading) return <div>Loading plugin {pluginName}…</div>
+  if (remoteLoading) return <div>Loading plugin {manifestEntry.name}…</div>
   if (loadError)
     return (
       <div>
-        Failed to load plugin {pluginName}: {loadError}
+        Failed to load plugin {manifestEntry.name}: {loadError}
       </div>
     )
-  if (!Component) return <div>No plugin component available.</div>
+  if (!Component) return <div>No plugin component available. {JSON.stringify(manifestEntry)}</div>
 
   return (
     <Component
       cluster={cluster}
       namespace={namespace}
       syntheticProject={syntheticProject}
-      pluginName={pluginName}
+      pluginName={manifestEntry.name}
       pluginPath={pluginPath}
     />
   )

@@ -123,6 +123,44 @@ const SELECTOR_WIDTH_PROJECT =
 const SELECTOR_WIDTH_INSTANCE =
   process.env.LOCAL === 'true' ? options?.SELECTOR_WIDTH_INSTANCE : process.env.SELECTOR_WIDTH_INSTANCE
 
+const MF_PLUGINS_NO_CLUSTER =
+  process.env.LOCAL === 'true' ? options?.MF_PLUGINS_NO_CLUSTER : process.env.MF_PLUGINS_NO_CLUSTER
+
+type TPluginConfig = {
+  name: string
+  entry: string
+  exposedModule: string
+}
+
+type TPluginMap = Record<string, TPluginConfig>
+
+const isPluginConfig = (x: unknown): x is TPluginConfig => {
+  if (!x || typeof x !== 'object') return false
+  const o = x as Record<string, unknown>
+  return typeof o.name === 'string' && typeof o.entry === 'string' && typeof o.exposedModule === 'string'
+}
+
+const PARSED_MF_PLUGINS_NO_CLUSTER = (() => {
+  if (!MF_PLUGINS_NO_CLUSTER) return {}
+
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(MF_PLUGINS_NO_CLUSTER)
+  } catch {
+    return {}
+  }
+
+  if (!parsed || typeof parsed !== 'object') return {}
+
+  const out: TPluginMap = {}
+  for (const [key, value] of Object.entries(parsed as Record<string, unknown>)) {
+    if (!isPluginConfig(value)) continue
+    out[key] = value
+  }
+
+  return out
+})()
+
 const healthcheck = require('express-healthcheck')
 const promBundle = require('express-prom-bundle')
 
@@ -284,7 +322,8 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
       BASE_FACTORY_CLUSTERSCOPED_BUILTIN_KEY: ${
         JSON.stringify(BASE_FACTORY_CLUSTERSCOPED_BUILTIN_KEY) || '"check envs"'
       },
-      BASE_NAMESPACE_FACTORY_KEY: ${JSON.stringify(BASE_NAMESPACE_FACTORY_KEY) || '"check envs"'}
+      BASE_NAMESPACE_FACTORY_KEY: ${JSON.stringify(BASE_NAMESPACE_FACTORY_KEY) || '"check envs"'},
+      MF_PLUGINS_NO_CLUSTER: ${JSON.stringify(PARSED_MF_PLUGINS_NO_CLUSTER) || '"check envs"'}
     }
     `,
   )
