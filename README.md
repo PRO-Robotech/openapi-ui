@@ -56,6 +56,7 @@ This app can be configured through environment variables.
 | `SELECTOR_WIDTH_NAMESPACE`                  | `string`  | Selector width for namespace: `200px`                                                   |
 | `SELECTOR_WIDTH_PROJECT`                    | `string`  | Selector width for project: `200px`                                                     |
 | `SELECTOR_WIDTH_INSTANCE`                   | `string`  | Selector width for instance: `200px`                                                    |
+| `MF_PLUGINS_NO_CLUSTER`                     | `string`  | JSON for Plugins Manifest                                                               |
 
 ---
 
