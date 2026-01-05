@@ -103,6 +103,7 @@ export const PluginRoute: FC = () => {
       syntheticProject={syntheticProject}
       pluginName={pluginName}
       pluginPath={pluginPath}
+      withRoutes
     />
   )
 }
