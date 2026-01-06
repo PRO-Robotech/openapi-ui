@@ -126,6 +126,16 @@ const SELECTOR_WIDTH_INSTANCE =
 const MF_PLUGINS_NO_CLUSTER =
   process.env.LOCAL === 'true' ? options?.MF_PLUGINS_NO_CLUSTER : process.env.MF_PLUGINS_NO_CLUSTER
 
+const THEME_TOKENS_COLORS_LIGHT =
+  process.env.LOCAL === 'true' ? options?.THEME_TOKENS_COLORS_LIGHT : process.env.THEME_TOKENS_COLORS_LIGHT
+const THEME_TOKENS_COLORS_DARK =
+  process.env.LOCAL === 'true' ? options?.THEME_TOKENS_COLORS_DARK : process.env.THEME_TOKENS_COLORS_DARK
+const THEME_TOKENS_SIZES = process.env.LOCAL === 'true' ? options?.THEME_TOKENS_SIZES : process.env.THEME_TOKENS_SIZES
+const THEME_TOKENS_COMPONENTS_LIGHT =
+  process.env.LOCAL === 'true' ? options?.THEME_TOKENS_COMPONENTS_LIGHT : process.env.THEME_TOKENS_COMPONENTS_LIGHT
+const THEME_TOKENS_COMPONENTS_DARK =
+  process.env.LOCAL === 'true' ? options?.THEME_TOKENS_COMPONENTS_DARK : process.env.THEME_TOKENS_COMPONENTS_DARK
+
 type TPluginConfig = {
   name: string
   entry: string
@@ -159,6 +169,77 @@ const PARSED_MF_PLUGINS_NO_CLUSTER = (() => {
   }
 
   return out
+})()
+
+const PARSED_THEME_TOKENS_COLORS_LIGHT = (() => {
+  if (!THEME_TOKENS_COLORS_LIGHT) return {}
+
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(THEME_TOKENS_COLORS_LIGHT)
+  } catch {
+    return {}
+  }
+
+  if (!parsed || typeof parsed !== 'object') return {}
+
+  return parsed
+})()
+const PARSED_THEME_TOKENS_COLORS_DARK = (() => {
+  if (!THEME_TOKENS_COLORS_DARK) return {}
+
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(THEME_TOKENS_COLORS_DARK)
+  } catch {
+    return {}
+  }
+
+  if (!parsed || typeof parsed !== 'object') return {}
+
+  return parsed
+})()
+const PARSED_THEME_TOKENS_SIZES = (() => {
+  if (!THEME_TOKENS_SIZES) return {}
+
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(THEME_TOKENS_SIZES)
+  } catch {
+    return {}
+  }
+
+  if (!parsed || typeof parsed !== 'object') return {}
+
+  return parsed
+})()
+const PARSED_THEME_TOKENS_COMPONENTS_LIGHT = (() => {
+  if (!THEME_TOKENS_COMPONENTS_LIGHT) return {}
+
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(THEME_TOKENS_COMPONENTS_LIGHT)
+  } catch {
+    return {}
+  }
+
+  if (!parsed || typeof parsed !== 'object') return {}
+
+  return parsed
+})()
+const PARSED_THEME_TOKENS_COMPONENTS_DARK = (() => {
+  if (!THEME_TOKENS_COMPONENTS_DARK) return {}
+
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(THEME_TOKENS_COMPONENTS_DARK)
+  } catch {
+    return {}
+  }
+
+  if (!parsed || typeof parsed !== 'object') return {}
+
+  return parsed
 })()
 
 const healthcheck = require('express-healthcheck')
@@ -323,7 +404,12 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
         JSON.stringify(BASE_FACTORY_CLUSTERSCOPED_BUILTIN_KEY) || '"check envs"'
       },
       BASE_NAMESPACE_FACTORY_KEY: ${JSON.stringify(BASE_NAMESPACE_FACTORY_KEY) || '"check envs"'},
-      MF_PLUGINS_NO_CLUSTER: ${JSON.stringify(PARSED_MF_PLUGINS_NO_CLUSTER) || '"check envs"'}
+      MF_PLUGINS_NO_CLUSTER: ${JSON.stringify(PARSED_MF_PLUGINS_NO_CLUSTER) || '"check envs"'},
+      THEME_TOKENS_COLORS_LIGHT: ${JSON.stringify(PARSED_THEME_TOKENS_COLORS_LIGHT) || '"check envs"'},
+      THEME_TOKENS_COLORS_DARK: ${JSON.stringify(PARSED_THEME_TOKENS_COLORS_DARK) || '"check envs"'},
+      THEME_TOKENS_SIZES: ${JSON.stringify(PARSED_THEME_TOKENS_SIZES) || '"check envs"'},
+      THEME_TOKENS_COMPONENTS_LIGHT: ${JSON.stringify(PARSED_THEME_TOKENS_COMPONENTS_LIGHT) || '"check envs"'},
+      THEME_TOKENS_COMPONENTS_DARK: ${JSON.stringify(PARSED_THEME_TOKENS_COMPONENTS_DARK) || '"check envs"'}
     }
     `,
   )
