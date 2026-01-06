@@ -44,6 +44,9 @@ const CUSTOMIZATION_SIDEBAR_FALLBACK_ID =
     : process.env.CUSTOMIZATION_SIDEBAR_FALLBACK_ID
 
 const USE_NAMESPACE_NAV = process.env.LOCAL === 'true' ? options?.USE_NAMESPACE_NAV : process.env.USE_NAMESPACE_NAV
+
+const HIDE_NAVIGATION = process.env.LOCAL === 'true' ? options?.HIDE_NAVIGATION : process.env.HIDE_NAVIGATION
+
 const HIDE_INSIDE = process.env.LOCAL === 'true' ? options?.HIDE_INSIDE : process.env.HIDE_INSIDE
 
 const NAVIGATE_FROM_CLUSTERLIST =
@@ -135,6 +138,8 @@ const THEME_TOKENS_COMPONENTS_LIGHT =
   process.env.LOCAL === 'true' ? options?.THEME_TOKENS_COMPONENTS_LIGHT : process.env.THEME_TOKENS_COMPONENTS_LIGHT
 const THEME_TOKENS_COMPONENTS_DARK =
   process.env.LOCAL === 'true' ? options?.THEME_TOKENS_COMPONENTS_DARK : process.env.THEME_TOKENS_COMPONENTS_DARK
+const THEME_TOKENS_USE_MERGE_STRATEGY =
+  process.env.LOCAL === 'true' ? options?.THEME_TOKENS_USE_MERGE_STRATEGY : process.env.THEME_TOKENS_USE_MERGE_STRATEGY
 
 type TPluginConfig = {
   name: string
@@ -379,6 +384,7 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
       ${SELECTOR_WIDTH_INSTANCE ? `  SELECTOR_WIDTH_INSTANCE: "${SELECTOR_WIDTH_INSTANCE}",` : ''}
       CUSTOMIZATION_SIDEBAR_FALLBACK_ID: ${JSON.stringify(CUSTOMIZATION_SIDEBAR_FALLBACK_ID) || '"check envs"'},
       USE_NAMESPACE_NAV: ${USE_NAMESPACE_NAV ? JSON.stringify(USE_NAMESPACE_NAV).toLowerCase() : '"false"'},
+      HIDE_NAVIGATION: ${HIDE_NAVIGATION ? JSON.stringify(HIDE_NAVIGATION).toLowerCase() : '"false"'},
       HIDE_INSIDE: ${HIDE_INSIDE ? JSON.stringify(HIDE_INSIDE).toLowerCase() : '"false"'},
       NAVIGATE_FROM_CLUSTERLIST: ${JSON.stringify(NAVIGATE_FROM_CLUSTERLIST) || '"check envs"'},
       PROJECTS_API_GROUP: ${JSON.stringify(PROJECTS_API_GROUP) || '"check envs"'},
@@ -409,7 +415,10 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
       THEME_TOKENS_COLORS_DARK: ${JSON.stringify(PARSED_THEME_TOKENS_COLORS_DARK) || '"check envs"'},
       THEME_TOKENS_SIZES: ${JSON.stringify(PARSED_THEME_TOKENS_SIZES) || '"check envs"'},
       THEME_TOKENS_COMPONENTS_LIGHT: ${JSON.stringify(PARSED_THEME_TOKENS_COMPONENTS_LIGHT) || '"check envs"'},
-      THEME_TOKENS_COMPONENTS_DARK: ${JSON.stringify(PARSED_THEME_TOKENS_COMPONENTS_DARK) || '"check envs"'}
+      THEME_TOKENS_COMPONENTS_DARK: ${JSON.stringify(PARSED_THEME_TOKENS_COMPONENTS_DARK) || '"check envs"'},
+      THEME_TOKENS_USE_MERGE_STRATEGY: ${
+        THEME_TOKENS_USE_MERGE_STRATEGY ? JSON.stringify(THEME_TOKENS_USE_MERGE_STRATEGY).toLowerCase() : '"false"'
+      }
     }
     `,
   )
