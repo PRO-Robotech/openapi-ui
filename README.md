@@ -29,6 +29,7 @@ This app can be configured through environment variables.
 | `CUSTOMIZATION_NAVIGATION_RESOURCE_NAME`    | `string`  | Resource name for navigation settings. `navigation`                                     |
 | `CUSTOMIZATION_SIDEBAR_FALLBACK_ID`         | `string`  | `spec.id` to find in `sidebars` to fallback. Use `-namespaced` for NS-pages             |
 | `USE_NAMESPACE_NAV`                         | `boolean` | Use namespaces instead of project/instances. `true`                                     |
+| `HIDE_NAVIGATION`                           | `boolean` | Hide navigation container (also navigation plugin).                                     |
 | `HIDE_INSIDE`                               | `boolean` | Use namespaces instead of project/instances. `true`                                     |
 | `NAVIGATE_FROM_CLUSTERLIST`                 | `string`  | Location to be navigated after selecting cluster. `/openapi-ui/clusters/~recordValue~`  |
 | `PROJECTS_API_GROUP`                        | `string`  | API group for projects resources. If not using namespace nav.                           |
@@ -40,25 +41,29 @@ This app can be configured through environment variables.
 | `MARKETPLACE_PLURAL`                        | `string`  | Plural name for marketplace resources for related factory component.                    |
 | `MARKETPLACE_KIND`                          | `string`  | Kind name for marketplace resources for related factory component.                      |
 | `NODE_TERMINAL_DEFAULT_PROFILE`             | `string`  | Default profile for node terminal component. `baseline`                                 |
-| `REMOVE_BACKLINK`                           | `boolean` | Remove backlink arrow from right-side navigation                                        |
-| `REMOVE_BACKLINK_TEXT`                      | `boolean` | Remove backlink text from right-side navigation                                         |
-| `DOCS_URL`                                  | `string`  | URL to navigate from question mark                                                      |
-| `SEARCH_TABLE_CUSTOMIZATION_PREFIX`         | `string`  | Search tables Customization id prefix                                                   |
-| `BASE_FACTORY_NAMESPACED_API_KEY`           | `string`  | Base factory key for namespaced API resources                                           |
-| `BASE_FACTORY_CLUSTERSCOPED_API_KEY`        | `string`  | Base factory key for clusterscoped API resources                                        |
-| `BASE_FACTORY_NAMESPACED_BUILTIN_KEY`       | `string`  | Base factory key for namespaced builtin (v1) resources                                  |
-| `BASE_FACTORY_CLUSTERSCOPED_BUILTIN_KEY`    | `string`  | Base factory key for clusterscoped builtin (v1) resources                               |
-| `BASE_NAMESPACE_FACTORY_KEY`                | `string`  | Base factory key for namespaces                                                         |
-| `CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP`   | `string`  | Custom namespace resource: api group                                                    |
-| `CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION` | `string`  | Custom namespace resource: api version                                                  |
-| `CUSTOM_NAMESPACE_API_RESOURCE_PLURAL`      | `string`  | Custom namespace resource: plural name                                                  |
+| `REMOVE_BACKLINK`                           | `boolean` | Remove backlink arrow from right-side navigation.                                       |
+| `REMOVE_BACKLINK_TEXT`                      | `boolean` | Remove backlink text from right-side navigation.                                        |
+| `DOCS_URL`                                  | `string`  | URL to navigate from question mark.                                                     |
+| `SEARCH_TABLE_CUSTOMIZATION_PREFIX`         | `string`  | Search tables Customization id prefix.                                                  |
+| `BASE_FACTORY_NAMESPACED_API_KEY`           | `string`  | Base factory key for namespaced API resources.                                          |
+| `BASE_FACTORY_CLUSTERSCOPED_API_KEY`        | `string`  | Base factory key for clusterscoped API resources.                                       |
+| `BASE_FACTORY_NAMESPACED_BUILTIN_KEY`       | `string`  | Base factory key for namespaced builtin (v1) resources.                                 |
+| `BASE_FACTORY_CLUSTERSCOPED_BUILTIN_KEY`    | `string`  | Base factory key for clusterscoped builtin (v1) resources.                              |
+| `BASE_NAMESPACE_FACTORY_KEY`                | `string`  | Base factory key for namespaces.                                                        |
+| `CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP`   | `string`  | Custom namespace resource: api group.                                                   |
+| `CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION` | `string`  | Custom namespace resource: api version.                                                 |
+| `CUSTOM_NAMESPACE_API_RESOURCE_PLURAL`      | `string`  | Custom namespace resource: plural name.                                                 |
 | `SELECTOR_WIDTH_CLUSTER`                    | `string`  | Selector width for cluster: `200px`                                                     |
 | `SELECTOR_WIDTH_NAMESPACE`                  | `string`  | Selector width for namespace: `200px`                                                   |
 | `SELECTOR_WIDTH_PROJECT`                    | `string`  | Selector width for project: `200px`                                                     |
 | `SELECTOR_WIDTH_INSTANCE`                   | `string`  | Selector width for instance: `200px`                                                    |
-| `MF_PLUGINS_NO_CLUSTER`                     | `string`  | JSON for Plugins Manifest                                                               |
-
----
+| `MF_PLUGINS_NO_CLUSTER`                     | `string`  | JSON for Plugins Manifest.                                                              |
+| `THEME_TOKENS_COLORS_LIGHT`                 | `string`  | JSON for AntD Tokens: check [this](https://ant.design/theme-editor) out.                |
+| `THEME_TOKENS_COLORS_DARK`                  | `string`  | JSON for AntD Tokens: check [this](https://ant.design/theme-editor) out.                |
+| `THEME_TOKENS_SIZES`                        | `string`  | JSON for AntD Tokens: check [this](https://ant.design/theme-editor) out.                |
+| `THEME_TOKENS_COMPONENTS_LIGHT`             | `string`  | JSON for AntD Tokens: check [this](https://ant.design/theme-editor) out.                |
+| `THEME_TOKENS_COMPONENTS_DARK`              | `string`  | JSON for AntD Tokens: check [this](https://ant.design/theme-editor) out.                |
+| `THEME_TOKENS_USE_MERGE_STRATEGY`           | `boolean` | Use merge instead of replace for theme tokens. Doesn't work for components.             |
 
 ## 🤝 Contributing
 

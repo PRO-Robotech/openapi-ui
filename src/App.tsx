@@ -4,7 +4,7 @@ import React, { FC, useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { ConfigProvider, theme as antdtheme } from 'antd'
+import { ConfigProvider } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 import type { RootState } from 'store/store'
 import { setIsFederation } from 'store/federation/federation/federation'
@@ -30,7 +30,7 @@ import {
   PluginRoute,
 } from 'pages'
 import { getBasePrefix } from 'utils/getBaseprefix'
-import { colorsLight, colorsDark, sizes } from 'constants/colors'
+import { getConfigProviderProps } from 'utils/getConfigProviderProps'
 import { MainLayout, AppShell } from 'templates'
 
 type TAppProps = {
@@ -99,67 +99,12 @@ export const App: FC<TAppProps> = ({ isFederation, forcedTheme }) => {
     </Routes>
   )
 
-  const colors = theme === 'dark' ? colorsDark : colorsLight
+  const antdConfig = getConfigProviderProps({ theme })
 
   return (
     <QueryClientProvider client={queryClient}>
       {import.meta.env.MODE === 'development' && <ReactQueryDevtools />}
-      <ConfigProvider
-        theme={{
-          algorithm: theme === 'dark' ? antdtheme.darkAlgorithm : undefined,
-          token: {
-            fontFamily: '"Roboto", sans-serif',
-            ...colors,
-            ...sizes,
-          },
-          components: {
-            Layout: {
-              ...colors,
-            },
-            Button: {
-              colorPrimary: theme === 'dark' ? '#fff' : '#000',
-              primaryColor: theme === 'dark' ? '#000' : '#fff',
-            },
-            Tooltip: {
-              colorBgSpotlight: colors?.colorBgLayout,
-              colorText: colors?.colorText,
-              colorTextLightSolid: colors?.colorText,
-            },
-            Popover: {
-              colorBgElevated: colors?.colorBgLayout,
-            },
-            Table: {
-              headerBg: colors?.colorBgLayout,
-            },
-            Slider: {
-              trackBg: colors?.colorText,
-              trackHoverBg: colors?.colorText,
-            },
-            Menu: {
-              itemBg: colors?.colorBgLayout,
-              itemHoverBg: colors?.colorBgContainer,
-              itemActiveBg: colors?.colorInfoBg,
-              itemSelectedBg: colors?.colorInfoBg,
-              subMenuItemBg: colors?.colorFillQuaternary,
-              // itemColor: colors?.colorTextDescription,
-              // itemHoverColor: colors?.colorTextDescription,
-              itemColor: colors?.colorText,
-              itemHoverColor: colors?.colorText,
-              itemSelectedColor: colors?.colorText,
-              itemBorderRadius: 0,
-            },
-            Tag: {
-              defaultBg: colors?.colorPrimaryBg,
-            },
-            Segmented: {
-              trackBg: colors?.colorText,
-              itemColor: colors?.colorPrimaryBg,
-              itemHoverColor: colors?.colorPrimaryBg,
-              motionDurationSlow: '0.1s',
-            },
-          },
-        }}
-      >
+      <ConfigProvider theme={antdConfig}>
         {isFederation ? renderRoutes() : <BrowserRouter>{renderRoutes(basePrefix)}</BrowserRouter>}
       </ConfigProvider>
     </QueryClientProvider>

@@ -43,6 +43,10 @@ export const BASE_USE_NAMESPACE_NAV = import.meta.env.DEV
   ? window._env_.USE_NAMESPACE_NAV || import.meta.env.VITE_USE_NAMESPACE_NAV
   : window._env_.USE_NAMESPACE_NAV
 
+export const BASE_HIDE_NAVIGATION = import.meta.env.DEV
+  ? window._env_.HIDE_NAVIGATION || import.meta.env.VITE_HIDE_NAVIGATION
+  : window._env_.HIDE_NAVIGATION
+
 export const BASE_HIDE_INSIDE = import.meta.env.DEV
   ? window._env_.HIDE_INSIDE || import.meta.env.VITE_HIDE_INSIDE
   : window._env_.HIDE_INSIDE
@@ -151,3 +155,22 @@ export const SELECTOR_WIDTH_INSTANCE = import.meta.env.DEV
 export const MF_PLUGINS_NO_CLUSTER = import.meta.env.DEV
   ? window._env_.MF_PLUGINS_NO_CLUSTER || import.meta.env.VITE_MF_PLUGINS_NO_CLUSTER
   : window._env_.MF_PLUGINS_NO_CLUSTER
+
+export const THEME_TOKENS_COLORS_LIGHT = import.meta.env.DEV
+  ? window._env_.THEME_TOKENS_COLORS_LIGHT || import.meta.env.VITE_THEME_TOKENS_COLORS_LIGHT
+  : window._env_.THEME_TOKENS_COLORS_LIGHT
+export const THEME_TOKENS_COLORS_DARK = import.meta.env.DEV
+  ? window._env_.THEME_TOKENS_COLORS_DARK || import.meta.env.VITE_THEME_TOKENS_COLORS_DARK
+  : window._env_.THEME_TOKENS_COLORS_DARK
+export const THEME_TOKENS_SIZES = import.meta.env.DEV
+  ? window._env_.THEME_TOKENS_SIZES || import.meta.env.VITE_THEME_TOKENS_SIZES
+  : window._env_.THEME_TOKENS_SIZES
+export const THEME_TOKENS_COMPONENTS_LIGHT = import.meta.env.DEV
+  ? window._env_.THEME_TOKENS_COMPONENTS_LIGHT || import.meta.env.VITE_THEME_TOKENS_COMPONENTS_LIGHT
+  : window._env_.THEME_TOKENS_COMPONENTS_LIGHT
+export const THEME_TOKENS_COMPONENTS_DARK = import.meta.env.DEV
+  ? window._env_.THEME_TOKENS_COMPONENTS_DARK || import.meta.env.VITE_THEME_TOKENS_COMPONENTS_DARK
+  : window._env_.THEME_TOKENS_COMPONENTS_DARK
+export const THEME_TOKENS_USE_MERGE_STRATEGY = import.meta.env.DEV
+  ? window._env_.THEME_TOKENS_USE_MERGE_STRATEGY || import.meta.env.VITE_THEME_TOKENS_USE_MERGE_STRATEGY
+  : window._env_.THEME_TOKENS_USE_MERGE_STRATEGY
