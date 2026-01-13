@@ -9,6 +9,9 @@ import {
   __federation_method_unwrapDefault as unwrapModule,
 } from 'virtual:__federation__'
 import { TPluginManifestEntry } from '@prorobotech/openapi-k8s-toolkit'
+import { useSelector, useDispatch } from 'react-redux'
+import type { RootState } from 'store/store'
+import { setTheme } from 'store/theme/theme/theme'
 
 type TParams = {
   cluster: string
@@ -80,6 +83,19 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
 
   console.log('manifestEntry', manifestEntry)
 
+  const dispatch = useDispatch()
+  const theme = useSelector((state: RootState) => state.openapiTheme.theme)
+
+  const toggleTheme = (checked: boolean) => {
+    if (checked) {
+      localStorage.setItem('theme', 'dark')
+      dispatch(setTheme('dark'))
+    } else {
+      localStorage.setItem('theme', 'light')
+      dispatch(setTheme('light'))
+    }
+  }
+
   // STEP 2 – render states
 
   if (remoteLoading) return <div>Loading plugin {manifestEntry.name}…</div>
@@ -98,6 +114,7 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
       syntheticProject={syntheticProject}
       pluginName={manifestEntry.name}
       pluginPath={pluginPath}
+      toggleTheme={() => toggleTheme(theme !== 'dark')}
     />
   )
 }
