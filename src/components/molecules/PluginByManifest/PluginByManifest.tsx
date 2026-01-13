@@ -12,6 +12,7 @@ import { TPluginManifestEntry } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector, useDispatch } from 'react-redux'
 import type { RootState } from 'store/store'
 import { setTheme } from 'store/theme/theme/theme'
+import { THEME_EVENT } from 'constants/theme'
 
 type TParams = {
   cluster: string
@@ -94,6 +95,8 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
       localStorage.setItem('theme', 'light')
       dispatch(setTheme('light'))
     }
+    // 🔔 notify all federated modules in the same tab
+    window.dispatchEvent(new CustomEvent(THEME_EVENT))
   }
 
   // STEP 2 – render states
