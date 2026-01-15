@@ -47,6 +47,14 @@ export const BASE_HIDE_NAVIGATION = import.meta.env.DEV
   ? window._env_.HIDE_NAVIGATION || import.meta.env.VITE_HIDE_NAVIGATION
   : window._env_.HIDE_NAVIGATION
 
+export const BASE_BREADCRUMBS_NO_MARGIN_TOP = import.meta.env.DEV
+  ? window._env_.BREADCRUMBS_NO_MARGIN_TOP || import.meta.env.VITE_BREADCRUMBS_NO_MARGIN_TOP
+  : window._env_.BREADCRUMBS_NO_MARGIN_TOP
+
+export const BASE_USE_NEW_NAVIGATION = import.meta.env.DEV
+  ? window._env_.USE_NEW_NAVIGATION || import.meta.env.VITE_USE_NEW_NAVIGATION
+  : window._env_.USE_NEW_NAVIGATION
+
 export const BASE_HIDE_INSIDE = import.meta.env.DEV
   ? window._env_.HIDE_INSIDE || import.meta.env.VITE_HIDE_INSIDE
   : window._env_.HIDE_INSIDE
