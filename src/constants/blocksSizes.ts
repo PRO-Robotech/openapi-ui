@@ -1,6 +1,8 @@
+import { BASE_BREADCRUMBS_NO_MARGIN_TOP, BASE_HIDE_NAVIGATION } from './customizationApiGroupAndVersion'
+
 export const HEAD_FIRST_ROW = 52
-export const HEAD_SECOND_ROW = 56
-export const NAV_HEIGHT = 50
+export const HEAD_SECOND_ROW = BASE_HIDE_NAVIGATION ? 0 : 56
+export const NAV_HEIGHT = BASE_BREADCRUMBS_NO_MARGIN_TOP ? 35 : 50
 export const FOOTER_HEIGHT = 38
 export const MAIN_CONTENT_HORIZONTAL_PADDING = 24
 export const BACKLINK_HEIGHT = 26
