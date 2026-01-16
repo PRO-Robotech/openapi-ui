@@ -5,6 +5,7 @@ import { BaseTemplate } from 'templates'
 import { ManageableSidebar, NavigationContainer, ManageableBreadcrumbs, BackLink } from 'components'
 import { getSidebarIdPrefix } from 'utils/getSidebarIdPrefix'
 import { getBreadcrumbsIdPrefix } from 'utils/getBreadcrumbsIdPrefix'
+import { BASE_HIDE_BREADCRUMBS } from 'constants/customizationApiGroupAndVersion'
 
 export type TChromeCtx = {
   setCurrentTags: (tags?: string[]) => void
@@ -96,10 +97,12 @@ export const AppShell: FC<{ inside?: boolean }> = ({ inside }) => {
 
   return (
     <BaseTemplate inside={inside} sidebar={sidebarEl} isSearch={baseTemplateSearchBoolean}>
-      <NavigationContainer>
-        <ManageableBreadcrumbs idToCompare={breadcrumbsId} inside={inside} />
-        {backlinkTo && backlinkTitle && <BackLink to={backlinkTo} title={backlinkTitle} />}
-      </NavigationContainer>
+      {BASE_HIDE_BREADCRUMBS !== 'true' && (
+        <NavigationContainer>
+          <ManageableBreadcrumbs idToCompare={breadcrumbsId} inside={inside} />
+          {backlinkTo && backlinkTitle && <BackLink to={backlinkTo} title={backlinkTitle} />}
+        </NavigationContainer>
+      )}
       <Outlet context={ctx} />
     </BaseTemplate>
   )

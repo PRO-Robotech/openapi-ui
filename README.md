@@ -30,6 +30,9 @@ This app can be configured through environment variables.
 | `CUSTOMIZATION_SIDEBAR_FALLBACK_ID`         | `string`  | `spec.id` to find in `sidebars` to fallback. Use `-namespaced` for NS-pages             |
 | `USE_NAMESPACE_NAV`                         | `boolean` | Use namespaces instead of project/instances. `true`                                     |
 | `HIDE_NAVIGATION`                           | `boolean` | Hide navigation container (also navigation plugin).                                     |
+| `HIDE_BREADCRUMBS`                          | `boolean` | Hide breadcrumbs container.                                                             |
+| `BREADCRUMBS_NO_MARGIN_TOP`                 | `boolean` | Breadcrumbs with no margin-top.                                                         |
+| `USE_NEW_NAVIGATION`                        | `boolean` | Cluster selector in sidebar. NS selector where it needs to be.                          |
 | `HIDE_INSIDE`                               | `boolean` | Use namespaces instead of project/instances. `true`                                     |
 | `NAVIGATE_FROM_CLUSTERLIST`                 | `string`  | Location to be navigated after selecting cluster. `/openapi-ui/clusters/~recordValue~`  |
 | `PROJECTS_API_GROUP`                        | `string`  | API group for projects resources. If not using namespace nav.                           |

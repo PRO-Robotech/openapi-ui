@@ -47,6 +47,13 @@ const USE_NAMESPACE_NAV = process.env.LOCAL === 'true' ? options?.USE_NAMESPACE_
 
 const HIDE_NAVIGATION = process.env.LOCAL === 'true' ? options?.HIDE_NAVIGATION : process.env.HIDE_NAVIGATION
 
+const HIDE_BREADCRUMBS = process.env.LOCAL === 'true' ? options?.HIDE_BREADCRUMBS : process.env.HIDE_BREADCRUMBS
+
+const BREADCRUMBS_NO_MARGIN_TOP =
+  process.env.LOCAL === 'true' ? options?.BREADCRUMBS_NO_MARGIN_TOP : process.env.BREADCRUMBS_NO_MARGIN_TOP
+
+const USE_NEW_NAVIGATION = process.env.LOCAL === 'true' ? options?.USE_NEW_NAVIGATION : process.env.USE_NEW_NAVIGATION
+
 const HIDE_INSIDE = process.env.LOCAL === 'true' ? options?.HIDE_INSIDE : process.env.HIDE_INSIDE
 
 const NAVIGATE_FROM_CLUSTERLIST =
@@ -385,6 +392,11 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
       CUSTOMIZATION_SIDEBAR_FALLBACK_ID: ${JSON.stringify(CUSTOMIZATION_SIDEBAR_FALLBACK_ID) || '"check envs"'},
       USE_NAMESPACE_NAV: ${USE_NAMESPACE_NAV ? JSON.stringify(USE_NAMESPACE_NAV).toLowerCase() : '"false"'},
       HIDE_NAVIGATION: ${HIDE_NAVIGATION ? JSON.stringify(HIDE_NAVIGATION).toLowerCase() : '"false"'},
+      HIDE_BREADCRUMBS: ${HIDE_BREADCRUMBS ? JSON.stringify(HIDE_BREADCRUMBS).toLowerCase() : '"false"'},
+      BREADCRUMBS_NO_MARGIN_TOP: ${
+        BREADCRUMBS_NO_MARGIN_TOP ? JSON.stringify(BREADCRUMBS_NO_MARGIN_TOP).toLowerCase() : '"false"'
+      },
+      USE_NEW_NAVIGATION: ${USE_NEW_NAVIGATION ? JSON.stringify(USE_NEW_NAVIGATION).toLowerCase() : '"false"'},
       HIDE_INSIDE: ${HIDE_INSIDE ? JSON.stringify(HIDE_INSIDE).toLowerCase() : '"false"'},
       NAVIGATE_FROM_CLUSTERLIST: ${JSON.stringify(NAVIGATE_FROM_CLUSTERLIST) || '"check envs"'},
       PROJECTS_API_GROUP: ${JSON.stringify(PROJECTS_API_GROUP) || '"check envs"'},

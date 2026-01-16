@@ -17,9 +17,11 @@ import {
   TJSON,
   useSmartResourceParams,
   useManyK8sSmartResource,
+  useResourceScope,
 } from '@prorobotech/openapi-k8s-toolkit'
-import { FlexGrow, PaddingContainer } from 'components'
+import { FlexGrow, PaddingContainer, SelectorNamespaceNew, SelectorNamespaceProjectNew } from 'components'
 import { TABLE_PROPS } from 'constants/tableProps'
+import { BASE_USE_NAMESPACE_NAV } from 'constants/customizationApiGroupAndVersion'
 import {
   HEAD_FIRST_ROW,
   HEAD_SECOND_ROW,
@@ -65,6 +67,9 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
   const cluster = useSelector((state: RootState) => state.cluster.cluster)
   const theme = useSelector((state: RootState) => state.openapiTheme.theme)
   const baseprefix = useSelector((state: RootState) => state.baseprefix.baseprefix)
+
+  const possibleProject = params.syntheticProject && namespace ? params.syntheticProject : namespace
+  const possibleInstance = params.syntheticProject && namespace ? namespace : undefined
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<false | { name: string; endpoint: string }>(false)
   const [isDeleteModalManyOpen, setIsDeleteModalManyOpen] = useState<false | { name: string; endpoint: string }[]>(
@@ -121,6 +126,8 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
     limit,
   })
 
+  const { data: resourceScope } = useResourceScope({ plural, cluster, apiGroup, apiVersion })
+
   const moreResourcesParams = useSmartResourceParams({ cluster, namespace })
   const moreResources = useManyK8sSmartResource(moreResourcesParams.paramsList)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -157,9 +164,22 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
 
   return (
     <>
-      {isLoading && !dataItems && <Spin />}
-      {error && <Alert message={`An error has occurred: ${error} `} type="error" />}
       <OverflowContainer height={height} searchMount={searchMount}>
+        {BASE_USE_NAMESPACE_NAV === 'true' ? (
+          <SelectorNamespaceNew
+            cluster={cluster}
+            namespace={namespace}
+            disabled={resourceScope?.isNamespaceScoped === false}
+          />
+        ) : (
+          <SelectorNamespaceProjectNew
+            cluster={cluster}
+            projectName={params.projectName || possibleProject}
+            instanceName={params.instanceName || possibleInstance}
+          />
+        )}
+        {error && <Alert message={`An error has occurred: ${error} `} type="error" />}
+        {isLoading && !dataItems && <Spin />}
         {!error && dataItems && (
           <EnrichedTableProvider
             key={providerKey}

@@ -6,12 +6,12 @@ import { useMountEffect } from 'hooks/useMountEffect'
 import { EntrySelect } from 'components/atoms'
 import { SELECTOR_WIDTH_NAMESPACE } from 'constants/customizationApiGroupAndVersion'
 
-type TSelectorInsideProps = {
+type TSelectorNamespaceInsideProps = {
   cluster?: string
   namespace?: string
 }
 
-export const SelectorInside: FC<TSelectorInsideProps> = ({ cluster, namespace }) => {
+export const SelectorNamespaceInside: FC<TSelectorNamespaceInsideProps> = ({ cluster, namespace }) => {
   const navigate = useNavigate()
   const params = useParams()
 
