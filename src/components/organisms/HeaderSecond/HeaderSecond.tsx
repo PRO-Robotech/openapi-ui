@@ -4,7 +4,13 @@ import { useParams } from 'react-router-dom'
 import { HEAD_SECOND_ROW } from 'constants/blocksSizes'
 import { MF_PLUGINS_NO_CLUSTER, BASE_USE_NAMESPACE_NAV } from 'constants/customizationApiGroupAndVersion'
 import { PluginByManifest } from 'components/molecules'
-import { SelectorCluster, SelectorClusterInside, Selector, SelectorInside, SelectorNamespace } from './organisms'
+import {
+  SelectorCluster,
+  SelectorNamespace,
+  SelectorNamespaceProject,
+  SelectorClusterInside,
+  SelectorNamespaceInside,
+} from './organisms'
 import { Styled } from './styled'
 
 type THeaderProps = {
@@ -28,9 +34,9 @@ export const HeaderSecond: FC<THeaderProps> = ({ inside, isSearch }) => {
       <Styled.PaddingContainer $height={HEAD_SECOND_ROW}>
         <Flex gap={18}>
           {inside ? <SelectorClusterInside cluster={cluster} /> : <SelectorCluster cluster={cluster} />}
-          {inside && <SelectorInside cluster={cluster} namespace={namespace} />}
+          {inside && <SelectorNamespaceInside cluster={cluster} namespace={namespace} />}
           {!inside && !isSearch && BASE_USE_NAMESPACE_NAV !== 'true' && (
-            <Selector
+            <SelectorNamespaceProject
               cluster={cluster}
               projectName={projectName || possibleProject}
               instanceName={instanceName || possibleInstance}

@@ -14,13 +14,17 @@ import {
   SELECTOR_WIDTH_INSTANCE,
 } from 'constants/customizationApiGroupAndVersion'
 
-type TSelectorProps = {
+type TSelectorNamespaceProjectProps = {
   cluster?: string
   projectName?: string
   instanceName?: string
 }
 
-export const Selector: FC<TSelectorProps> = ({ cluster, projectName, instanceName }) => {
+export const SelectorNamespaceProject: FC<TSelectorNamespaceProjectProps> = ({
+  cluster,
+  projectName,
+  instanceName,
+}) => {
   const navigate = useNavigate()
 
   const [selectedCluster, setSelectedCluster] = useState(cluster)

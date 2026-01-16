@@ -47,6 +47,8 @@ const USE_NAMESPACE_NAV = process.env.LOCAL === 'true' ? options?.USE_NAMESPACE_
 
 const HIDE_NAVIGATION = process.env.LOCAL === 'true' ? options?.HIDE_NAVIGATION : process.env.HIDE_NAVIGATION
 
+const HIDE_BREADCRUMBS = process.env.LOCAL === 'true' ? options?.HIDE_BREADCRUMBS : process.env.HIDE_BREADCRUMBS
+
 const BREADCRUMBS_NO_MARGIN_TOP =
   process.env.LOCAL === 'true' ? options?.BREADCRUMBS_NO_MARGIN_TOP : process.env.BREADCRUMBS_NO_MARGIN_TOP
 
@@ -390,6 +392,7 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
       CUSTOMIZATION_SIDEBAR_FALLBACK_ID: ${JSON.stringify(CUSTOMIZATION_SIDEBAR_FALLBACK_ID) || '"check envs"'},
       USE_NAMESPACE_NAV: ${USE_NAMESPACE_NAV ? JSON.stringify(USE_NAMESPACE_NAV).toLowerCase() : '"false"'},
       HIDE_NAVIGATION: ${HIDE_NAVIGATION ? JSON.stringify(HIDE_NAVIGATION).toLowerCase() : '"false"'},
+      HIDE_BREADCRUMBS: ${HIDE_BREADCRUMBS ? JSON.stringify(HIDE_BREADCRUMBS).toLowerCase() : '"false"'},
       BREADCRUMBS_NO_MARGIN_TOP: ${
         BREADCRUMBS_NO_MARGIN_TOP ? JSON.stringify(BREADCRUMBS_NO_MARGIN_TOP).toLowerCase() : '"false"'
       },

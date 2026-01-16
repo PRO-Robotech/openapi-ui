@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
 import { ListInsideClusterAndNs, NavigationContainer } from 'components'
 import { BaseTemplate } from 'templates'
+import { BASE_HIDE_BREADCRUMBS } from 'constants/customizationApiGroupAndVersion'
 
 type TListInsideClustersAndNsPageProps = {
   inside?: boolean
@@ -27,9 +28,11 @@ export const ListInsideClustersAndNsPage: FC<TListInsideClustersAndNsPageProps> 
 
   return (
     <BaseTemplate inside={inside}>
-      <NavigationContainer>
-        <Breadcrumb items={breadcrumbItems} separator=">" />
-      </NavigationContainer>
+      {BASE_HIDE_BREADCRUMBS !== 'true' && (
+        <NavigationContainer>
+          <Breadcrumb items={breadcrumbItems} separator=">" />
+        </NavigationContainer>
+      )}
       <ContentCard flexGrow={1} displayFlex flexFlow="column">
         <ListInsideClusterAndNs />
       </ContentCard>
