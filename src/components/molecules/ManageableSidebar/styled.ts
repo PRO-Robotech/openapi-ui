@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { BASE_USE_NEW_NAVIGATION } from 'constants/customizationApiGroupAndVersion'
 
 type TContainerProps = {
   $isDark?: boolean
@@ -18,7 +19,7 @@ const Container = styled.div<TContainerProps>`
   direction: rtl;
   max-height: ${({ $maxHeight }) => $maxHeight || 'initial'};
   user-select: none;
-  border-top-right-radius: 7px;
+  border-top-right-radius: ${BASE_USE_NEW_NAVIGATION ? '0' : `7px`};
 
   & ul {
     direction: ltr;
