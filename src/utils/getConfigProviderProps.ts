@@ -57,9 +57,11 @@ const getDefaultComponentsSettings = ({
     defaultBg: colors?.colorPrimaryBg,
   },
   Segmented: {
-    trackBg: colors?.colorText,
-    itemColor: colors?.colorPrimaryBg,
-    itemHoverColor: colors?.colorPrimaryBg,
+    trackBg: colors?.colorBgLayout,
+    itemColor: colors?.colorText,
+    itemHoverColor: colors?.colorText,
+    itemSelectedBg: colors?.colorText,
+    itemSelectedColor: colors?.colorInfoBg,
     motionDurationSlow: '0.1s',
   },
 })
