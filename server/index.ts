@@ -18,11 +18,18 @@ if (process.env.LOCAL === 'true') {
 
 const KUBE_API_URL = process.env.LOCAL === 'true' ? options?.KUBE_API_URL : process.env.KUBE_API_URL
 
+const BFF_URL = process.env.LOCAL === 'true' ? options?.BFF_URL : process.env.BFF_URL
+
 const TITLE_TEXT = process.env.LOCAL === 'true' ? options?.TITLE_TEXT : process.env.TITLE_TEXT
 const LOGO_TEXT = process.env.LOCAL === 'true' ? options?.LOGO_TEXT : process.env.LOGO_TEXT
 const FOOTER_TEXT = process.env.LOCAL === 'true' ? options?.FOOTER_TEXT : process.env.FOOTER_TEXT
 const CUSTOM_LOGO_SVG = process.env.LOCAL === 'true' ? options?.CUSTOM_LOGO_SVG : process.env.CUSTOM_LOGO_SVG
 const CUSTOM_TENANT_TEXT = process.env.LOCAL === 'true' ? options?.CUSTOM_TENANT_TEXT : process.env.CUSTOM_TENANT_TEXT
+
+const LOGIN_URL = process.env.LOCAL === 'true' ? options?.LOGIN_URL : process.env.LOGIN_URL
+const LOGOUT_URL = process.env.LOCAL === 'true' ? options?.LOGOUT_URL : process.env.LOGOUT_URL
+const LOGIN_USERNAME_FIELD =
+  process.env.LOCAL === 'true' ? options?.LOGIN_USERNAME_FIELD : process.env.LOGIN_USERNAME_FIELD
 
 const CUSTOMIZATION_API_GROUP =
   process.env.LOCAL === 'true' ? options?.CUSTOMIZATION_API_GROUP : process.env.CUSTOMIZATION_API_GROUP
@@ -37,79 +44,6 @@ const CUSTOMIZATION_NAVIGATION_RESOURCE_NAME =
   process.env.LOCAL === 'true'
     ? options?.CUSTOMIZATION_NAVIGATION_RESOURCE_NAME
     : process.env.CUSTOMIZATION_NAVIGATION_RESOURCE_NAME
-
-const CUSTOMIZATION_SIDEBAR_FALLBACK_ID =
-  process.env.LOCAL === 'true'
-    ? options?.CUSTOMIZATION_SIDEBAR_FALLBACK_ID
-    : process.env.CUSTOMIZATION_SIDEBAR_FALLBACK_ID
-
-const USE_NAMESPACE_NAV = process.env.LOCAL === 'true' ? options?.USE_NAMESPACE_NAV : process.env.USE_NAMESPACE_NAV
-
-const HIDE_NAVIGATION = process.env.LOCAL === 'true' ? options?.HIDE_NAVIGATION : process.env.HIDE_NAVIGATION
-
-const HIDE_BREADCRUMBS = process.env.LOCAL === 'true' ? options?.HIDE_BREADCRUMBS : process.env.HIDE_BREADCRUMBS
-
-const BREADCRUMBS_NO_MARGIN_TOP =
-  process.env.LOCAL === 'true' ? options?.BREADCRUMBS_NO_MARGIN_TOP : process.env.BREADCRUMBS_NO_MARGIN_TOP
-
-const USE_NEW_NAVIGATION = process.env.LOCAL === 'true' ? options?.USE_NEW_NAVIGATION : process.env.USE_NEW_NAVIGATION
-
-const HIDE_INSIDE = process.env.LOCAL === 'true' ? options?.HIDE_INSIDE : process.env.HIDE_INSIDE
-
-const NAVIGATE_FROM_CLUSTERLIST =
-  process.env.LOCAL === 'true' ? options?.NAVIGATE_FROM_CLUSTERLIST : process.env.NAVIGATE_FROM_CLUSTERLIST
-
-const PROJECTS_API_GROUP = process.env.LOCAL === 'true' ? options?.PROJECTS_API_GROUP : process.env.PROJECTS_API_GROUP
-const PROJECTS_API_VERSION =
-  process.env.LOCAL === 'true' ? options?.PROJECTS_API_VERSION : process.env.PROJECTS_API_VERSION
-const PROJECTS_PLURAL = process.env.LOCAL === 'true' ? options?.PROJECTS_PLURAL : process.env.PROJECTS_PLURAL
-
-const MARKETPLACE_PLURAL = process.env.LOCAL === 'true' ? options?.MARKETPLACE_PLURAL : process.env.MARKETPLACE_PLURAL
-const MARKETPLACE_KIND = process.env.LOCAL === 'true' ? options?.MARKETPLACE_KIND : process.env.MARKETPLACE_KIND
-
-const INSTANCES_API_GROUP =
-  process.env.LOCAL === 'true' ? options?.INSTANCES_API_GROUP : process.env.INSTANCES_API_GROUP
-const INSTANCES_API_VERSION =
-  process.env.LOCAL === 'true' ? options?.INSTANCES_API_VERSION : process.env.INSTANCES_API_VERSION
-const INSTANCES_PLURAL = process.env.LOCAL === 'true' ? options?.INSTANCES_PLURAL : process.env.INSTANCES_PLURAL
-
-const BFF_URL = process.env.LOCAL === 'true' ? options?.BFF_URL : process.env.BFF_URL
-
-const NODE_TERMINAL_DEFAULT_PROFILE =
-  process.env.LOCAL === 'true' ? options?.NODE_TERMINAL_DEFAULT_PROFILE : process.env.NODE_TERMINAL_DEFAULT_PROFILE
-
-const LOGIN_URL = process.env.LOCAL === 'true' ? options?.LOGIN_URL : process.env.LOGIN_URL
-const LOGOUT_URL = process.env.LOCAL === 'true' ? options?.LOGOUT_URL : process.env.LOGOUT_URL
-const LOGIN_USERNAME_FIELD =
-  process.env.LOCAL === 'true' ? options?.LOGIN_USERNAME_FIELD : process.env.LOGIN_USERNAME_FIELD
-
-const REMOVE_BACKLINK = process.env.LOCAL === 'true' ? options?.REMOVE_BACKLINK : process.env.REMOVE_BACKLINK
-const REMOVE_BACKLINK_TEXT =
-  process.env.LOCAL === 'true' ? options?.REMOVE_BACKLINK_TEXT : process.env.REMOVE_BACKLINK_TEXT
-
-const DOCS_URL = process.env.LOCAL === 'true' ? options?.DOCS_URL : process.env.DOCS_URL
-
-const SEARCH_TABLE_CUSTOMIZATION_PREFIX =
-  process.env.LOCAL === 'true'
-    ? options?.SEARCH_TABLE_CUSTOMIZATION_PREFIX
-    : process.env.SEARCH_TABLE_CUSTOMIZATION_PREFIX
-
-const BASE_FACTORY_NAMESPACED_API_KEY =
-  process.env.LOCAL === 'true' ? options?.BASE_FACTORY_NAMESPACED_API_KEY : process.env.BASE_FACTORY_NAMESPACED_API_KEY
-const BASE_FACTORY_CLUSTERSCOPED_API_KEY =
-  process.env.LOCAL === 'true'
-    ? options?.BASE_FACTORY_CLUSTERSCOPED_API_KEY
-    : process.env.BASE_FACTORY_CLUSTERSCOPED_API_KEY
-const BASE_FACTORY_NAMESPACED_BUILTIN_KEY =
-  process.env.LOCAL === 'true'
-    ? options?.BASE_FACTORY_NAMESPACED_BUILTIN_KEY
-    : process.env.BASE_FACTORY_NAMESPACED_BUILTIN_KEY
-const BASE_FACTORY_CLUSTERSCOPED_BUILTIN_KEY =
-  process.env.LOCAL === 'true'
-    ? options?.BASE_FACTORY_CLUSTERSCOPED_BUILTIN_KEY
-    : process.env.BASE_FACTORY_CLUSTERSCOPED_BUILTIN_KEY
-const BASE_NAMESPACE_FACTORY_KEY =
-  process.env.LOCAL === 'true' ? options?.BASE_NAMESPACE_FACTORY_KEY : process.env.BASE_NAMESPACE_FACTORY_KEY
 
 const CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP =
   process.env.LOCAL === 'true'
@@ -132,6 +66,74 @@ const SELECTOR_WIDTH_PROJECT =
   process.env.LOCAL === 'true' ? options?.SELECTOR_WIDTH_PROJECT : process.env.SELECTOR_WIDTH_PROJECT
 const SELECTOR_WIDTH_INSTANCE =
   process.env.LOCAL === 'true' ? options?.SELECTOR_WIDTH_INSTANCE : process.env.SELECTOR_WIDTH_INSTANCE
+
+const CUSTOMIZATION_SIDEBAR_FALLBACK_ID =
+  process.env.LOCAL === 'true'
+    ? options?.CUSTOMIZATION_SIDEBAR_FALLBACK_ID
+    : process.env.CUSTOMIZATION_SIDEBAR_FALLBACK_ID
+
+const USE_NAMESPACE_NAV = process.env.LOCAL === 'true' ? options?.USE_NAMESPACE_NAV : process.env.USE_NAMESPACE_NAV
+
+const HIDE_NAVIGATION = process.env.LOCAL === 'true' ? options?.HIDE_NAVIGATION : process.env.HIDE_NAVIGATION
+
+const HIDE_BREADCRUMBS = process.env.LOCAL === 'true' ? options?.HIDE_BREADCRUMBS : process.env.HIDE_BREADCRUMBS
+
+const BREADCRUMBS_NO_MARGIN_TOP =
+  process.env.LOCAL === 'true' ? options?.BREADCRUMBS_NO_MARGIN_TOP : process.env.BREADCRUMBS_NO_MARGIN_TOP
+
+const USE_NEW_NAVIGATION = process.env.LOCAL === 'true' ? options?.USE_NEW_NAVIGATION : process.env.USE_NEW_NAVIGATION
+
+const HIDE_INSIDE = process.env.LOCAL === 'true' ? options?.HIDE_INSIDE : process.env.HIDE_INSIDE
+
+const HIDE_FOOTER = process.env.LOCAL === 'true' ? options?.HIDE_FOOTER : process.env.HIDE_FOOTER
+
+const NAVIGATE_FROM_CLUSTERLIST =
+  process.env.LOCAL === 'true' ? options?.NAVIGATE_FROM_CLUSTERLIST : process.env.NAVIGATE_FROM_CLUSTERLIST
+
+const PROJECTS_API_GROUP = process.env.LOCAL === 'true' ? options?.PROJECTS_API_GROUP : process.env.PROJECTS_API_GROUP
+const PROJECTS_API_VERSION =
+  process.env.LOCAL === 'true' ? options?.PROJECTS_API_VERSION : process.env.PROJECTS_API_VERSION
+const PROJECTS_PLURAL = process.env.LOCAL === 'true' ? options?.PROJECTS_PLURAL : process.env.PROJECTS_PLURAL
+
+const MARKETPLACE_PLURAL = process.env.LOCAL === 'true' ? options?.MARKETPLACE_PLURAL : process.env.MARKETPLACE_PLURAL
+const MARKETPLACE_KIND = process.env.LOCAL === 'true' ? options?.MARKETPLACE_KIND : process.env.MARKETPLACE_KIND
+
+const INSTANCES_API_GROUP =
+  process.env.LOCAL === 'true' ? options?.INSTANCES_API_GROUP : process.env.INSTANCES_API_GROUP
+const INSTANCES_API_VERSION =
+  process.env.LOCAL === 'true' ? options?.INSTANCES_API_VERSION : process.env.INSTANCES_API_VERSION
+const INSTANCES_PLURAL = process.env.LOCAL === 'true' ? options?.INSTANCES_PLURAL : process.env.INSTANCES_PLURAL
+
+const NODE_TERMINAL_DEFAULT_PROFILE =
+  process.env.LOCAL === 'true' ? options?.NODE_TERMINAL_DEFAULT_PROFILE : process.env.NODE_TERMINAL_DEFAULT_PROFILE
+
+const DOCS_URL = process.env.LOCAL === 'true' ? options?.DOCS_URL : process.env.DOCS_URL
+
+const SEARCH_TABLE_CUSTOMIZATION_PREFIX =
+  process.env.LOCAL === 'true'
+    ? options?.SEARCH_TABLE_CUSTOMIZATION_PREFIX
+    : process.env.SEARCH_TABLE_CUSTOMIZATION_PREFIX
+
+const REMOVE_BACKLINK = process.env.LOCAL === 'true' ? options?.REMOVE_BACKLINK : process.env.REMOVE_BACKLINK
+const REMOVE_BACKLINK_TEXT =
+  process.env.LOCAL === 'true' ? options?.REMOVE_BACKLINK_TEXT : process.env.REMOVE_BACKLINK_TEXT
+
+const BASE_FACTORY_NAMESPACED_API_KEY =
+  process.env.LOCAL === 'true' ? options?.BASE_FACTORY_NAMESPACED_API_KEY : process.env.BASE_FACTORY_NAMESPACED_API_KEY
+const BASE_FACTORY_CLUSTERSCOPED_API_KEY =
+  process.env.LOCAL === 'true'
+    ? options?.BASE_FACTORY_CLUSTERSCOPED_API_KEY
+    : process.env.BASE_FACTORY_CLUSTERSCOPED_API_KEY
+const BASE_FACTORY_NAMESPACED_BUILTIN_KEY =
+  process.env.LOCAL === 'true'
+    ? options?.BASE_FACTORY_NAMESPACED_BUILTIN_KEY
+    : process.env.BASE_FACTORY_NAMESPACED_BUILTIN_KEY
+const BASE_FACTORY_CLUSTERSCOPED_BUILTIN_KEY =
+  process.env.LOCAL === 'true'
+    ? options?.BASE_FACTORY_CLUSTERSCOPED_BUILTIN_KEY
+    : process.env.BASE_FACTORY_CLUSTERSCOPED_BUILTIN_KEY
+const BASE_NAMESPACE_FACTORY_KEY =
+  process.env.LOCAL === 'true' ? options?.BASE_NAMESPACE_FACTORY_KEY : process.env.BASE_NAMESPACE_FACTORY_KEY
 
 const MF_PLUGINS_NO_CLUSTER =
   process.env.LOCAL === 'true' ? options?.MF_PLUGINS_NO_CLUSTER : process.env.MF_PLUGINS_NO_CLUSTER
@@ -360,8 +362,11 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
       TITLE_TEXT: ${JSON.stringify(TITLE_TEXT) || '"check envs"'},
       LOGO_TEXT: ${LOGO_TEXT !== undefined ? JSON.stringify(LOGO_TEXT) : '"check envs"'},
       FOOTER_TEXT: ${JSON.stringify(FOOTER_TEXT) || '"check envs"'},
-      ${CUSTOM_LOGO_SVG ? `  CUSTOM_LOGO_SVG: "${CUSTOM_LOGO_SVG}",` : ''}
-      ${CUSTOM_TENANT_TEXT ? `  CUSTOM_TENANT_TEXT: "${CUSTOM_TENANT_TEXT}",` : ''}
+      ${CUSTOM_LOGO_SVG ? `CUSTOM_LOGO_SVG: "${CUSTOM_LOGO_SVG}",` : ''}
+      ${CUSTOM_TENANT_TEXT ? `CUSTOM_TENANT_TEXT: "${CUSTOM_TENANT_TEXT}",` : ''}
+      LOGIN_URL: ${JSON.stringify(LOGIN_URL) || '"check envs"'},
+      LOGOUT_URL: ${JSON.stringify(LOGOUT_URL) || '"check envs"'},
+      LOGIN_USERNAME_FIELD: ${JSON.stringify(LOGIN_USERNAME_FIELD) || '"check envs"'},
       CUSTOMIZATION_API_GROUP: ${JSON.stringify(CUSTOMIZATION_API_GROUP) || '"check envs"'},
       CUSTOMIZATION_API_VERSION: ${JSON.stringify(CUSTOMIZATION_API_VERSION) || '"check envs"'},
       CUSTOMIZATION_NAVIGATION_RESOURCE_PLURAL: ${
@@ -372,23 +377,23 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
       },
       ${
         CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP
-          ? `  CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP: "${CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP}",`
+          ? `CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP: "${CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP}",`
           : ''
       }
       ${
         CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION
-          ? `  CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION: "${CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION}",`
+          ? `CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION: "${CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION}",`
           : ''
       }
       ${
         CUSTOM_NAMESPACE_API_RESOURCE_PLURAL
-          ? `  CUSTOM_NAMESPACE_API_RESOURCE_PLURAL: "${CUSTOM_NAMESPACE_API_RESOURCE_PLURAL}",`
+          ? `CUSTOM_NAMESPACE_API_RESOURCE_PLURAL: "${CUSTOM_NAMESPACE_API_RESOURCE_PLURAL}",`
           : ''
       }
-      ${SELECTOR_WIDTH_CLUSTER ? `  SELECTOR_WIDTH_CLUSTER: "${SELECTOR_WIDTH_CLUSTER}",` : ''}
-      ${SELECTOR_WIDTH_NAMESPACE ? `  SELECTOR_WIDTH_NAMESPACE: "${SELECTOR_WIDTH_NAMESPACE}",` : ''}
-      ${SELECTOR_WIDTH_PROJECT ? `  SELECTOR_WIDTH_PROJECT: "${SELECTOR_WIDTH_PROJECT}",` : ''}
-      ${SELECTOR_WIDTH_INSTANCE ? `  SELECTOR_WIDTH_INSTANCE: "${SELECTOR_WIDTH_INSTANCE}",` : ''}
+      ${SELECTOR_WIDTH_CLUSTER ? `SELECTOR_WIDTH_CLUSTER: "${SELECTOR_WIDTH_CLUSTER}",` : ''}
+      ${SELECTOR_WIDTH_NAMESPACE ? `SELECTOR_WIDTH_NAMESPACE: "${SELECTOR_WIDTH_NAMESPACE}",` : ''}
+      ${SELECTOR_WIDTH_PROJECT ? `SELECTOR_WIDTH_PROJECT: "${SELECTOR_WIDTH_PROJECT}",` : ''}
+      ${SELECTOR_WIDTH_INSTANCE ? `SELECTOR_WIDTH_INSTANCE: "${SELECTOR_WIDTH_INSTANCE}",` : ''}
       CUSTOMIZATION_SIDEBAR_FALLBACK_ID: ${JSON.stringify(CUSTOMIZATION_SIDEBAR_FALLBACK_ID) || '"check envs"'},
       USE_NAMESPACE_NAV: ${USE_NAMESPACE_NAV ? JSON.stringify(USE_NAMESPACE_NAV).toLowerCase() : '"false"'},
       HIDE_NAVIGATION: ${HIDE_NAVIGATION ? JSON.stringify(HIDE_NAVIGATION).toLowerCase() : '"false"'},
@@ -398,6 +403,7 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
       },
       USE_NEW_NAVIGATION: ${USE_NEW_NAVIGATION ? JSON.stringify(USE_NEW_NAVIGATION).toLowerCase() : '"false"'},
       HIDE_INSIDE: ${HIDE_INSIDE ? JSON.stringify(HIDE_INSIDE).toLowerCase() : '"false"'},
+      HIDE_FOOTER: ${HIDE_FOOTER ? JSON.stringify(HIDE_FOOTER).toLowerCase() : '"false"'},
       NAVIGATE_FROM_CLUSTERLIST: ${JSON.stringify(NAVIGATE_FROM_CLUSTERLIST) || '"check envs"'},
       PROJECTS_API_GROUP: ${JSON.stringify(PROJECTS_API_GROUP) || '"check envs"'},
       PROJECTS_API_VERSION: ${JSON.stringify(PROJECTS_API_VERSION) || '"check envs"'},
@@ -408,9 +414,6 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
       INSTANCES_API_VERSION: ${JSON.stringify(INSTANCES_API_VERSION) || '"check envs"'},
       INSTANCES_PLURAL: ${JSON.stringify(INSTANCES_PLURAL) || '"check envs"'},
       NODE_TERMINAL_DEFAULT_PROFILE: ${JSON.stringify(NODE_TERMINAL_DEFAULT_PROFILE) || '"general"'},
-      LOGIN_URL: ${JSON.stringify(LOGIN_URL) || '"check envs"'},
-      LOGOUT_URL: ${JSON.stringify(LOGOUT_URL) || '"check envs"'},
-      LOGIN_USERNAME_FIELD: ${JSON.stringify(LOGIN_USERNAME_FIELD) || '"check envs"'},
       DOCS_URL: ${JSON.stringify(DOCS_URL) || '"/docs"'},
       SEARCH_TABLE_CUSTOMIZATION_PREFIX: ${JSON.stringify(SEARCH_TABLE_CUSTOMIZATION_PREFIX) || '"search-"'},
       REMOVE_BACKLINK: ${!!REMOVE_BACKLINK ? JSON.stringify(REMOVE_BACKLINK).toLowerCase() : '"false"'},

@@ -7,7 +7,7 @@ export const NavigationContainer = styled.div`
   justify-content: start;
   align-items: center;
   gap: 18px;
-  height: ${BASE_BREADCRUMBS_NO_MARGIN_TOP ? 'auto' : `${NAV_HEIGHT}px`};
-  min-height: ${BASE_BREADCRUMBS_NO_MARGIN_TOP ? 'auto' : `${NAV_HEIGHT}px`};
-  margin-bottom: ${BASE_BREADCRUMBS_NO_MARGIN_TOP ? '10px' : 'auto'};
+  height: ${BASE_BREADCRUMBS_NO_MARGIN_TOP === 'true' ? 'auto' : `${NAV_HEIGHT}px`};
+  min-height: ${BASE_BREADCRUMBS_NO_MARGIN_TOP === 'true' ? 'auto' : `${NAV_HEIGHT}px`};
+  margin-bottom: ${BASE_BREADCRUMBS_NO_MARGIN_TOP === 'true' ? '10px' : 'auto'};
 `
