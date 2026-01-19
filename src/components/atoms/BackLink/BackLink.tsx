@@ -12,6 +12,7 @@ type TBackLinkProps = {
 }
 
 export const BackLink: FC<TBackLinkProps> = ({ to, title }) => {
+  // already prepared in constants
   if (BASE_REMOVE_BACKLINK && BASE_REMOVE_BACKLINK_TEXT) {
     return null
   }

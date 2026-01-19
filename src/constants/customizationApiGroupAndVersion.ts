@@ -20,6 +20,16 @@ export const CUSTOM_TENANT_TEXT = import.meta.env.DEV
   ? window._env_.CUSTOM_TENANT_TEXT || import.meta.env.VITE_CUSTOM_TENANT_TEXT
   : window._env_.CUSTOM_TENANT_TEXT
 
+export const LOGIN_URL = import.meta.env.DEV
+  ? window._env_.LOGIN_URL || import.meta.env.VITE_LOGIN_URL
+  : window._env_.LOGIN_URL
+export const LOGOUT_URL = import.meta.env.DEV
+  ? window._env_.LOGOUT_URL || import.meta.env.VITE_LOGOUT_URL
+  : window._env_.LOGOUT_URL
+export const LOGIN_USERNAME_FIELD = import.meta.env.DEV
+  ? window._env_.LOGIN_USERNAME_FIELD || import.meta.env.VITE_LOGIN_USERNAME_FIELD
+  : window._env_.LOGIN_USERNAME_FIELD
+
 export const BASE_API_GROUP = import.meta.env.DEV
   ? window._env_.CUSTOMIZATION_API_GROUP || import.meta.env.VITE_CUSTOMIZATION_API_GROUP
   : window._env_.CUSTOMIZATION_API_GROUP
@@ -34,6 +44,30 @@ export const BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_PLURAL = import.meta.env.DEV
 export const BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME = import.meta.env.DEV
   ? window._env_.CUSTOMIZATION_NAVIGATION_RESOURCE_NAME || import.meta.env.VITE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME
   : window._env_.CUSTOMIZATION_NAVIGATION_RESOURCE_NAME
+
+export const CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP: string | undefined = import.meta.env.DEV
+  ? window._env_.CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP || import.meta.env.VITE_CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP
+  : window._env_.CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP
+export const CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION = import.meta.env.DEV
+  ? window._env_.CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION ||
+    import.meta.env.VITE_CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION
+  : window._env_.CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION
+export const CUSTOM_NAMESPACE_API_RESOURCE_PLURAL = import.meta.env.DEV
+  ? window._env_.CUSTOM_NAMESPACE_API_RESOURCE_PLURAL || import.meta.env.VITE_CUSTOM_NAMESPACE_API_RESOURCE_PLURAL
+  : window._env_.CUSTOM_NAMESPACE_API_RESOURCE_PLURAL
+
+export const SELECTOR_WIDTH_CLUSTER = import.meta.env.DEV
+  ? window._env_.SELECTOR_WIDTH_CLUSTER || import.meta.env.VITE_SELECTOR_WIDTH_CLUSTER
+  : window._env_.SELECTOR_WIDTH_CLUSTER
+export const SELECTOR_WIDTH_NAMESPACE = import.meta.env.DEV
+  ? window._env_.SELECTOR_WIDTH_NAMESPACE || import.meta.env.VITE_SELECTOR_WIDTH_NAMESPACE
+  : window._env_.SELECTOR_WIDTH_NAMESPACE
+export const SELECTOR_WIDTH_PROJECT = import.meta.env.DEV
+  ? window._env_.SELECTOR_WIDTH_PROJECT || import.meta.env.VITE_SELECTOR_WIDTH_PROJECT
+  : window._env_.SELECTOR_WIDTH_PROJECT
+export const SELECTOR_WIDTH_INSTANCE = import.meta.env.DEV
+  ? window._env_.SELECTOR_WIDTH_INSTANCE || import.meta.env.VITE_SELECTOR_WIDTH_INSTANCE
+  : window._env_.SELECTOR_WIDTH_INSTANCE
 
 export const CUSTOMIZATION_SIDEBAR_FALLBACK_ID = import.meta.env.DEV
   ? window._env_.CUSTOMIZATION_SIDEBAR_FALLBACK_ID || import.meta.env.VITE_CUSTOMIZATION_SIDEBAR_FALLBACK_ID
@@ -102,16 +136,6 @@ export const NODE_TERMINAL_DEFAULT_PROFILE = import.meta.env.DEV
   ? window._env_.NODE_TERMINAL_DEFAULT_PROFILE || import.meta.env.VITE_NODE_TERMINAL_DEFAULT_PROFILE
   : window._env_.NODE_TERMINAL_DEFAULT_PROFILE
 
-export const LOGIN_URL = import.meta.env.DEV
-  ? window._env_.LOGIN_URL || import.meta.env.VITE_LOGIN_URL
-  : window._env_.LOGIN_URL
-export const LOGOUT_URL = import.meta.env.DEV
-  ? window._env_.LOGOUT_URL || import.meta.env.VITE_LOGOUT_URL
-  : window._env_.LOGOUT_URL
-export const LOGIN_USERNAME_FIELD = import.meta.env.DEV
-  ? window._env_.LOGIN_USERNAME_FIELD || import.meta.env.VITE_LOGIN_USERNAME_FIELD
-  : window._env_.LOGIN_USERNAME_FIELD
-
 export const DOCS_URL = import.meta.env.DEV
   ? window._env_.DOCS_URL || import.meta.env.VITE_DOCS_URL
   : window._env_.DOCS_URL
@@ -120,6 +144,7 @@ export const SEARCH_TABLE_CUSTOMIZATION_PREFIX = import.meta.env.DEV
   ? window._env_.SEARCH_TABLE_CUSTOMIZATION_PREFIX || import.meta.env.VITE_SEARCH_TABLE_CUSTOMIZATION_PREFIX
   : window._env_.SEARCH_TABLE_CUSTOMIZATION_PREFIX
 
+// preprepared
 export const BASE_REMOVE_BACKLINK = import.meta.env.DEV
   ? window._env_.REMOVE_BACKLINK === 'true' || import.meta.env.VITE_REMOVE_BACKLINK?.toString().toLowerCase() === 'true'
   : window._env_.REMOVE_BACKLINK === 'true'
@@ -143,30 +168,6 @@ export const BASE_FACTORY_CLUSTERSCOPED_BUILTIN_KEY = import.meta.env.DEV
 export const BASE_NAMESPACE_FACTORY_KEY = import.meta.env.DEV
   ? window._env_.BASE_NAMESPACE_FACTORY_KEY || import.meta.env.VITE_BASE_NAMESPACE_FACTORY_KEY
   : window._env_.BASE_NAMESPACE_FACTORY_KEY
-
-export const CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP: string | undefined = import.meta.env.DEV
-  ? window._env_.CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP || import.meta.env.VITE_CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP
-  : window._env_.CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP
-export const CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION = import.meta.env.DEV
-  ? window._env_.CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION ||
-    import.meta.env.VITE_CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION
-  : window._env_.CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION
-export const CUSTOM_NAMESPACE_API_RESOURCE_PLURAL = import.meta.env.DEV
-  ? window._env_.CUSTOM_NAMESPACE_API_RESOURCE_PLURAL || import.meta.env.VITE_CUSTOM_NAMESPACE_API_RESOURCE_PLURAL
-  : window._env_.CUSTOM_NAMESPACE_API_RESOURCE_PLURAL
-
-export const SELECTOR_WIDTH_CLUSTER = import.meta.env.DEV
-  ? window._env_.SELECTOR_WIDTH_CLUSTER || import.meta.env.VITE_SELECTOR_WIDTH_CLUSTER
-  : window._env_.SELECTOR_WIDTH_CLUSTER
-export const SELECTOR_WIDTH_NAMESPACE = import.meta.env.DEV
-  ? window._env_.SELECTOR_WIDTH_NAMESPACE || import.meta.env.VITE_SELECTOR_WIDTH_NAMESPACE
-  : window._env_.SELECTOR_WIDTH_NAMESPACE
-export const SELECTOR_WIDTH_PROJECT = import.meta.env.DEV
-  ? window._env_.SELECTOR_WIDTH_PROJECT || import.meta.env.VITE_SELECTOR_WIDTH_PROJECT
-  : window._env_.SELECTOR_WIDTH_PROJECT
-export const SELECTOR_WIDTH_INSTANCE = import.meta.env.DEV
-  ? window._env_.SELECTOR_WIDTH_INSTANCE || import.meta.env.VITE_SELECTOR_WIDTH_INSTANCE
-  : window._env_.SELECTOR_WIDTH_INSTANCE
 
 export const MF_PLUGINS_NO_CLUSTER = import.meta.env.DEV
   ? window._env_.MF_PLUGINS_NO_CLUSTER || import.meta.env.VITE_MF_PLUGINS_NO_CLUSTER
