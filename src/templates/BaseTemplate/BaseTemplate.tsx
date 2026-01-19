@@ -3,7 +3,7 @@ import { Col } from 'antd'
 import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
 import { DefaultLayout, HeaderSecond, Footer, Sidebar, RowFlexGrow, FlexCol } from 'components'
-import { BASE_HIDE_NAVIGATION } from 'constants/customizationApiGroupAndVersion'
+import { BASE_HIDE_NAVIGATION, BASE_HIDE_FOOTER } from 'constants/customizationApiGroupAndVersion'
 
 type TBaseTemplateProps = {
   children?: ReactNode | undefined
@@ -25,7 +25,7 @@ export const BaseTemplate: FC<TBaseTemplateProps> = ({ children, inside, isSearc
           {BASE_HIDE_NAVIGATION !== 'true' && <HeaderSecond inside={inside} isSearch={isSearch} />}
           {children}
         </DefaultLayout.ContentPadding>
-        <Footer />
+        {BASE_HIDE_FOOTER !== 'true' && <Footer />}
       </FlexCol>
     </RowFlexGrow>
   )

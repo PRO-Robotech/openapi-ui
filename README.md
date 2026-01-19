@@ -34,6 +34,7 @@ This app can be configured through environment variables.
 | `BREADCRUMBS_NO_MARGIN_TOP`                 | `boolean` | Breadcrumbs with no margin-top.                                                         |
 | `USE_NEW_NAVIGATION`                        | `boolean` | Cluster selector in sidebar. NS selector where it needs to be.                          |
 | `HIDE_INSIDE`                               | `boolean` | Use namespaces instead of project/instances. `true`                                     |
+| `HIDE_FOOTER`                               | `boolean` | Hide footer container.                                                                  |
 | `NAVIGATE_FROM_CLUSTERLIST`                 | `string`  | Location to be navigated after selecting cluster. `/openapi-ui/clusters/~recordValue~`  |
 | `PROJECTS_API_GROUP`                        | `string`  | API group for projects resources. If not using namespace nav.                           |
 | `PROJECTS_API_VERSION`                      | `string`  | API version for projects resources. If not using namespace nav.                         |

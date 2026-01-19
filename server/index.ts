@@ -56,6 +56,8 @@ const USE_NEW_NAVIGATION = process.env.LOCAL === 'true' ? options?.USE_NEW_NAVIG
 
 const HIDE_INSIDE = process.env.LOCAL === 'true' ? options?.HIDE_INSIDE : process.env.HIDE_INSIDE
 
+const HIDE_FOOTER = process.env.LOCAL === 'true' ? options?.HIDE_FOOTER : process.env.HIDE_FOOTER
+
 const NAVIGATE_FROM_CLUSTERLIST =
   process.env.LOCAL === 'true' ? options?.NAVIGATE_FROM_CLUSTERLIST : process.env.NAVIGATE_FROM_CLUSTERLIST
 
@@ -398,6 +400,7 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
       },
       USE_NEW_NAVIGATION: ${USE_NEW_NAVIGATION ? JSON.stringify(USE_NEW_NAVIGATION).toLowerCase() : '"false"'},
       HIDE_INSIDE: ${HIDE_INSIDE ? JSON.stringify(HIDE_INSIDE).toLowerCase() : '"false"'},
+      HIDE_FOOTER: ${HIDE_FOOTER ? JSON.stringify(HIDE_FOOTER).toLowerCase() : '"false"'},
       NAVIGATE_FROM_CLUSTERLIST: ${JSON.stringify(NAVIGATE_FROM_CLUSTERLIST) || '"check envs"'},
       PROJECTS_API_GROUP: ${JSON.stringify(PROJECTS_API_GROUP) || '"check envs"'},
       PROJECTS_API_VERSION: ${JSON.stringify(PROJECTS_API_VERSION) || '"check envs"'},

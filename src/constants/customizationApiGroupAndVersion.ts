@@ -63,6 +63,10 @@ export const BASE_HIDE_INSIDE = import.meta.env.DEV
   ? window._env_.HIDE_INSIDE || import.meta.env.VITE_HIDE_INSIDE
   : window._env_.HIDE_INSIDE
 
+export const BASE_HIDE_FOOTER = import.meta.env.DEV
+  ? window._env_.HIDE_FOOTER || import.meta.env.VITE_HIDE_FOOTER
+  : window._env_.HIDE_FOOTER
+
 export const BASE_NAVIGATE_FROM_CLUSTERLIST = import.meta.env.DEV
   ? window._env_.NAVIGATE_FROM_CLUSTERLIST || import.meta.env.VITE_NAVIGATE_FROM_CLUSTERLIST
   : window._env_.NAVIGATE_FROM_CLUSTERLIST
