@@ -1,10 +1,9 @@
 import React, { FC } from 'react'
 import { Breadcrumb, theme as antdtheme } from 'antd'
-import { ContentCard } from '@prorobotech/openapi-k8s-toolkit'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
-import { ListClusters, NavigationContainer } from 'components'
+import { ContentCardMain, ListClusters, NavigationContainer } from 'components'
 import { BaseTemplate } from 'templates'
 import { BASE_HIDE_BREADCRUMBS } from 'constants/customizationApiGroupAndVersion'
 
@@ -30,9 +29,9 @@ export const ListClustersPage: FC = () => {
           <Breadcrumb items={breadcrumbItems} separator=">" />
         </NavigationContainer>
       )}
-      <ContentCard flexGrow={1} displayFlex flexFlow="column">
+      <ContentCardMain>
         <ListClusters />
-      </ContentCard>
+      </ContentCardMain>
     </BaseTemplate>
   )
 }

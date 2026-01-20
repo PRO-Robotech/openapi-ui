@@ -26,10 +26,10 @@ import {
   SelectorNamespaceNew,
   SelectorNamespaceProjectNew,
   MainContentFixedTop,
+  MainContentFixedBottom,
 } from 'components'
 import { TABLE_PROPS } from 'constants/tableProps'
 import { BASE_USE_NAMESPACE_NAV } from 'constants/customizationApiGroupAndVersion'
-import { MainContentFixedBottom } from 'components/atoms/MainContentFixedBottom/MainContentFixedBottom'
 // import {
 //   HEAD_FIRST_ROW,
 //   HEAD_SECOND_ROW,
@@ -252,8 +252,7 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
       {/* </OverflowContainer> */}
       {/* {searchMount ? <Spacer $space={12} $samespace /> : <FlexGrow />} */}
       <Spacer $space={12} $samespace />
-      <Spacer $space={36} $samespace />
-      <MainContentFixedBottom>
+      {searchMount ? (
         <PaddingContainer $padding="4px">
           <Flex justify="space-between">
             <div>
@@ -297,7 +296,56 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
             </div>
           </Flex>
         </PaddingContainer>
-      </MainContentFixedBottom>
+      ) : (
+        <>
+          <Spacer $space={36} $samespace />
+          <MainContentFixedBottom>
+            <PaddingContainer $padding="4px">
+              <Flex justify="space-between">
+                <div>
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      const url = getLinkToForm({
+                        cluster,
+                        baseprefix,
+                        namespace,
+                        syntheticProject: params.syntheticProject,
+                        apiGroup,
+                        apiVersion,
+                        plural,
+                        inside,
+                        fullPath,
+                        searchMount,
+                      })
+                      navigate(url)
+                    }}
+                    loading={createPermission.isPending}
+                    disabled={!createPermission.data?.status.allowed}
+                  >
+                    <PlusOutlined />
+                    Add {kindName}
+                  </Button>
+                </div>
+                <div>
+                  {selectedRowKeys.length > 0 && (
+                    <Flex gap={16}>
+                      <Button type="primary" onClick={clearSelected}>
+                        <ClearOutlined />
+                        Clear
+                      </Button>
+                      <Button type="primary" onClick={() => setIsDeleteModalManyOpen(selectedRowsData)}>
+                        <MinusOutlined />
+                        Delete
+                      </Button>
+                    </Flex>
+                  )}
+                </div>
+              </Flex>
+            </PaddingContainer>
+          </MainContentFixedBottom>
+        </>
+      )}
       {isDeleteModalOpen && (
         <DeleteModal
           name={isDeleteModalOpen.name}

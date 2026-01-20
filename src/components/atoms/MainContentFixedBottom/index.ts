@@ -1,1 +1,1 @@
-export * from './MainContentFixedTop'
+export * from './MainContentFixedBottom'

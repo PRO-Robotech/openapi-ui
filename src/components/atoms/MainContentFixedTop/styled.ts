@@ -10,7 +10,7 @@ const Container = styled.div<TContainerProps>`
   top: ${HEAD_FIRST_ROW + NAV_HEIGHT + 24}px;
   z-index: 5;
   background: ${({ $bgColor }) => $bgColor};
-  width: calc(100vw - ${SIDEBAR_WIDTH + MAIN_CONTENT_HORIZONTAL_PADDING * 2 + 48}px);
+  width: calc(100% - ${SIDEBAR_WIDTH + MAIN_CONTENT_HORIZONTAL_PADDING * 2 + 48}px);
 `
 
 export const Styled = {

@@ -1,7 +1,6 @@
 import React, { FC, useEffect } from 'react'
-import { ContentCard } from '@prorobotech/openapi-k8s-toolkit'
 import { useOutletContext } from 'react-router-dom'
-import { Search } from 'components'
+import { ContentCardMain, Search } from 'components'
 import { TChromeCtx } from 'templates'
 
 export const SearchPage: FC = () => {
@@ -25,8 +24,8 @@ export const SearchPage: FC = () => {
   }, [setSidebarSuffix, setBreadcrumbsSuffix, setCurrentTags, setUseOnlyNamespace, setBaseTemplateSearchBoolean])
 
   return (
-    <ContentCard flexGrow={1} displayFlex flexFlow="column">
+    <ContentCardMain>
       <Search />
-    </ContentCard>
+    </ContentCardMain>
   )
 }
