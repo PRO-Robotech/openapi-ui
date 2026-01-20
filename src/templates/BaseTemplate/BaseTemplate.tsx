@@ -14,13 +14,11 @@ export const BaseTemplate: FC<TBaseTemplateProps> = ({ children, inside, isSearc
   return (
     <>
       <Sidebar sidebar={sidebar} />
+      {BASE_HIDE_NAVIGATION !== 'true' && <HeaderSecond inside={inside} isSearch={isSearch} />}
       <Styled.Container>
-        <Styled.MainContent>
-          {BASE_HIDE_NAVIGATION !== 'true' && <HeaderSecond inside={inside} isSearch={isSearch} />}
-          {children}
-        </Styled.MainContent>
-        {BASE_HIDE_FOOTER !== 'true' && <Footer />}
+        <Styled.MainContent>{children}</Styled.MainContent>
       </Styled.Container>
+      {BASE_HIDE_FOOTER !== 'true' && <Footer />}
     </>
   )
 }

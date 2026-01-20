@@ -1,1 +1,0 @@
-export { TableCrdPage } from './TableCrdPage'

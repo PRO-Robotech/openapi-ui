@@ -25,8 +25,6 @@ import {
   PaddingContainer,
   SelectorNamespaceNew,
   SelectorNamespaceProjectNew,
-  StickyOnBottom,
-  StickyOnTop,
 } from 'components'
 import { TABLE_PROPS } from 'constants/tableProps'
 import { BASE_USE_NAMESPACE_NAV } from 'constants/customizationApiGroupAndVersion'
@@ -175,29 +173,19 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
       {/* <OverflowContainer height={height} searchMount={searchMount}> */}
       {!searchMount && (
         <>
-          <StickyOnTop
-            offsetTop={75}
-            fixedStyle={{
-              background: theme === 'dark' ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.8)',
-              boxShadow: `1px 2px 6px ${theme === 'dark' ? '#00000030' : '#FFFFFF70'}`,
-              padding: '10px',
-              borderRadius: '8px',
-            }}
-          >
-            {BASE_USE_NAMESPACE_NAV === 'true' ? (
-              <SelectorNamespaceNew
-                cluster={cluster}
-                namespace={namespace}
-                disabled={resourceScope?.isNamespaceScoped === false}
-              />
-            ) : (
-              <SelectorNamespaceProjectNew
-                cluster={cluster}
-                projectName={params.projectName || possibleProject}
-                instanceName={params.instanceName || possibleInstance}
-              />
-            )}
-          </StickyOnTop>
+          {BASE_USE_NAMESPACE_NAV === 'true' ? (
+            <SelectorNamespaceNew
+              cluster={cluster}
+              namespace={namespace}
+              disabled={resourceScope?.isNamespaceScoped === false}
+            />
+          ) : (
+            <SelectorNamespaceProjectNew
+              cluster={cluster}
+              projectName={params.projectName || possibleProject}
+              instanceName={params.instanceName || possibleInstance}
+            />
+          )}
           <Spacer $space={16} $samespace />
         </>
       )}
@@ -259,119 +247,49 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
       {/* </OverflowContainer> */}
       {/* {searchMount ? <Spacer $space={12} $samespace /> : <FlexGrow />} */}
       <Spacer $space={12} $samespace />
-      {searchMount ? (
-        <PaddingContainer $padding="4px">
-          <Flex justify="space-between">
-            <div>
-              <Button
-                type="primary"
-                onClick={() => {
-                  const url = getLinkToForm({
-                    cluster,
-                    baseprefix,
-                    namespace,
-                    syntheticProject: params.syntheticProject,
-                    apiGroup,
-                    apiVersion,
-                    plural,
-                    inside,
-                    fullPath,
-                    searchMount,
-                  })
-                  navigate(url)
-                }}
-                loading={createPermission.isPending}
-                disabled={!createPermission.data?.status.allowed}
-              >
-                <PlusOutlined />
-                Add {kindName}
-              </Button>
-            </div>
-            <div>
-              {selectedRowKeys.length > 0 && (
-                <Flex gap={16}>
-                  <Button type="primary" onClick={clearSelected}>
-                    <ClearOutlined />
-                    Clear
-                  </Button>
-                  <Button type="primary" onClick={() => setIsDeleteModalManyOpen(selectedRowsData)}>
-                    <MinusOutlined />
-                    Delete
-                  </Button>
-                </Flex>
-              )}
-            </div>
-          </Flex>
-        </PaddingContainer>
-      ) : (
-        <>
-          <PaddingContainer $padding="4px">
-            <Flex justify="space-between">
-              <div>
-                <StickyOnBottom
-                  offsetBottom={75}
-                  fixedStyle={{
-                    background: theme === 'dark' ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.8)',
-                    boxShadow: `1px 2px 6px ${theme === 'dark' ? '#00000030' : '#FFFFFF70'}`,
-                    padding: '10px',
-                    borderRadius: '8px',
-                  }}
-                >
-                  <Button
-                    type="primary"
-                    onClick={() => {
-                      const url = getLinkToForm({
-                        cluster,
-                        baseprefix,
-                        namespace,
-                        syntheticProject: params.syntheticProject,
-                        apiGroup,
-                        apiVersion,
-                        plural,
-                        inside,
-                        fullPath,
-                        searchMount,
-                      })
-                      navigate(url)
-                    }}
-                    loading={createPermission.isPending}
-                    disabled={!createPermission.data?.status.allowed}
-                  >
-                    <PlusOutlined />
-                    Add {kindName}
-                  </Button>
-                </StickyOnBottom>
-              </div>
-              <div>
-                {selectedRowKeys.length > 0 && (
-                  <StickyOnBottom
-                    offsetBottom={75}
-                    fixedStyle={{
-                      background: theme === 'dark' ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.8)',
-                      boxShadow: `1px 2px 6px ${theme === 'dark' ? '#00000030' : '#FFFFFF70'}`,
-                      padding: '10px',
-                      borderRadius: '8px',
-                      right: 50,
-                    }}
-                  >
-                    <Flex gap={16}>
-                      <Button type="primary" onClick={clearSelected}>
-                        <ClearOutlined />
-                        Clear
-                      </Button>
-                      <Button type="primary" onClick={() => setIsDeleteModalManyOpen(selectedRowsData)}>
-                        <MinusOutlined />
-                        Delete
-                      </Button>
-                    </Flex>
-                  </StickyOnBottom>
-                )}
-              </div>
-            </Flex>
-          </PaddingContainer>
-          <Spacer $space={32} $samespace />
-        </>
-      )}
+      <PaddingContainer $padding="4px">
+        <Flex justify="space-between">
+          <div>
+            <Button
+              type="primary"
+              onClick={() => {
+                const url = getLinkToForm({
+                  cluster,
+                  baseprefix,
+                  namespace,
+                  syntheticProject: params.syntheticProject,
+                  apiGroup,
+                  apiVersion,
+                  plural,
+                  inside,
+                  fullPath,
+                  searchMount,
+                })
+                navigate(url)
+              }}
+              loading={createPermission.isPending}
+              disabled={!createPermission.data?.status.allowed}
+            >
+              <PlusOutlined />
+              Add {kindName}
+            </Button>
+          </div>
+          <div>
+            {selectedRowKeys.length > 0 && (
+              <Flex gap={16}>
+                <Button type="primary" onClick={clearSelected}>
+                  <ClearOutlined />
+                  Clear
+                </Button>
+                <Button type="primary" onClick={() => setIsDeleteModalManyOpen(selectedRowsData)}>
+                  <MinusOutlined />
+                  Delete
+                </Button>
+              </Flex>
+            )}
+          </div>
+        </Flex>
+      </PaddingContainer>
       {isDeleteModalOpen && (
         <DeleteModal
           name={isDeleteModalOpen.name}

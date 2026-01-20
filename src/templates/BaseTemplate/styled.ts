@@ -1,17 +1,25 @@
 import styled from 'styled-components'
-import { HEAD_FIRST_ROW, MAIN_CONTENT_HORIZONTAL_PADDING } from 'constants/blocksSizes'
+import {
+  FOOTER_HEIGHT,
+  HEAD_FIRST_ROW,
+  HEAD_SECOND_ROW,
+  MAIN_CONTENT_HORIZONTAL_PADDING,
+  SIDEBAR_WIDTH,
+} from 'constants/blocksSizes'
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: 250px 1fr;
+  grid-template-columns: ${SIDEBAR_WIDTH}px 1fr;
   width: 100%;
 `
 
 const Container = styled.div`
-  margin-left: 250px;
-  min-height: calc(100vh - ${HEAD_FIRST_ROW}px);
+  margin-left: ${SIDEBAR_WIDTH}px;
+  min-height: calc(100vh - ${HEAD_FIRST_ROW + HEAD_SECOND_ROW + FOOTER_HEIGHT}px);
   display: flex;
   flex-direction: column;
+  margin-top: ${HEAD_SECOND_ROW}px;
+  margin-bottom: ${FOOTER_HEIGHT}px;
 `
 
 const MainContent = styled.div`

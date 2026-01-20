@@ -2,17 +2,9 @@
 export { MainPage } from './MainPage'
 export { ListClustersPage } from './ListClustersPage'
 /* tables */
-export {
-  // TableCrdPage,
-  TableApiPage,
-  TableBuiltinPage,
-} from './Tables'
+export { TableApiPage, TableBuiltinPage } from './Tables'
 /* forms */
-export {
-  // FormCrdPage,
-  FormApiPage,
-  FormBuiltinPage,
-} from './Forms'
+export { FormApiPage, FormBuiltinPage } from './Forms'
 /* factory */
 export { FactoryPage } from './FactoryPage'
 /* search */

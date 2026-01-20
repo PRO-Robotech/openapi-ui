@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { BASE_USE_NEW_NAVIGATION } from 'constants/customizationApiGroupAndVersion'
+import { SIDEBAR_WIDTH } from 'constants/blocksSizes'
 
 type TContainerProps = {
   $isDark?: boolean
@@ -12,7 +13,7 @@ type TContainerProps = {
 }
 
 const Container = styled.div<TContainerProps>`
-  width: 250px;
+  width: ${SIDEBAR_WIDTH}px;
   padding-right: 1px;
   overflow-y: auto;
   scrollbar-width: thin;

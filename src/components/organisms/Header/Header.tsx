@@ -15,19 +15,21 @@ export const Header: FC = () => {
   }
 
   return (
-    <Styled.Container $height={HEAD_FIRST_ROW} $bgColor={token.colorBgLayout}>
-      <Flex justify="space-between">
-        <div>
-          <Logo />
-        </div>
-        <div>
-          <Flex gap={10}>
-            <Documentation key="SidebarDocumentation" />
-            <ThemeSelector />
-            <User key="SidebarUser" />
-          </Flex>
-        </div>
-      </Flex>
-    </Styled.Container>
+    <Styled.NonTransparentSticky>
+      <Styled.Container $height={HEAD_FIRST_ROW} $bgColor={token.colorBgLayout}>
+        <Flex justify="space-between">
+          <div>
+            <Logo />
+          </div>
+          <div>
+            <Flex gap={10}>
+              <Documentation key="SidebarDocumentation" />
+              <ThemeSelector />
+              <User key="SidebarUser" />
+            </Flex>
+          </div>
+        </Flex>
+      </Styled.Container>
+    </Styled.NonTransparentSticky>
   )
 }

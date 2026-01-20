@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { HEAD_FIRST_ROW } from 'constants/blocksSizes'
+import { HEAD_FIRST_ROW, SIDEBAR_WIDTH } from 'constants/blocksSizes'
 
 type TContainerProps = {
   $borderRadius: number
@@ -12,9 +12,10 @@ const Container = styled.div<TContainerProps>`
   border: 1px ${({ $borderColor }) => $borderColor} solid;
   border-left: 0;
   box-sizing: border-box;
-  width: 250px;
+  width: ${SIDEBAR_WIDTH}px;
   position: fixed;
   top: ${HEAD_FIRST_ROW}px;
+  height: 100%;
 `
 
 export const Styled = {

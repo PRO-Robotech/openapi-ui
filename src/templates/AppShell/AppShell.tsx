@@ -1,5 +1,6 @@
 import React, { FC, useState, useMemo } from 'react'
 import { Outlet, useParams } from 'react-router-dom'
+import { theme as antdtheme } from 'antd'
 import { useKinds } from '@prorobotech/openapi-k8s-toolkit'
 import { BaseTemplate } from 'templates'
 import { ManageableSidebar, NavigationContainer, ManageableBreadcrumbs, BackLink } from 'components'
@@ -18,6 +19,7 @@ export type TChromeCtx = {
 }
 
 export const AppShell: FC<{ inside?: boolean }> = ({ inside }) => {
+  const { token } = antdtheme.useToken()
   const { cluster, namespace, syntheticProject } = useParams()
 
   // fetch in advance
@@ -98,7 +100,7 @@ export const AppShell: FC<{ inside?: boolean }> = ({ inside }) => {
   return (
     <BaseTemplate inside={inside} sidebar={sidebarEl} isSearch={baseTemplateSearchBoolean}>
       {BASE_HIDE_BREADCRUMBS !== 'true' && (
-        <NavigationContainer>
+        <NavigationContainer $bgColor={token.colorBgLayout}>
           <ManageableBreadcrumbs idToCompare={breadcrumbsId} inside={inside} />
           {backlinkTo && backlinkTitle && <BackLink to={backlinkTo} title={backlinkTitle} />}
         </NavigationContainer>
