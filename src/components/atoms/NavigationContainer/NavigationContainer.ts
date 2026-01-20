@@ -13,7 +13,7 @@ export const NavigationContainer = styled.div<TNavigationContainerProps>`
   gap: 18px;
   height: ${BASE_BREADCRUMBS_NO_MARGIN_TOP === 'true' ? 'auto' : `${NAV_HEIGHT}px`};
   min-height: ${BASE_BREADCRUMBS_NO_MARGIN_TOP === 'true' ? 'auto' : `${NAV_HEIGHT}px`};
-  margin-bottom: ${BASE_BREADCRUMBS_NO_MARGIN_TOP === 'true' ? '10px' : 'auto'};
+  padding-bottom: ${BASE_BREADCRUMBS_NO_MARGIN_TOP === 'true' ? '10px' : 'auto'};
   position: sticky;
   top: ${HEAD_FIRST_ROW}px;
   background: ${({ $bgColor }) => $bgColor};

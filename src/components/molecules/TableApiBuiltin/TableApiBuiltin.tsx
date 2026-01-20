@@ -25,9 +25,11 @@ import {
   PaddingContainer,
   SelectorNamespaceNew,
   SelectorNamespaceProjectNew,
+  MainContentFixedTop,
 } from 'components'
 import { TABLE_PROPS } from 'constants/tableProps'
 import { BASE_USE_NAMESPACE_NAV } from 'constants/customizationApiGroupAndVersion'
+import { MainContentFixedBottom } from 'components/atoms/MainContentFixedBottom/MainContentFixedBottom'
 // import {
 //   HEAD_FIRST_ROW,
 //   HEAD_SECOND_ROW,
@@ -173,20 +175,23 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
       {/* <OverflowContainer height={height} searchMount={searchMount}> */}
       {!searchMount && (
         <>
-          {BASE_USE_NAMESPACE_NAV === 'true' ? (
-            <SelectorNamespaceNew
-              cluster={cluster}
-              namespace={namespace}
-              disabled={resourceScope?.isNamespaceScoped === false}
-            />
-          ) : (
-            <SelectorNamespaceProjectNew
-              cluster={cluster}
-              projectName={params.projectName || possibleProject}
-              instanceName={params.instanceName || possibleInstance}
-            />
-          )}
-          <Spacer $space={16} $samespace />
+          <MainContentFixedTop>
+            {BASE_USE_NAMESPACE_NAV === 'true' ? (
+              <SelectorNamespaceNew
+                cluster={cluster}
+                namespace={namespace}
+                disabled={resourceScope?.isNamespaceScoped === false}
+              />
+            ) : (
+              <SelectorNamespaceProjectNew
+                cluster={cluster}
+                projectName={params.projectName || possibleProject}
+                instanceName={params.instanceName || possibleInstance}
+              />
+            )}
+            <Spacer $space={16} $samespace />
+          </MainContentFixedTop>
+          <Spacer $space={48} $samespace />
         </>
       )}
       {error && <Alert message={`An error has occurred: ${error} `} type="error" />}
@@ -247,49 +252,52 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
       {/* </OverflowContainer> */}
       {/* {searchMount ? <Spacer $space={12} $samespace /> : <FlexGrow />} */}
       <Spacer $space={12} $samespace />
-      <PaddingContainer $padding="4px">
-        <Flex justify="space-between">
-          <div>
-            <Button
-              type="primary"
-              onClick={() => {
-                const url = getLinkToForm({
-                  cluster,
-                  baseprefix,
-                  namespace,
-                  syntheticProject: params.syntheticProject,
-                  apiGroup,
-                  apiVersion,
-                  plural,
-                  inside,
-                  fullPath,
-                  searchMount,
-                })
-                navigate(url)
-              }}
-              loading={createPermission.isPending}
-              disabled={!createPermission.data?.status.allowed}
-            >
-              <PlusOutlined />
-              Add {kindName}
-            </Button>
-          </div>
-          <div>
-            {selectedRowKeys.length > 0 && (
-              <Flex gap={16}>
-                <Button type="primary" onClick={clearSelected}>
-                  <ClearOutlined />
-                  Clear
-                </Button>
-                <Button type="primary" onClick={() => setIsDeleteModalManyOpen(selectedRowsData)}>
-                  <MinusOutlined />
-                  Delete
-                </Button>
-              </Flex>
-            )}
-          </div>
-        </Flex>
-      </PaddingContainer>
+      <Spacer $space={36} $samespace />
+      <MainContentFixedBottom>
+        <PaddingContainer $padding="4px">
+          <Flex justify="space-between">
+            <div>
+              <Button
+                type="primary"
+                onClick={() => {
+                  const url = getLinkToForm({
+                    cluster,
+                    baseprefix,
+                    namespace,
+                    syntheticProject: params.syntheticProject,
+                    apiGroup,
+                    apiVersion,
+                    plural,
+                    inside,
+                    fullPath,
+                    searchMount,
+                  })
+                  navigate(url)
+                }}
+                loading={createPermission.isPending}
+                disabled={!createPermission.data?.status.allowed}
+              >
+                <PlusOutlined />
+                Add {kindName}
+              </Button>
+            </div>
+            <div>
+              {selectedRowKeys.length > 0 && (
+                <Flex gap={16}>
+                  <Button type="primary" onClick={clearSelected}>
+                    <ClearOutlined />
+                    Clear
+                  </Button>
+                  <Button type="primary" onClick={() => setIsDeleteModalManyOpen(selectedRowsData)}>
+                    <MinusOutlined />
+                    Delete
+                  </Button>
+                </Flex>
+              )}
+            </div>
+          </Flex>
+        </PaddingContainer>
+      </MainContentFixedBottom>
       {isDeleteModalOpen && (
         <DeleteModal
           name={isDeleteModalOpen.name}
