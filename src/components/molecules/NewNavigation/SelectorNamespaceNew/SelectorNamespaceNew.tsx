@@ -5,7 +5,6 @@ import { useNavSelectorInside } from 'hooks/useNavSelectorInside'
 import { useMountEffect } from 'hooks/useMountEffect'
 import { EntrySelect } from 'components/atoms'
 import { SELECTOR_WIDTH_NAMESPACE } from 'constants/customizationApiGroupAndVersion'
-import { PaddingContainer } from '@prorobotech/openapi-k8s-toolkit'
 
 type TSelectorNamespaceNewProps = {
   cluster?: string
@@ -64,7 +63,7 @@ export const SelectorNamespaceNew: FC<TSelectorNamespaceNewProps> = ({ cluster, 
   }, [namespace, cluster])
 
   return (
-    <PaddingContainer $padding="0 0 16px 0">
+    <div>
       <Flex gap={18} justify="start" align="center">
         <Typography.Text>Namespace: </Typography.Text>
         <EntrySelect
@@ -76,6 +75,6 @@ export const SelectorNamespaceNew: FC<TSelectorNamespaceNewProps> = ({ cluster, 
           forcedWidth={SELECTOR_WIDTH_NAMESPACE}
         />
       </Flex>
-    </PaddingContainer>
+    </div>
   )
 }

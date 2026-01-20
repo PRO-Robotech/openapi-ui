@@ -19,9 +19,9 @@ export const Sidebar: FC<TSidebarProps> = ({ sidebar }) => {
   }
 
   return (
-    <Styled.BackgroundContainer $borderRadius={token.borderRadius} $borderColor={token.colorBorder}>
+    <Styled.Container $borderRadius={token.borderRadius} $borderColor={token.colorBorder}>
       {BASE_USE_NEW_NAVIGATION === 'true' && <SelectorClusterNew cluster={cluster} />}
       {sidebar}
-    </Styled.BackgroundContainer>
+    </Styled.Container>
   )
 }
