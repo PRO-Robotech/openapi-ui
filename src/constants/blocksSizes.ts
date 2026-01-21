@@ -15,8 +15,10 @@ export const NAV_HEIGHT = (() => {
 export const FOOTER_HEIGHT = BASE_HIDE_FOOTER === 'true' ? 0 : 38
 export const MAIN_CONTENT_HORIZONTAL_PADDING = 24
 export const BACKLINK_HEIGHT = 26
+export const SIDEBAR_WIDTH = 250
 /* computed only */
 export const CONTENT_CARD_PADDING = 25
 export const BLACKHOLE_FORM_VIEW_SWITCH_HEIGHT = 42
 export const BLACKHOLE_FORM_SUBMIT_ROW_HEIGHT = 48
 export const TABLE_ADD_BUTTON_HEIGHT = 35 + 8
+export const SELECTOR_CLUSTER_NEW_HEIGHT = 64 // in sidebar

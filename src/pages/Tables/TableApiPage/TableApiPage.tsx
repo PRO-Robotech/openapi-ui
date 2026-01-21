@@ -1,9 +1,8 @@
 import React, { FC, useEffect } from 'react'
-import { ContentCard } from '@prorobotech/openapi-k8s-toolkit'
 import { useParams, useSearchParams, useOutletContext } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
-import { TableApiBuiltin } from 'components'
+import { ContentCardMain, TableApiBuiltin } from 'components'
 import { getTableCustomizationIdPrefix } from 'utils/getTableCustomizationIdPrefix'
 import { getTablesBackLink } from 'utils/getBacklink'
 import { TChromeCtx } from 'templates'
@@ -84,7 +83,7 @@ export const TableApiPage: FC<TTableApiPageProps> = ({ inside }) => {
   const limitSp = searchParams.get('limit')
 
   return (
-    <ContentCard flexGrow={1} displayFlex flexFlow="column">
+    <ContentCardMain>
       {plural && apiGroup && apiVersion && (
         <TableApiBuiltin
           resourceType="api"
@@ -98,6 +97,6 @@ export const TableApiPage: FC<TTableApiPageProps> = ({ inside }) => {
           customizationIdPrefix={tableCustomizationIdPrefix}
         />
       )}
-    </ContentCard>
+    </ContentCardMain>
   )
 }

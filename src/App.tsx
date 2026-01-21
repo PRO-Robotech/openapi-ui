@@ -18,14 +18,11 @@ import {
   ListInsideApiPage,
   ListInsideCrdByApiGroupPage,
   ListInsideApiByApiGroupPage,
-  // TableCrdPage,
   TableApiPage,
   TableBuiltinPage,
   FormBuiltinPage,
   FormApiPage,
-  // FormCrdPage,
   FactoryPage,
-  // FactoryAdminPage,
   SearchPage,
   PluginRoute,
 } from 'pages'
@@ -61,10 +58,8 @@ export const App: FC<TAppProps> = ({ isFederation, forcedTheme }) => {
         <Route path={`${prefix}/clusters`} element={<ListClustersPage />} />
 
         <Route path={`${prefix}/:cluster/:namespace?/:syntheticProject?/*`} element={<AppShell />}>
-          {/* <Route path="crd-table/:apiGroup/:apiVersion/:apiExtensionVersion/:crdName" element={<TableCrdPage />} /> */}
           <Route path="api-table/:apiGroup/:apiVersion/:plural" element={<TableApiPage />} />
           <Route path="builtin-table/:plural" element={<TableBuiltinPage />} />
-          {/* <Route path="forms/crds/:apiGroup/:apiVersion/:plural/:name?/"" element={<FormCrdPage />} /> */}
           <Route path="forms/apis/:apiGroup/:apiVersion/:plural/:name?/" element={<FormApiPage />} />
           <Route path="forms/builtin/:apiVersion/:plural/:name?/" element={<FormBuiltinPage />} />
           <Route path="factory/:key/*" element={<FactoryPage />} />
@@ -74,10 +69,8 @@ export const App: FC<TAppProps> = ({ isFederation, forcedTheme }) => {
         </Route>
 
         <Route path={`${prefix}/inside/:cluster/:namespace?/:syntheticProject?/*`} element={<AppShell inside />}>
-          {/* <Route path="crd-table/:apiGroup/:apiVersion/:apiExtensionVersion/:crdName" element={<TableCrdPage inside />} /> */}
           <Route path="api-table/:apiGroup/:apiVersion/:plural" element={<TableApiPage inside />} />
           <Route path="builtin-table/:plural" element={<TableBuiltinPage inside />} />
-          {/* <Route path="forms/crds/:apiGroup/:apiVersion/:plural/:name?/"" element={<FormCrdPage />} /> */}
           <Route path="forms/builtin/:apiVersion/:plural/:name?/" element={<FormBuiltinPage />} />
           <Route path="forms/apis/:apiGroup/:apiVersion/:plural/:name?/" element={<FormApiPage />} />
         </Route>

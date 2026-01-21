@@ -5,6 +5,7 @@ import { Search as PackageSearch, Spacer, useKinds, LookingGlassIcon } from '@pr
 import { ConfigProvider, theme as antdtheme, Form, Spin, Alert } from 'antd'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store/store'
+import { MainContentFixedTop } from 'components/atoms'
 import { HEAD_FIRST_ROW, HEAD_SECOND_ROW, FOOTER_HEIGHT, NAV_HEIGHT, CONTENT_CARD_PADDING } from 'constants/blocksSizes'
 import {
   FIELD_NAME,
@@ -40,24 +41,24 @@ export const Search: FC = () => {
 
   const [form] = Form.useForm()
 
-  const [height, setHeight] = useState(0)
+  // const [height, setHeight] = useState(0)
   const [emptyHeight, setEmptyHeight] = useState(0)
 
-  useEffect(() => {
-    const height =
-      window.innerHeight - HEAD_FIRST_ROW - HEAD_SECOND_ROW - NAV_HEIGHT - CONTENT_CARD_PADDING * 2 - FOOTER_HEIGHT - 1
-    setHeight(height)
+  // useEffect(() => {
+  //   const height =
+  //     window.innerHeight - HEAD_FIRST_ROW - HEAD_SECOND_ROW - NAV_HEIGHT - CONTENT_CARD_PADDING * 2 - FOOTER_HEIGHT - 1
+  //   setHeight(height)
 
-    const handleResize = () => {
-      setHeight(height)
-    }
+  //   const handleResize = () => {
+  //     setHeight(height)
+  //   }
 
-    window.addEventListener('resize', handleResize)
+  //   window.addEventListener('resize', handleResize)
 
-    return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [])
+  //   return () => {
+  //     window.removeEventListener('resize', handleResize)
+  //   }
+  // }, [])
 
   useEffect(() => {
     const emptyHeight =
@@ -230,8 +231,10 @@ export const Search: FC = () => {
   }
 
   return (
-    <Styled.Container $height={height}>
-      <Styled.OverflowContainer>
+    <>
+      {/* <Styled.Container $height={height}> */}
+      {/* <Styled.OverflowContainer> */}
+      <MainContentFixedTop>
         <PackageSearch
           cluster={cluster}
           theme={theme}
@@ -245,47 +248,50 @@ export const Search: FC = () => {
           }}
           kindsWithVersion={kindsData.kindsWithVersion}
         />
-        <ConfigProvider
-          theme={{
-            components: {
-              Table: {
-                headerBg: token.colorBgContainer,
-              },
+      </MainContentFixedTop>
+      <Spacer $space={90} $samespace />
+      <ConfigProvider
+        theme={{
+          components: {
+            Table: {
+              headerBg: token.colorBgContainer,
             },
-          }}
-        >
-          {watchedKinds?.map(item => {
-            const fields = [...(watchedFields || []), ...(watchedName ? [`metadata.name=${watchedName}`] : [])]
-            return (
-              <Fragment key={item}>
-                <Spacer $space={20} $samespace />
-                <SearchEntry
-                  kindsWithVersion={kindsData.kindsWithVersion}
-                  form={form}
-                  constants={{
-                    FIELD_NAME,
-                  }}
-                  resource={item}
-                  labels={watchedLabels}
-                  fields={fields.length ? fields : undefined}
-                />
-              </Fragment>
-            )
-          })}
-        </ConfigProvider>
+          },
+        }}
+      >
+        {watchedKinds?.map(item => {
+          const fields = [...(watchedFields || []), ...(watchedName ? [`metadata.name=${watchedName}`] : [])]
+          return (
+            <Fragment key={item}>
+              <Spacer $space={20} $samespace />
+              <SearchEntry
+                kindsWithVersion={kindsData.kindsWithVersion}
+                form={form}
+                constants={{
+                  FIELD_NAME,
+                }}
+                resource={item}
+                labels={watchedLabels}
+                fields={fields.length ? fields : undefined}
+              />
+            </Fragment>
+          )
+        })}
+      </ConfigProvider>
 
-        {(watchedKinds && watchedKinds.length) ||
-        (watchedName && watchedName.length) ||
-        (watchedLabels && watchedLabels.length) ||
-        (watchedFields && watchedFields.length) ? (
-          <Spacer $space={20} $samespace />
-        ) : (
-          <Styled.EmptyContainer $height={emptyHeight}>
-            <LookingGlassIcon />
-            <Styled.EmptyText>Select search options</Styled.EmptyText>
-          </Styled.EmptyContainer>
-        )}
-      </Styled.OverflowContainer>
-    </Styled.Container>
+      {(watchedKinds && watchedKinds.length) ||
+      (watchedName && watchedName.length) ||
+      (watchedLabels && watchedLabels.length) ||
+      (watchedFields && watchedFields.length) ? (
+        <Spacer $space={20} $samespace />
+      ) : (
+        <Styled.EmptyContainer $height={emptyHeight}>
+          <LookingGlassIcon />
+          <Styled.EmptyText>Select search options</Styled.EmptyText>
+        </Styled.EmptyContainer>
+      )}
+      {/* </Styled.OverflowContainer> */}
+      {/* </Styled.Container> */}
+    </>
   )
 }

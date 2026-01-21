@@ -30,23 +30,27 @@ export const HeaderSecond: FC<THeaderProps> = ({ inside, isSearch }) => {
   }
 
   return (
-    <Styled.BackgroundContainer $bgColor={token.colorFillSecondary} $borderRadius={token.borderRadius}>
-      <Styled.PaddingContainer $height={HEAD_SECOND_ROW}>
-        <Flex gap={18}>
-          {inside ? <SelectorClusterInside cluster={cluster} /> : <SelectorCluster cluster={cluster} />}
-          {inside && <SelectorNamespaceInside cluster={cluster} namespace={namespace} />}
-          {!inside && !isSearch && BASE_USE_NAMESPACE_NAV !== 'true' && (
-            <SelectorNamespaceProject
-              cluster={cluster}
-              projectName={projectName || possibleProject}
-              instanceName={instanceName || possibleInstance}
-            />
-          )}
-          {!inside && (isSearch || BASE_USE_NAMESPACE_NAV === 'true') && (
-            <SelectorNamespace cluster={cluster} namespace={namespace} />
-          )}
-        </Flex>
-      </Styled.PaddingContainer>
-    </Styled.BackgroundContainer>
+    <Styled.NonTransparentSticky>
+      <Styled.InternalBackground $bgColor={token.colorBgLayout}>
+        <Styled.Container $bgColor={token.colorFillSecondary} $borderRadius={token.borderRadius}>
+          <Styled.PaddingContainer $height={HEAD_SECOND_ROW}>
+            <Flex gap={18}>
+              {inside ? <SelectorClusterInside cluster={cluster} /> : <SelectorCluster cluster={cluster} />}
+              {inside && <SelectorNamespaceInside cluster={cluster} namespace={namespace} />}
+              {!inside && !isSearch && BASE_USE_NAMESPACE_NAV !== 'true' && (
+                <SelectorNamespaceProject
+                  cluster={cluster}
+                  projectName={projectName || possibleProject}
+                  instanceName={instanceName || possibleInstance}
+                />
+              )}
+              {!inside && (isSearch || BASE_USE_NAMESPACE_NAV === 'true') && (
+                <SelectorNamespace cluster={cluster} namespace={namespace} />
+              )}
+            </Flex>
+          </Styled.PaddingContainer>
+        </Styled.Container>
+      </Styled.InternalBackground>
+    </Styled.NonTransparentSticky>
   )
 }

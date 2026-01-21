@@ -1,7 +1,6 @@
 import React, { FC, useEffect } from 'react'
-import { ContentCard } from '@prorobotech/openapi-k8s-toolkit'
 import { useParams, useOutletContext } from 'react-router-dom'
-import { ListInsideAllResources } from 'components'
+import { ListInsideAllResources, ContentCardMain } from 'components'
 import { TChromeCtx } from 'templates'
 
 export const ListInsideApiPage: FC = () => {
@@ -22,8 +21,8 @@ export const ListInsideApiPage: FC = () => {
   }, [setSidebarSuffix, setBreadcrumbsSuffix, setUseOnlyNamespace])
 
   return (
-    <ContentCard flexGrow={1} displayFlex flexFlow="column">
+    <ContentCardMain>
       <ListInsideAllResources namespace={namespace} />
-    </ContentCard>
+    </ContentCardMain>
   )
 }

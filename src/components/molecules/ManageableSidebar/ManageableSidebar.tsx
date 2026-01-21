@@ -4,10 +4,11 @@ import { useLocation, useParams } from 'react-router-dom'
 import { ManageableSidebarProvider } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
-import { HEAD_FIRST_ROW } from 'constants/blocksSizes'
+import { HEAD_FIRST_ROW, SELECTOR_CLUSTER_NEW_HEIGHT } from 'constants/blocksSizes'
 import {
   BASE_API_GROUP,
   BASE_API_VERSION,
+  BASE_USE_NEW_NAVIGATION,
   CUSTOMIZATION_SIDEBAR_FALLBACK_ID,
 } from 'constants/customizationApiGroupAndVersion'
 import { Styled } from './styled'
@@ -37,7 +38,7 @@ export const ManageableSidebar: FC<TManageableSidebarProps> = ({
   const [height, setHeight] = useState(0)
 
   useEffect(() => {
-    const height = window.innerHeight - HEAD_FIRST_ROW - 2
+    const height = window.innerHeight - HEAD_FIRST_ROW - 2 - (BASE_USE_NEW_NAVIGATION ? SELECTOR_CLUSTER_NEW_HEIGHT : 0)
     setHeight(height)
 
     const handleResize = () => {

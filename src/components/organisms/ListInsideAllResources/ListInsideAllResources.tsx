@@ -14,7 +14,7 @@ import {
 import { Spin, Alert, Flex } from 'antd'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store/store'
-import { TitleWithNoTopMargin } from 'components/atoms'
+import { MainContentFixedTop, TitleWithNoTopMargin } from 'components/atoms'
 import { Styled } from './styled'
 
 type TListInsideAllResourcesProps = {
@@ -55,7 +55,7 @@ export const ListInsideAllResources: FC<TListInsideAllResourcesProps> = ({ names
   const { nonCrdGroups, builtinGroups } = groupsByCategory || {}
 
   return (
-    <Styled.Grid>
+    <>
       {/* <div>
         <Flex justify="center">
           <TitleWithNoTopMargin level={3}>CRD Groups</TitleWithNoTopMargin>
@@ -85,55 +85,66 @@ export const ListInsideAllResources: FC<TListInsideAllResourcesProps> = ({ names
           />
         )}
       </div> */}
-      <div>
-        <Flex justify="center">
-          <TitleWithNoTopMargin level={3}>API Groups</TitleWithNoTopMargin>
-        </Flex>
+      <MainContentFixedTop>
+        <Styled.Grid>
+          <div>
+            <Flex justify="center">
+              <TitleWithNoTopMargin level={3}>API Groups</TitleWithNoTopMargin>
+            </Flex>
+          </div>
+          <div>
+            <Flex justify="center">
+              <TitleWithNoTopMargin level={3}>Builtin Groups</TitleWithNoTopMargin>
+            </Flex>
+          </div>
+        </Styled.Grid>
         <Spacer $space={20} $samespace />
-        {apiGroupList.isPending && <Spin />}
-        {apiGroupList.error && (
-          <Alert message={`An error has occurred: ${apiGroupList.error?.message} `} type="error" />
-        )}
-        {!apiGroupList.error && nonCrdGroups && (
-          <TreeWithSearch
-            treeData={groupsToTreeData(
-              nonCrdGroups.map(({ versions, preferredVersion }) => ({
-                apis: versions.map(({ groupVersion }) => groupVersion),
-                highlightString: preferredVersion.groupVersion,
-              })),
-            )}
-            onSelect={(_, info) => {
-              if (info.node.isLeaf) {
-                navigate(
-                  `${baseprefix}/inside/${cluster}${namespace ? `/${namespace}` : ''}/apis-by-api/${info.node.key}`,
-                )
-              }
-            }}
-          />
-        )}
-      </div>
-      <div>
-        <Flex justify="center">
-          <TitleWithNoTopMargin level={3}>Builtin Groups</TitleWithNoTopMargin>
-        </Flex>
-        <Spacer $space={20} $samespace />
-        {builtInData.isPending && <Spin />}
-        {builtInData.error && <Alert message={`An error has occurred: ${builtInData.error?.message} `} type="error" />}
-        {!builtInData.error && builtinGroups && (
-          <TreeWithSearch
-            treeData={getBuiltinTreeData(
-              builtinGroups.filter(({ name }) => !name.includes('/')).map(({ name }) => name),
-            )}
-            onSelect={(_, info) => {
-              if (info.node.isLeaf) {
-                navigate(
-                  `${baseprefix}/inside/${cluster}${namespace ? `/${namespace}` : ''}/builtin-table/${info.node.key}`,
-                )
-              }
-            }}
-          />
-        )}
-      </div>
-    </Styled.Grid>
+      </MainContentFixedTop>
+      <Styled.Grid>
+        <div>
+          {apiGroupList.isPending && <Spin />}
+          {apiGroupList.error && (
+            <Alert message={`An error has occurred: ${apiGroupList.error?.message} `} type="error" />
+          )}
+          {!apiGroupList.error && nonCrdGroups && (
+            <TreeWithSearch
+              treeData={groupsToTreeData(
+                nonCrdGroups.map(({ versions, preferredVersion }) => ({
+                  apis: versions.map(({ groupVersion }) => groupVersion),
+                  highlightString: preferredVersion.groupVersion,
+                })),
+              )}
+              onSelect={(_, info) => {
+                if (info.node.isLeaf) {
+                  navigate(
+                    `${baseprefix}/inside/${cluster}${namespace ? `/${namespace}` : ''}/apis-by-api/${info.node.key}`,
+                  )
+                }
+              }}
+            />
+          )}
+        </div>
+        <div>
+          {builtInData.isPending && <Spin />}
+          {builtInData.error && (
+            <Alert message={`An error has occurred: ${builtInData.error?.message} `} type="error" />
+          )}
+          {!builtInData.error && builtinGroups && (
+            <TreeWithSearch
+              treeData={getBuiltinTreeData(
+                builtinGroups.filter(({ name }) => !name.includes('/')).map(({ name }) => name),
+              )}
+              onSelect={(_, info) => {
+                if (info.node.isLeaf) {
+                  navigate(
+                    `${baseprefix}/inside/${cluster}${namespace ? `/${namespace}` : ''}/builtin-table/${info.node.key}`,
+                  )
+                }
+              }}
+            />
+          )}
+        </div>
+      </Styled.Grid>
+    </>
   )
 }

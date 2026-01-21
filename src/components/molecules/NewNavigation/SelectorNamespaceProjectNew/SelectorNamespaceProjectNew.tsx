@@ -3,7 +3,7 @@ import { Flex, Typography } from 'antd'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useNavSelector } from 'hooks/useNavSelector'
 import { useMountEffect } from 'hooks/useMountEffect'
-import { EntrySelect, PaddingContainer } from 'components/atoms'
+import { EntrySelect } from 'components/atoms'
 import { SELECTOR_WIDTH_PROJECT, SELECTOR_WIDTH_INSTANCE } from 'constants/customizationApiGroupAndVersion'
 
 type TSelectorNamespaceProjectNewProps = {
@@ -101,7 +101,7 @@ export const SelectorNamespaceProjectNew: FC<TSelectorNamespaceProjectNewProps> 
   }, [projectName, instanceName, cluster])
 
   return (
-    <PaddingContainer $padding="0 0 16px 0">
+    <div>
       <Flex gap={18} justify="start" align="center">
         <Typography.Text>Project: </Typography.Text>
         <EntrySelect
@@ -127,6 +127,6 @@ export const SelectorNamespaceProjectNew: FC<TSelectorNamespaceProjectNewProps> 
           forcedWidth={SELECTOR_WIDTH_INSTANCE}
         />
       </Flex>
-    </PaddingContainer>
+    </div>
   )
 }
