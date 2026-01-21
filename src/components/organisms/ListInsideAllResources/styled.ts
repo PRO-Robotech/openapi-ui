@@ -6,8 +6,8 @@ const Grid = styled.div`
 
   /* grid-template-columns: repeat(3, 1fr); */
   grid-template-columns: repeat(2, 1fr);
-  height: 100%;
-  min-height: 80vh;
+  /* height: 100%; */
+  /* min-height: 80vh; */
 `
 
 export const Styled = {

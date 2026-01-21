@@ -11,8 +11,8 @@ export const NavigationContainer = styled.div<TNavigationContainerProps>`
   justify-content: start;
   align-items: center;
   gap: 18px;
-  height: ${BASE_BREADCRUMBS_NO_MARGIN_TOP === 'true' ? 'auto' : `${NAV_HEIGHT}px`};
-  min-height: ${BASE_BREADCRUMBS_NO_MARGIN_TOP === 'true' ? 'auto' : `${NAV_HEIGHT}px`};
+  height: ${BASE_BREADCRUMBS_NO_MARGIN_TOP === 'true' ? '35px' : `${NAV_HEIGHT}px`};
+  min-height: ${BASE_BREADCRUMBS_NO_MARGIN_TOP === 'true' ? '35px' : `${NAV_HEIGHT}px`};
   padding-bottom: ${BASE_BREADCRUMBS_NO_MARGIN_TOP === 'true' ? '10px' : 'auto'};
   position: sticky;
   top: ${HEAD_FIRST_ROW}px;

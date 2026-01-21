@@ -9,7 +9,7 @@ import {
 } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store/store'
-import { TitleWithNoTopMargin } from 'components/atoms'
+import { MainContentFixedTop, TitleWithNoTopMargin } from 'components/atoms'
 
 type TListInsideCrdsByApiGroupProps = {
   namespace?: string
@@ -43,8 +43,10 @@ export const ListInsideCrdsByApiGroup: FC<TListInsideCrdsByApiGroupProps> = ({
 
   return (
     <>
-      <TitleWithNoTopMargin level={3}>CRD Groups</TitleWithNoTopMargin>
-      <Spacer $space={20} $samespace />
+      <MainContentFixedTop>
+        <TitleWithNoTopMargin level={3}>CRD Groups</TitleWithNoTopMargin>
+        <Spacer $space={20} $samespace />
+      </MainContentFixedTop>
       {isPending && <Spin />}
       {!error &&
         data &&

@@ -9,7 +9,7 @@ import {
 } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store/store'
-import { TitleWithNoTopMargin } from 'components/atoms'
+import { MainContentFixedTop, TitleWithNoTopMargin } from 'components/atoms'
 import { Styled } from './styled'
 
 type TListInsideApisByApiGroupProps = {
@@ -40,8 +40,10 @@ export const ListInsideApisByApiGroup: FC<TListInsideApisByApiGroupProps> = ({ n
 
   return (
     <>
-      <TitleWithNoTopMargin level={3}>API Groups</TitleWithNoTopMargin>
-      <Spacer $space={20} $samespace />
+      <MainContentFixedTop>
+        <TitleWithNoTopMargin level={3}>API Groups</TitleWithNoTopMargin>
+        <Spacer $space={20} $samespace />
+      </MainContentFixedTop>
       {isPending && <Spin />}
       {!error && data && (
         <Styled.Grid>

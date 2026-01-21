@@ -1,7 +1,6 @@
 import React, { FC, useEffect } from 'react'
-import { ContentCard } from '@prorobotech/openapi-k8s-toolkit'
 import { useParams, useOutletContext } from 'react-router-dom'
-import { ListInsideCrdsByApiGroup } from 'components'
+import { ContentCardMain, ListInsideCrdsByApiGroup } from 'components'
 import { TChromeCtx } from 'templates'
 
 export const ListInsideCrdByApiGroupPage: FC = () => {
@@ -22,7 +21,7 @@ export const ListInsideCrdByApiGroupPage: FC = () => {
   }, [setSidebarSuffix, setBreadcrumbsSuffix, setUseOnlyNamespace])
 
   return (
-    <ContentCard flexGrow={1} displayFlex flexFlow="column">
+    <ContentCardMain>
       {apiGroup && apiVersion && apiExtensionVersion && (
         <ListInsideCrdsByApiGroup
           namespace={namespace}
@@ -31,6 +30,6 @@ export const ListInsideCrdByApiGroupPage: FC = () => {
           apiExtensionVersion={apiExtensionVersion}
         />
       )}
-    </ContentCard>
+    </ContentCardMain>
   )
 }
