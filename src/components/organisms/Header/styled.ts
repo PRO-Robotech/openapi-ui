@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { MAIN_CONTENT_HORIZONTAL_PADDING } from 'constants/blocksSizes'
 
 const NonTransparentSticky = styled.div`
-  background: #fff;
+  background: white;
   position: sticky;
   top: 0;
   z-index: 5;

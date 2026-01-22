@@ -5,7 +5,7 @@ type TNonTransparentStickyProps = {
 }
 
 const NonTransparentSticky = styled.div<TNonTransparentStickyProps>`
-  background: #fff;
+  background: white;
   position: ${({ $fixedOffest }) => ($fixedOffest ? 'sticky' : 'auto')};
   top: ${({ $fixedOffest }) => $fixedOffest || 'initial'};
   z-index: 5;
