@@ -5,7 +5,7 @@ const NonTransparentSticky = styled.div`
   margin-left: ${SIDEBAR_WIDTH}px;
   position: fixed;
   z-index: 5;
-  background: #fff;
+  background: white;
   width: 100%;
   bottom: 0;
 `

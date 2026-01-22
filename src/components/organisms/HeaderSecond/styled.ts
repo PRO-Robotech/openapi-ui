@@ -7,7 +7,7 @@ const NonTransparentSticky = styled.div`
   top: ${HEAD_FIRST_ROW}px;
   margin-left: ${250 + MAIN_CONTENT_HORIZONTAL_PADDING}px;
   z-index: 5;
-  background: #fff;
+  background: white;
 `
 
 type TInternalBackgroundProps = {
