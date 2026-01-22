@@ -1,11 +1,17 @@
 import { ThemeConfig } from 'antd'
 
+type CustomTokens = {
+  colorBgMonaco?: string
+}
+
+type ExtendedToken = ThemeConfig['token'] & CustomTokens
+
 const percentageToHex = (percentage: number) => {
   const decimal = `0${Math.round(255 * (percentage / 100)).toString(16)}`.slice(-2).toUpperCase()
   return decimal
 }
 
-export const colorsLight: ThemeConfig['token'] = {
+export const colorsLight: ExtendedToken = {
   colorPrimaryBg: '#F0F5FF',
   colorPrimaryBgHover: '#DBEAFE',
   colorPrimaryBorder: '#BFDBFE',
@@ -21,6 +27,7 @@ export const colorsLight: ThemeConfig['token'] = {
   colorBgContainer: '#FFFFFF',
   colorBgElevated: '#FFFFFF',
   colorBgLayout: '#F1F5F9',
+  colorBgMonaco: '#FFFFFE',
   colorBgSpotlight: `#000000${percentageToHex(88)}`,
   colorBgMask: `#000000${percentageToHex(45)}`,
   colorBgContainerDisabled: `#000000${percentageToHex(4)}`,
@@ -87,7 +94,7 @@ export const colorsLight: ThemeConfig['token'] = {
   colorInfoTextActive: '#2563EB',
 }
 
-export const colorsDark: ThemeConfig['token'] = {
+export const colorsDark: ExtendedToken = {
   colorPrimaryBg: '#40485A',
   colorPrimaryBgHover: '#2F3846',
   colorPrimaryBorder: '#334155',
@@ -103,6 +110,7 @@ export const colorsDark: ThemeConfig['token'] = {
   colorBgContainer: '#2D2F38',
   colorBgElevated: '#2D2F38',
   colorBgLayout: '#1E1F22',
+  colorBgMonaco: '#1E1E1E',
   colorBgSpotlight: `#FFFFFF${percentageToHex(88)}`,
   colorBgMask: `#FFFFFF${percentageToHex(45)}`,
   colorBgContainerDisabled: `#FFFFFF${percentageToHex(4)}`,
