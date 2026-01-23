@@ -8,7 +8,7 @@ type TContainerProps = {
 const Container = styled.div<TContainerProps>`
   position: fixed;
   bottom: ${FOOTER_HEIGHT + 24}px;
-  z-index: 5;
+  z-index: 1055;
   background: ${({ $bgColor }) => $bgColor};
   width: calc(100% - ${SIDEBAR_WIDTH + MAIN_CONTENT_HORIZONTAL_PADDING * 2 + 48}px);
 `

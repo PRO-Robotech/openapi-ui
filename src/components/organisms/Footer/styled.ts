@@ -4,7 +4,7 @@ import { FOOTER_HEIGHT, SIDEBAR_WIDTH } from 'constants/blocksSizes'
 const NonTransparentSticky = styled.div`
   margin-left: ${SIDEBAR_WIDTH}px;
   position: fixed;
-  z-index: 5;
+  z-index: 1055;
   background: white;
   width: 100%;
   bottom: 0;

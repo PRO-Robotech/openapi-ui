@@ -8,7 +8,7 @@ const NonTransparentSticky = styled.div<TNonTransparentStickyProps>`
   background: white;
   position: ${({ $fixedOffest }) => ($fixedOffest ? 'sticky' : 'auto')};
   bottom: ${({ $fixedOffest }) => $fixedOffest || 'initial'};
-  z-index: 5;
+  z-index: 1055;
 `
 
 type TBackgroundContainerProps = {

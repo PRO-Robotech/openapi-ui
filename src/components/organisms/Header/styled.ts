@@ -5,7 +5,7 @@ const NonTransparentSticky = styled.div`
   background: white;
   position: sticky;
   top: 0;
-  z-index: 5;
+  z-index: 1055;
 `
 
 type TContainerProps = {
