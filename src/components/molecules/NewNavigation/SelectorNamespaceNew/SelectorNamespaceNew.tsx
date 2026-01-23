@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react'
 import { Flex, Typography } from 'antd'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useNavSelectorInside } from 'hooks/useNavSelectorInside'
 import { useMountEffect } from 'hooks/useMountEffect'
 import { EntrySelect } from 'components/atoms'
@@ -15,6 +15,7 @@ type TSelectorNamespaceNewProps = {
 export const SelectorNamespaceNew: FC<TSelectorNamespaceNewProps> = ({ cluster, namespace, disabled }) => {
   const navigate = useNavigate()
   const params = useParams()
+  const location = useLocation()
 
   const [selectedCluster, setSelectedCluster] = useState(cluster)
   const [selectedNamespace, setSelectedNamespace] = useState(namespace)
@@ -54,7 +55,8 @@ export const SelectorNamespaceNew: FC<TSelectorNamespaceNewProps> = ({ cluster, 
       nextParts.splice(namespaceIdx, 1)
     }
 
-    navigate('/' + nextParts.join('/'))
+    // ✅ keep current search params as-is
+    navigate(`/${nextParts.join('/')}${location.search}`)
   }
 
   useMountEffect(() => {

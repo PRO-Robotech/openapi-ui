@@ -6,6 +6,7 @@ import { ConfigProvider, theme as antdtheme, Form, Spin, Alert } from 'antd'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store/store'
 import { MainContentFixedTop } from 'components/atoms'
+import { useElementHeight } from 'hooks/useElementHeight'
 import { HEAD_FIRST_ROW, HEAD_SECOND_ROW, FOOTER_HEIGHT, NAV_HEIGHT, CONTENT_CARD_PADDING } from 'constants/blocksSizes'
 import {
   FIELD_NAME,
@@ -35,6 +36,8 @@ export const Search: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const location = useLocation()
   const { token } = antdtheme.useToken()
+
+  const { ref, height } = useElementHeight<HTMLDivElement>()
 
   const cluster = useSelector((state: RootState) => state.cluster.cluster)
   const theme = useSelector((state: RootState) => state.openapiTheme.theme)
@@ -234,7 +237,7 @@ export const Search: FC = () => {
     <>
       {/* <Styled.Container $height={height}> */}
       {/* <Styled.OverflowContainer> */}
-      <MainContentFixedTop>
+      <MainContentFixedTop ref={ref}>
         <PackageSearch
           cluster={cluster}
           theme={theme}
@@ -249,7 +252,7 @@ export const Search: FC = () => {
           kindsWithVersion={kindsData.kindsWithVersion}
         />
       </MainContentFixedTop>
-      <Spacer $space={90} $samespace />
+      <Spacer $space={height} $samespace />
       <ConfigProvider
         theme={{
           components: {

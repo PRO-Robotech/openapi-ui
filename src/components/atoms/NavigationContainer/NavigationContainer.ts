@@ -18,5 +18,5 @@ export const NavigationContainer = styled.div<TNavigationContainerProps>`
   top: ${HEAD_FIRST_ROW}px;
   background: ${({ $bgColor }) => $bgColor};
   width: 100%;
-  z-index: 5;
+  z-index: 1055;
 `

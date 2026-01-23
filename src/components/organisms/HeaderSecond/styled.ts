@@ -6,7 +6,7 @@ const NonTransparentSticky = styled.div`
   position: fixed;
   top: ${HEAD_FIRST_ROW}px;
   margin-left: ${250 + MAIN_CONTENT_HORIZONTAL_PADDING}px;
-  z-index: 5;
+  z-index: 1055;
   background: white;
 `
 
