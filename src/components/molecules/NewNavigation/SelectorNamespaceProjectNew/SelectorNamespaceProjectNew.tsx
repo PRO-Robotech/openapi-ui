@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react'
 import { Flex, Typography } from 'antd'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useNavSelector } from 'hooks/useNavSelector'
 import { useMountEffect } from 'hooks/useMountEffect'
 import { EntrySelect } from 'components/atoms'
@@ -21,6 +21,7 @@ export const SelectorNamespaceProjectNew: FC<TSelectorNamespaceProjectNewProps> 
 }) => {
   const navigate = useNavigate()
   const params = useParams()
+  const location = useLocation()
 
   const [selectedCluster, setSelectedCluster] = useState(cluster)
   const [selectedProjectName, setSelectedProjectName] = useState(projectName)
@@ -55,7 +56,8 @@ export const SelectorNamespaceProjectNew: FC<TSelectorNamespaceProjectNewProps> 
       ...tail,
     ]
 
-    navigate('/' + nextParts.join('/'))
+    // ✅ keep current search params as-is
+    navigate(`/${nextParts.join('/')}${location.search}`)
   }
 
   const handleProjectChange = (value?: string) => {
