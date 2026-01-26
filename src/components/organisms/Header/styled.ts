@@ -3,8 +3,9 @@ import { MAIN_CONTENT_HORIZONTAL_PADDING } from 'constants/blocksSizes'
 
 const NonTransparentSticky = styled.div`
   background: white;
-  position: sticky;
+  position: fixed;
   top: 0;
+  width: 100%;
   z-index: 1055;
 `
 
