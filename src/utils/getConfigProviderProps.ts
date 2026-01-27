@@ -64,6 +64,10 @@ const getDefaultComponentsSettings = ({
     itemSelectedColor: colors?.colorInfoBg,
     motionDurationSlow: '0.1s',
   },
+  Modal: {
+    zIndexBase: 2000,
+    zIndexPopupBase: 2000,
+  },
 })
 
 export const getColors = ({
