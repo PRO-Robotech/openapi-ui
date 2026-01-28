@@ -65,8 +65,8 @@ const getDefaultComponentsSettings = ({
     motionDurationSlow: '0.1s',
   },
   Modal: {
-    zIndexBase: 2000,
-    zIndexPopupBase: 2000,
+    zIndexBase: 1057,
+    zIndexPopupBase: 1057,
   },
 })
 
