@@ -35,6 +35,7 @@ This app can be configured through environment variables.
 | `SELECTOR_WIDTH_PROJECT`                    | `string`  | No               | Selector width for project: `200px`                                                     |
 | `SELECTOR_WIDTH_INSTANCE`                   | `string`  | No               | Selector width for instance: `200px`                                                    |
 | `CUSTOMIZATION_SIDEBAR_FALLBACK_ID`         | `string`  | Yes if no plugin | `spec.id` to find in `sidebars` to fallback. Use `-namespaced` for NS-pages             |
+| `CUSTOMIZATION_BREADCRUMBS_FALLBACK_ID`     | `string`  | Yes if no plugin | `spec.id` **prefix** to find in `breadcrumbs` to fallback                               |
 | `USE_NAMESPACE_NAV`                         | `boolean` | No               | Use namespaces instead of project/instances. `true`                                     |
 | `HIDE_NAVIGATION`                           | `boolean` | No               | Hide navigation container (also navigation plugin).                                     |
 | `HIDE_BREADCRUMBS`                          | `boolean` | No               | Hide breadcrumbs container.                                                             |
