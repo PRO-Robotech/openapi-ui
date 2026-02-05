@@ -12,6 +12,13 @@ import {
   BLACKHOLE_FORM_VIEW_SWITCH_HEIGHT,
   BLACKHOLE_FORM_SUBMIT_ROW_HEIGHT,
 } from 'constants/blocksSizes'
+import {
+  BASE_API_GROUP,
+  BASE_API_VERSION,
+  CUSTOMIZATION_CFO_FALLBACK_ID,
+  CUSTOMIZATION_CFOMAPPING_RESOURCE_NAME,
+  CUSTOMIZATION_CFOMAPPING_RESOURCE_PLURAL,
+} from 'constants/customizationApiGroupAndVersion'
 
 type TBlackholeFormProps = {
   data:
@@ -90,6 +97,13 @@ export const BlackholeForm: FC<TBlackholeFormProps> = ({ data, customizationId, 
       urlParamsForPermissions={urlParamsForPermissions}
       data={data}
       customizationId={customizationId}
+      forcingCustomization={{
+        baseApiGroup: BASE_API_GROUP,
+        baseApiVersion: BASE_API_VERSION,
+        cfoMappingPlural: CUSTOMIZATION_CFOMAPPING_RESOURCE_PLURAL,
+        cfoMappinResourceName: CUSTOMIZATION_CFOMAPPING_RESOURCE_NAME,
+        fallbackId: CUSTOMIZATION_CFO_FALLBACK_ID,
+      }}
       isCreate={isCreate}
       backlink={backlink}
       modeData={modeData}

@@ -27,7 +27,7 @@ export const ManageableSidebar: FC<TManageableSidebarProps> = ({
   currentTags,
 }) => {
   const location = useLocation()
-  const { pathname } = useLocation()
+  const { pathname, search } = location
   const params = useParams()
   const cluster = params?.cluster || ''
   const namespace = params?.namespace || ''
@@ -84,6 +84,7 @@ export const ManageableSidebar: FC<TManageableSidebarProps> = ({
           ...replaceValuesPartsOfUrls,
         }}
         pathname={pathname}
+        searchParams={search}
         idToCompare={idToCompare}
         fallbackIdToCompare={
           namespace ? `${CUSTOMIZATION_SIDEBAR_FALLBACK_ID}-namespaced` : CUSTOMIZATION_SIDEBAR_FALLBACK_ID

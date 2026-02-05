@@ -27,6 +27,8 @@ This app can be configured through environment variables.
 | `CUSTOMIZATION_API_VERSION`                 | `string`  | Yes              | API version for customization resources. `v1alpha1`                                     |
 | `CUSTOMIZATION_NAVIGATION_RESOURCE_PLURAL`  | `string`  | No               | Resource plural name for navigation settings. `navigations`                             |
 | `CUSTOMIZATION_NAVIGATION_RESOURCE_NAME`    | `string`  | No               | Resource name for navigation settings. `navigation`                                     |
+| `CUSTOMIZATION_CFOMAPPING_RESOURCE_PLURAL`  | `string`  | No               | Resource plural name for CFO settings. `cfomappings`                                    |
+| `CUSTOMIZATION_CFOMAPPING_RESOURCE_NAME`    | `string`  | No               | Resource name for navigation settings. `default`                                        |
 | `CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP`   | `string`  | No               | Custom namespace resource: api group.                                                   |
 | `CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION` | `string`  | No               | Custom namespace resource: api version.                                                 |
 | `CUSTOM_NAMESPACE_API_RESOURCE_PLURAL`      | `string`  | No               | Custom namespace resource: plural name.                                                 |
@@ -36,6 +38,7 @@ This app can be configured through environment variables.
 | `SELECTOR_WIDTH_INSTANCE`                   | `string`  | No               | Selector width for instance: `200px`                                                    |
 | `CUSTOMIZATION_SIDEBAR_FALLBACK_ID`         | `string`  | Yes if no plugin | `spec.id` to find in `sidebars` to fallback. Use `-namespaced` for NS-pages             |
 | `CUSTOMIZATION_BREADCRUMBS_FALLBACK_ID`     | `string`  | Yes if no plugin | `spec.id` **prefix** to find in `breadcrumbs` to fallback                               |
+| `CUSTOMIZATION_CFO_FALLBACK_ID`             | `string`  | No               | `spec.id` **prefix** to find in `CFO` to fallback                                       |
 | `USE_NAMESPACE_NAV`                         | `boolean` | No               | Use namespaces instead of project/instances. `true`                                     |
 | `HIDE_NAVIGATION`                           | `boolean` | No               | Hide navigation container (also navigation plugin).                                     |
 | `HIDE_BREADCRUMBS`                          | `boolean` | No               | Hide breadcrumbs container.                                                             |
