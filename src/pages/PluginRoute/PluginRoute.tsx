@@ -25,7 +25,7 @@ export const PluginRoute: FC = () => {
     data: manifest,
     isLoading: manifestLoading,
     error: manifestError,
-  } = usePluginManifest({ cluster: cluster || '', refetchInterval: 60_000, isEnabled: Boolean(cluster) })
+  } = usePluginManifest({ cluster: cluster || '', refetchInterval: false, isEnabled: Boolean(cluster) })
 
   const [Component, setComponent] = useState<React.ComponentType<any> | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)

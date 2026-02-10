@@ -63,6 +63,7 @@ const getDefaultComponentsSettings = ({
     itemSelectedBg: colors?.colorText,
     itemSelectedColor: colors?.colorInfoBg,
     motionDurationSlow: '0.1s',
+    colorTextDisabled: colors?.colorInfoBg,
   },
   Modal: {
     zIndexBase: 1057,
