@@ -9,6 +9,7 @@ import {
   TFactoryResponse,
   // ContentCard,
 } from '@prorobotech/openapi-k8s-toolkit'
+import { Result } from 'antd'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store/store'
 import {
@@ -60,7 +61,11 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags }) => {
   }, [spec?.sidebarTags, setSidebarTags])
 
   if (!spec) {
-    return null
+    return (
+      <ContentCardMain>
+        <Result status="404" title="Factory Not Found" subTitle={`No factory is configured for key "${key ?? ''}".`} />
+      </ContentCardMain>
+    )
   }
 
   if (spec.withScrollableMainContentCard) {
