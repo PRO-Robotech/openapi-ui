@@ -47,7 +47,9 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags }) => {
   //   }
   // }, [])
 
-  const { data: factoryData } = useK8sSmartResource<TFactoryResponse<TDynamicComponentsAppTypeMap>>({
+  const { data: factoryData, isLoading: isFactoryLoading } = useK8sSmartResource<
+    TFactoryResponse<TDynamicComponentsAppTypeMap>
+  >({
     cluster,
     apiGroup: BASE_API_GROUP,
     apiVersion: BASE_API_VERSION,
@@ -59,6 +61,10 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags }) => {
   useEffect(() => {
     setSidebarTags(spec?.sidebarTags || [])
   }, [spec?.sidebarTags, setSidebarTags])
+
+  if (isFactoryLoading) {
+    return null
+  }
 
   if (!spec) {
     return (
