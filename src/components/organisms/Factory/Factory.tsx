@@ -69,7 +69,14 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags }) => {
   if (!spec) {
     return (
       <ContentCardMain>
-        <Result status="404" title="Factory Not Found" subTitle={`No factory is configured for key "${key ?? ''}".`} />
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+          <Result
+            status="404"
+            title="Factory Not Found"
+            subTitle={`No factory is configured for key "${key ?? ''}".`}
+            style={{ padding: 0 }}
+          />
+        </div>
       </ContentCardMain>
     )
   }
