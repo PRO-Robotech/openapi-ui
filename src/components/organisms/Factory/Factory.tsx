@@ -20,6 +20,7 @@ import {
 // import { HEAD_FIRST_ROW, HEAD_SECOND_ROW, FOOTER_HEIGHT, NAV_HEIGHT } from 'constants/blocksSizes'
 import '@xterm/xterm/css/xterm.css'
 import { ContentCardMain } from 'components/atoms'
+import { Styled } from './styled'
 
 type TFactoryProps = {
   setSidebarTags: (tags: string[]) => void
@@ -69,7 +70,14 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags }) => {
   if (!spec) {
     return (
       <ContentCardMain>
-        <Result status="404" title="Factory Not Found" subTitle={`No factory is configured for key "${key ?? ''}".`} />
+        <Styled.NotFoundContainer>
+          <Result
+            status="404"
+            title="Factory Not Found"
+            subTitle={`No factory is configured for key "${key ?? ''}".`}
+            style={{ padding: 0 }}
+          />
+        </Styled.NotFoundContainer>
       </ContentCardMain>
     )
   }
