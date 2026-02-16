@@ -1,13 +1,14 @@
 import React, { FC } from 'react'
-import { Breadcrumb } from 'antd'
-import { ContentCard } from '@prorobotech/openapi-k8s-toolkit'
+import { Breadcrumb, theme as antdtheme } from 'antd'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
-import { ListClusters, NavigationContainer } from 'components'
+import { ContentCardMain, ListClusters, NavigationContainer } from 'components'
 import { BaseTemplate } from 'templates'
+import { BASE_HIDE_BREADCRUMBS } from 'constants/customizationApiGroupAndVersion'
 
 export const ListClustersPage: FC = () => {
+  const { token } = antdtheme.useToken()
   const baseprefix = useSelector((state: RootState) => state.baseprefix.baseprefix)
 
   const breadcrumbItems = [
@@ -23,12 +24,14 @@ export const ListClustersPage: FC = () => {
 
   return (
     <BaseTemplate>
-      <NavigationContainer>
-        <Breadcrumb items={breadcrumbItems} separator=">" />
-      </NavigationContainer>
-      <ContentCard flexGrow={1} displayFlex flexFlow="column">
+      {BASE_HIDE_BREADCRUMBS !== 'true' && (
+        <NavigationContainer $bgColor={token.colorBgLayout}>
+          <Breadcrumb items={breadcrumbItems} separator=">" />
+        </NavigationContainer>
+      )}
+      <ContentCardMain>
         <ListClusters />
-      </ContentCard>
+      </ContentCardMain>
     </BaseTemplate>
   )
 }

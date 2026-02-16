@@ -1,4 +1,6 @@
 import styled from 'styled-components'
+import { BASE_USE_NEW_NAVIGATION } from 'constants/customizationApiGroupAndVersion'
+import { SIDEBAR_WIDTH } from 'constants/blocksSizes'
 
 type TContainerProps = {
   $isDark?: boolean
@@ -11,14 +13,14 @@ type TContainerProps = {
 }
 
 const Container = styled.div<TContainerProps>`
-  width: 250px;
+  width: ${SIDEBAR_WIDTH}px;
   padding-right: 1px;
   overflow-y: auto;
   scrollbar-width: thin;
   direction: rtl;
   max-height: ${({ $maxHeight }) => $maxHeight || 'initial'};
   user-select: none;
-  border-top-right-radius: 7px;
+  border-top-right-radius: ${BASE_USE_NEW_NAVIGATION === 'true' ? '0' : `7px`};
 
   & ul {
     direction: ltr;
@@ -30,6 +32,7 @@ const Container = styled.div<TContainerProps>`
 
   /* stylelint-disable declaration-no-important */
   /* stylelint-disable no-descending-specificity */
+  /* stylelint-disable selector-no-qualifying-type */
 
   /* full width */
 
@@ -90,6 +93,13 @@ const Container = styled.div<TContainerProps>`
     background-color: ${({ $colorPrimaryHover }) => $colorPrimaryHover || 'initial'};
     border-radius: 4px;
     content: ' ';
+  }
+
+  && .ant-menu-root ul.ant-menu-sub ul.ant-menu-sub .ant-menu-item.ant-menu-item-selected {
+    width: 190px;
+    margin-left: 49px !important;
+    padding-left: 23px !important;
+    transition: padding 0s;
   }
 `
 

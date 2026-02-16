@@ -1,0 +1,1 @@
+export { PluginByManifest } from './PluginByManifest'

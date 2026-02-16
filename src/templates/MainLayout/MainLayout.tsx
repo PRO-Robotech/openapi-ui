@@ -7,7 +7,7 @@ import type { RootState } from 'store/store'
 import { setTheme } from 'store/theme/theme/theme'
 import { setCluster } from 'store/cluster/cluster/cluster'
 import { setClusterList } from 'store/clusterList/clusterList/clusterList'
-import { DefaultLayout, DefaultColorProvider, Header } from 'components'
+import { DefaultColorProvider, Header } from 'components'
 import { Styled } from './styled'
 
 type TMainLayoutProps = {
@@ -74,16 +74,16 @@ export const MainLayout: FC<TMainLayoutProps> = ({ children, forcedTheme }) => {
     <DefaultColorProvider $color={token.colorText}>
       <Styled.Container $isDark={theme === 'dark'}>
         <Layout>
-          <DefaultLayout.Layout $bgColor={token.colorBgLayout}>
-            <DefaultLayout.ContentContainer>
+          <Styled.Layout $bgColor={token.colorBgLayout}>
+            <Styled.ContentContainer>
               <Header />
               {clusterListQuery.error && (
                 <Alert message={`Cluster List Error: ${clusterListQuery.error?.message} `} type="error" />
               )}
               <Outlet />
               {children}
-            </DefaultLayout.ContentContainer>
-          </DefaultLayout.Layout>
+            </Styled.ContentContainer>
+          </Styled.Layout>
         </Layout>
       </Styled.Container>
     </DefaultColorProvider>

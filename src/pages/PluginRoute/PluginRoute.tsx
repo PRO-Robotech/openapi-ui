@@ -8,8 +8,7 @@ import {
   __federation_method_setRemote as setRemote,
   __federation_method_unwrapDefault as unwrapModule,
 } from 'virtual:__federation__'
-import { TPluginManifestEntry } from 'localTypes/plugins'
-import { usePluginManifest } from 'hooks/usePlugins'
+import { usePluginManifest, TPluginManifestEntry } from '@prorobotech/openapi-k8s-toolkit'
 
 type TParams = {
   cluster: string
@@ -22,7 +21,11 @@ type TParams = {
 export const PluginRoute: FC = () => {
   const { cluster, namespace, syntheticProject, pluginName, '*': pluginPath } = useParams<TParams>()
 
-  const { data: manifest, isLoading: manifestLoading, error: manifestError } = usePluginManifest(cluster)
+  const {
+    data: manifest,
+    isLoading: manifestLoading,
+    error: manifestError,
+  } = usePluginManifest({ cluster: cluster || '', refetchInterval: false, isEnabled: Boolean(cluster) })
 
   const [Component, setComponent] = useState<React.ComponentType<any> | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -65,7 +68,7 @@ export const PluginRoute: FC = () => {
       }
     }
 
-    const plugin = manifest[pluginName]
+    const plugin = manifest.data[pluginName]
     if (plugin) {
       load(plugin)
     } else {
@@ -75,7 +78,7 @@ export const PluginRoute: FC = () => {
     return () => {
       cancelled = true
     }
-  }, [manifest, pluginName])
+  }, [manifest, manifest?.data, pluginName])
 
   console.log('pluginName from URL:', pluginName)
   console.log('manifest keys:', Object.keys(manifest || {}))
@@ -100,6 +103,7 @@ export const PluginRoute: FC = () => {
       syntheticProject={syntheticProject}
       pluginName={pluginName}
       pluginPath={pluginPath}
+      withRoutes
     />
   )
 }
