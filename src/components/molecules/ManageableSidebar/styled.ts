@@ -32,6 +32,7 @@ const Container = styled.div<TContainerProps>`
 
   /* stylelint-disable declaration-no-important */
   /* stylelint-disable no-descending-specificity */
+  /* stylelint-disable selector-no-qualifying-type */
 
   /* full width */
 
