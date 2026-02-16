@@ -20,7 +20,7 @@ const Container = styled.div<TContainerProps>`
   justify-content: center;
   align-items: center;
   background: ${({ $colorBgLayout }) => $colorBgLayout};
-  width: 100%;
+  width: calc(100% - ${SIDEBAR_WIDTH}px);
 `
 
 export const Styled = {
