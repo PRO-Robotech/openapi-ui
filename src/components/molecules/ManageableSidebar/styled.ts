@@ -32,6 +32,7 @@ const Container = styled.div<TContainerProps>`
 
   /* stylelint-disable declaration-no-important */
   /* stylelint-disable no-descending-specificity */
+  /* stylelint-disable selector-no-qualifying-type */
 
   /* full width */
 
@@ -92,6 +93,13 @@ const Container = styled.div<TContainerProps>`
     background-color: ${({ $colorPrimaryHover }) => $colorPrimaryHover || 'initial'};
     border-radius: 4px;
     content: ' ';
+  }
+
+  && .ant-menu-root ul.ant-menu-sub ul.ant-menu-sub .ant-menu-item.ant-menu-item-selected {
+    width: 190px;
+    margin-left: 49px !important;
+    padding-left: 23px !important;
+    transition: padding 0s;
   }
 `
 
