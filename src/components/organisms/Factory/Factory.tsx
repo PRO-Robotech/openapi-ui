@@ -24,9 +24,10 @@ import { Styled } from './styled'
 
 type TFactoryProps = {
   setSidebarTags: (tags: string[]) => void
+  setForcedSidebarId: (id?: string) => void
 }
 
-export const Factory: FC<TFactoryProps> = ({ setSidebarTags }) => {
+export const Factory: FC<TFactoryProps> = ({ setSidebarTags, setForcedSidebarId }) => {
   const theme = useSelector((state: RootState) => state.openapiTheme.theme)
   const cluster = useSelector((state: RootState) => state.cluster.cluster)
   const { key } = useParams()
@@ -61,7 +62,8 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags }) => {
 
   useEffect(() => {
     setSidebarTags(spec?.sidebarTags || [])
-  }, [spec?.sidebarTags, setSidebarTags])
+    setForcedSidebarId(spec?.forcedSidebarId)
+  }, [spec?.sidebarTags, spec?.forcedSidebarId, setSidebarTags, setForcedSidebarId])
 
   if (isFactoryLoading) {
     return null
