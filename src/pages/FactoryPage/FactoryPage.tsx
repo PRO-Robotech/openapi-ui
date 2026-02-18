@@ -6,7 +6,7 @@ import { TChromeCtx } from 'templates'
 export const FactoryPage: FC = () => {
   const { key } = useParams()
 
-  const { setCurrentTags, setSidebarSuffix, setBreadcrumbsSuffix } = useOutletContext<TChromeCtx>()
+  const { setCurrentTags, setSidebarSuffix, setForcedSidebarId, setBreadcrumbsSuffix } = useOutletContext<TChromeCtx>()
 
   useEffect(() => {
     setSidebarSuffix(`factory-${key}`)
@@ -15,9 +15,10 @@ export const FactoryPage: FC = () => {
     return () => {
       setCurrentTags(undefined)
       setSidebarSuffix(undefined)
+      setForcedSidebarId(undefined)
       setBreadcrumbsSuffix(undefined)
     }
-  }, [key, setSidebarSuffix, setBreadcrumbsSuffix, setCurrentTags])
+  }, [key, setSidebarSuffix, setForcedSidebarId, setBreadcrumbsSuffix, setCurrentTags])
 
-  return <Factory setSidebarTags={setCurrentTags} key={key} />
+  return <Factory setSidebarTags={setCurrentTags} setForcedSidebarId={setForcedSidebarId} key={key} />
 }

@@ -11,6 +11,7 @@ import { BASE_HIDE_BREADCRUMBS } from 'constants/customizationApiGroupAndVersion
 export type TChromeCtx = {
   setCurrentTags: (tags?: string[]) => void
   setSidebarSuffix: (suffix?: string) => void
+  setForcedSidebarId: (id?: string) => void
   setBreadcrumbsSuffix: (suffix?: string) => void
   setBacklinkTo: (backlinkTo?: string) => void
   setBacklinkTitle: (backlinkTitle?: string) => void
@@ -35,6 +36,7 @@ export const AppShell: FC<{ inside?: boolean }> = ({ inside }) => {
 
   const [currentTags, setCurrentTagsState] = useState<string[] | undefined>()
   const [sidebarSuffix, setSidebarSuffix] = useState<string | undefined>()
+  const [forcedSidebarId, setForcedSidebarId] = useState<string | undefined>()
   const [breadcrumbsSuffix, setBreadcrumbsSuffix] = useState<string | undefined>()
   const [backlinkTo, setBacklinkTo] = useState<string | undefined>()
   const [backlinkTitle, setBacklinkTitle] = useState<string | undefined>()
@@ -52,13 +54,15 @@ export const AppShell: FC<{ inside?: boolean }> = ({ inside }) => {
     })
   }, [])
 
-  const sidebarId = useMemo(
-    () =>
-      `${getSidebarIdPrefix({ instance: !!syntheticProject, project: !!namespace, useOnlyNamespace, inside })}${
-        sidebarSuffix ?? 'app-shell'
-      }`,
-    [syntheticProject, namespace, sidebarSuffix, useOnlyNamespace, inside],
-  )
+  const sidebarId = useMemo(() => {
+    if (forcedSidebarId) {
+      return forcedSidebarId
+    }
+
+    return `${getSidebarIdPrefix({ instance: !!syntheticProject, project: !!namespace, useOnlyNamespace, inside })}${
+      sidebarSuffix ?? 'app-shell'
+    }`
+  }, [forcedSidebarId, syntheticProject, namespace, sidebarSuffix, useOnlyNamespace, inside])
 
   const breadcrumbsId = useMemo(
     () =>
@@ -88,6 +92,7 @@ export const AppShell: FC<{ inside?: boolean }> = ({ inside }) => {
     () => ({
       setCurrentTags,
       setSidebarSuffix,
+      setForcedSidebarId,
       setBreadcrumbsSuffix,
       setBacklinkTo,
       setBacklinkTitle,
