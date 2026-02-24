@@ -26,3 +26,4 @@ yalc.lock
 
 /*.md
 !/README.md
+.claude
