@@ -25,7 +25,7 @@ export const useNavSelectorClusters = () => {
     ? (clusterList as unknown as TClusterLike[])
         .map(getClusterName)
         .filter((name): name is string => name.length > 0)
-        .map((name) => ({ value: name, label: name }))
+        .map(name => ({ value: name, label: name }))
         .sort((a, b) => a.label.localeCompare(b.label))
     : []
 
