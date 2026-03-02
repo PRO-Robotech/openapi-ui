@@ -55,6 +55,10 @@ This app can be configured through environment variables.
 | `INSTANCES_API_GROUP`                       | `string`  | No               | API group for instances resources. If not using namespace nav.                          |
 | `INSTANCES_API_VERSION`                     | `string`  | No               | API version for instances resources. If not using namespace nav.                        |
 | `INSTANCES_PLURAL`                          | `string`  | No               | Plural name for instances resources. If not using namespace nav.                        |
+| `CURRENT_CLUSTER`                           | `string`  | No               | Current cluster name                                                                    |
+| `CLUSTERLIST_API_RESOURCE_API_GROUP`        | `string`  | No               | API group for clusterlist resources. If not fallback to endpoint.                       |
+| `CLUSTERLIST_API_RESOURCE_API_VERSION`      | `string`  | No               | API version for clusterlist resources. If not fallback to endpoint.                     |
+| `CLUSTERLIST_API_RESOURCE_PLURAL`           | `string`  | No               | Plural name for clusterlist resources. If not fallback to endpoint.                     |
 | `NODE_TERMINAL_DEFAULT_PROFILE`             | `string`  | No               | Default profile for node terminal component. `baseline`. Deprecated.                    |
 | `DOCS_URL`                                  | `string`  | Yes              | URL to navigate from question mark.                                                     |
 | `SEARCH_TABLE_CUSTOMIZATION_PREFIX`         | `string`  | Yes              | Search tables Customization id prefix.                                                  |
