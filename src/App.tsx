@@ -28,6 +28,7 @@ import {
 } from 'pages'
 import { getBasePrefix } from 'utils/getBaseprefix'
 import { getConfigProviderProps } from 'utils/getConfigProviderProps'
+import { CURRENT_CLUSTER } from 'constants/customizationApiGroupAndVersion'
 import { MainLayout, AppShell } from 'templates'
 
 type TAppProps = {
@@ -55,7 +56,13 @@ export const App: FC<TAppProps> = ({ isFederation, forcedTheme }) => {
     <Routes>
       <Route element={<MainLayout forcedTheme={forcedTheme} />}>
         <Route path={`${prefix}/`} element={<MainPage />} />
-        <Route path={`${prefix}/clusters`} element={<ListClustersPage />} />
+        {CURRENT_CLUSTER?.length > 0 ? (
+          <Route path={`${prefix}/clusters`} element={<AppShell />}>
+            <Route index element={<ListClustersPage withBaseTemplate={false} />} />
+          </Route>
+        ) : (
+          <Route path={`${prefix}/clusters`} element={<ListClustersPage />} />
+        )}
 
         <Route path={`${prefix}/:cluster/:namespace?/:syntheticProject?/*`} element={<AppShell />}>
           <Route path="api-table/:apiGroup/:apiVersion/:plural" element={<TableApiPage />} />

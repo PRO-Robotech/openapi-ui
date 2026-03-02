@@ -1,5 +1,5 @@
 import React, { FC, useState, useMemo } from 'react'
-import { Outlet, useParams } from 'react-router-dom'
+import { Outlet, useLocation, useParams } from 'react-router-dom'
 import { theme as antdtheme } from 'antd'
 import { useKinds } from '@prorobotech/openapi-k8s-toolkit'
 import { BaseTemplate } from 'templates'
@@ -21,7 +21,13 @@ export type TChromeCtx = {
 
 export const AppShell: FC<{ inside?: boolean }> = ({ inside }) => {
   const { token } = antdtheme.useToken()
+  const { pathname } = useLocation()
   const { cluster, namespace, syntheticProject } = useParams()
+  const pathnameParts = pathname.split('/').filter(Boolean)
+  const isClusterListPage =
+    pathnameParts[pathnameParts.length - 1] === 'clusters' &&
+    pathnameParts[pathnameParts.length - 2] !== 'inside' &&
+    !cluster
 
   // fetch in advance
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -104,7 +110,7 @@ export const AppShell: FC<{ inside?: boolean }> = ({ inside }) => {
 
   return (
     <BaseTemplate inside={inside} sidebar={sidebarEl} isSearch={baseTemplateSearchBoolean}>
-      {BASE_HIDE_BREADCRUMBS !== 'true' && (
+      {BASE_HIDE_BREADCRUMBS !== 'true' && !isClusterListPage && (
         <NavigationContainer $bgColor={token.colorBgLayout}>
           <ManageableBreadcrumbs idToCompare={breadcrumbsId} inside={inside} />
           {backlinkTo && backlinkTitle && <BackLink to={backlinkTo} title={backlinkTitle} />}
