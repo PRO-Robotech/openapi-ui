@@ -1,6 +1,6 @@
 import React, { FC, ReactNode, useEffect, useCallback } from 'react'
 import { Layout, theme as antdtheme, Alert } from 'antd'
-import { useClusterList } from '@prorobotech/openapi-k8s-toolkit'
+import { TSingleResource, useClusterList, useK8sSmartResource } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams, Outlet } from 'react-router-dom'
 import type { RootState } from 'store/store'
@@ -8,6 +8,12 @@ import { setTheme } from 'store/theme/theme/theme'
 import { setCluster } from 'store/cluster/cluster/cluster'
 import { setClusterList } from 'store/clusterList/clusterList/clusterList'
 import { DefaultColorProvider, Header } from 'components'
+import {
+  CURRENT_CLUSTER,
+  CLUSTERLIST_API_RESOURCE_API_GROUP,
+  CLUSTERLIST_API_RESOURCE_API_VERSION,
+  CLUSTERLIST_API_RESOURCE_PLURAL,
+} from 'constants/customizationApiGroupAndVersion'
 import { Styled } from './styled'
 
 type TMainLayoutProps = {
@@ -21,7 +27,22 @@ export const MainLayout: FC<TMainLayoutProps> = ({ children, forcedTheme }) => {
   const { token } = useToken()
   const dispatch = useDispatch()
   const theme = useSelector((state: RootState) => state.openapiTheme.theme)
-  const clusterListQuery = useClusterList({ refetchInterval: false })
+  const isNonEmptyString = (value: string | undefined): value is string => typeof value === 'string' && value.length > 0
+  const useClusterListByResources = [
+    CURRENT_CLUSTER,
+    CLUSTERLIST_API_RESOURCE_API_GROUP,
+    CLUSTERLIST_API_RESOURCE_API_VERSION,
+    CLUSTERLIST_API_RESOURCE_PLURAL,
+  ].every(isNonEmptyString)
+
+  const clusterListQuery = useClusterList({ enabled: !useClusterListByResources, refetchInterval: false })
+  const clusterListQueryByResources = useK8sSmartResource<{ items: TSingleResource[] }>({
+    cluster: CURRENT_CLUSTER || '',
+    apiGroup: CLUSTERLIST_API_RESOURCE_API_GROUP,
+    apiVersion: CLUSTERLIST_API_RESOURCE_API_VERSION || '',
+    plural: CLUSTERLIST_API_RESOURCE_PLURAL || '',
+    isEnabled: useClusterListByResources,
+  })
 
   useEffect(() => {
     if (forcedTheme) {
@@ -61,10 +82,23 @@ export const MainLayout: FC<TMainLayoutProps> = ({ children, forcedTheme }) => {
   }, [handleStorage])
 
   useEffect(() => {
-    if (clusterListQuery.data) {
-      dispatch(setClusterList(clusterListQuery.data))
+    const clusterListFromResources = clusterListQueryByResources.data?.items
+      ?.map(item => item?.spec as { name?: string; api?: string; description?: string; tenant?: string } | undefined)
+      .filter((spec): spec is { name: string; api?: string; description?: string; tenant?: string } =>
+        Boolean(spec && typeof spec.name === 'string' && spec.name.length > 0),
+      )
+      .map(spec => ({
+        name: spec.name,
+        api: spec.api || '',
+        description: spec.description || '',
+        tenant: spec.tenant || '',
+      }))
+
+    const activeClusterList = useClusterListByResources ? clusterListFromResources : clusterListQuery.data
+    if (activeClusterList) {
+      dispatch(setClusterList(activeClusterList))
     }
-  }, [clusterListQuery, dispatch])
+  }, [clusterListQuery.data, clusterListQueryByResources.data, dispatch, useClusterListByResources])
 
   useEffect(() => {
     dispatch(setCluster(cluster ?? ''))
@@ -77,8 +111,13 @@ export const MainLayout: FC<TMainLayoutProps> = ({ children, forcedTheme }) => {
           <Styled.Layout $bgColor={token.colorBgLayout}>
             <Styled.ContentContainer>
               <Header />
-              {clusterListQuery.error && (
-                <Alert message={`Cluster List Error: ${clusterListQuery.error?.message} `} type="error" />
+              {(useClusterListByResources ? clusterListQueryByResources.error : clusterListQuery.error) && (
+                <Alert
+                  message={`Cluster List Error: ${
+                    useClusterListByResources ? clusterListQueryByResources.error : clusterListQuery.error?.message
+                  } `}
+                  type="error"
+                />
               )}
               <Outlet />
               {children}

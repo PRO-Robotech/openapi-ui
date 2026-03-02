@@ -165,6 +165,18 @@ const THEME_TOKENS_COMPONENTS_DARK =
 const THEME_TOKENS_USE_MERGE_STRATEGY =
   process.env.LOCAL === 'true' ? options?.THEME_TOKENS_USE_MERGE_STRATEGY : process.env.THEME_TOKENS_USE_MERGE_STRATEGY
 
+const CURRENT_CLUSTER = process.env.LOCAL === 'true' ? options?.CURRENT_CLUSTER : process.env.CURRENT_CLUSTER
+const CLUSTERLIST_API_RESOURCE_API_GROUP =
+  process.env.LOCAL === 'true'
+    ? options?.CLUSTERLIST_API_RESOURCE_API_GROUP
+    : process.env.CLUSTERLIST_API_RESOURCE_API_GROUP
+const CLUSTERLIST_API_RESOURCE_API_VERSION =
+  process.env.LOCAL === 'true'
+    ? options?.CLUSTERLIST_API_RESOURCE_API_VERSION
+    : process.env.CLUSTERLIST_API_RESOURCE_API_VERSION
+const CLUSTERLIST_API_RESOURCE_PLURAL =
+  process.env.LOCAL === 'true' ? options?.CLUSTERLIST_API_RESOURCE_PLURAL : process.env.CLUSTERLIST_API_RESOURCE_PLURAL
+
 type TPluginConfig = {
   name: string
   entry: string
@@ -436,6 +448,18 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
       INSTANCES_API_GROUP: ${JSON.stringify(INSTANCES_API_GROUP) || '"check envs"'},
       INSTANCES_API_VERSION: ${JSON.stringify(INSTANCES_API_VERSION) || '"check envs"'},
       INSTANCES_PLURAL: ${JSON.stringify(INSTANCES_PLURAL) || '"check envs"'},
+      ${CURRENT_CLUSTER ? `CURRENT_CLUSTER: "${CURRENT_CLUSTER}",` : ''}
+      ${
+        CLUSTERLIST_API_RESOURCE_API_GROUP
+          ? `CLUSTERLIST_API_RESOURCE_API_GROUP: "${CLUSTERLIST_API_RESOURCE_API_GROUP}",`
+          : ''
+      }
+      ${
+        CLUSTERLIST_API_RESOURCE_API_VERSION
+          ? `CLUSTERLIST_API_RESOURCE_API_VERSION: "${CLUSTERLIST_API_RESOURCE_API_VERSION}",`
+          : ''
+      }
+      ${CLUSTERLIST_API_RESOURCE_PLURAL ? `CLUSTERLIST_API_RESOURCE_PLURAL: "${CLUSTERLIST_API_RESOURCE_PLURAL}",` : ''}
       NODE_TERMINAL_DEFAULT_PROFILE: ${JSON.stringify(NODE_TERMINAL_DEFAULT_PROFILE) || '"general"'},
       DOCS_URL: ${JSON.stringify(DOCS_URL) || '"/docs"'},
       SEARCH_TABLE_CUSTOMIZATION_PREFIX: ${JSON.stringify(SEARCH_TABLE_CUSTOMIZATION_PREFIX) || '"search-"'},
