@@ -83,16 +83,28 @@ export const MainLayout: FC<TMainLayoutProps> = ({ children, forcedTheme }) => {
 
   useEffect(() => {
     const clusterListFromResources = clusterListQueryByResources.data?.items
-      ?.map(item => item?.spec as { name?: string; api?: string; description?: string; tenant?: string } | undefined)
-      .filter((spec): spec is { name: string; api?: string; description?: string; tenant?: string } =>
-        Boolean(spec && typeof spec.name === 'string' && spec.name.length > 0),
-      )
-      .map(spec => ({
-        name: spec.name,
-        api: spec.api || '',
-        description: spec.description || '',
-        tenant: spec.tenant || '',
-      }))
+      ?.map(item => {
+        const name =
+          typeof item?.metadata?.name === 'string' && item.metadata.name.length > 0 ? item.metadata.name : undefined
+        const spec = item?.spec as
+          | { displayName?: string; api?: string; description?: string; tenant?: string }
+          | undefined
+        const displayName =
+          typeof spec?.displayName === 'string' && spec.displayName.length > 0 ? spec.displayName : undefined
+
+        if (!spec || !name) {
+          return undefined
+        }
+
+        return {
+          name,
+          displayName,
+          api: spec.api || '',
+          description: spec.description || '',
+          tenant: spec.tenant || '',
+        }
+      })
+      .filter((item): item is NonNullable<typeof item> => Boolean(item))
 
     const activeClusterList = useClusterListByResources ? clusterListFromResources : clusterListQuery.data
     if (activeClusterList) {
