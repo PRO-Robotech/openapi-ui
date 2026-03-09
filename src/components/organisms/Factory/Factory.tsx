@@ -30,6 +30,7 @@ type TFactoryProps = {
 export const Factory: FC<TFactoryProps> = ({ setSidebarTags, setForcedSidebarId }) => {
   const theme = useSelector((state: RootState) => state.openapiTheme.theme)
   const cluster = useSelector((state: RootState) => state.cluster.cluster)
+  const clusterEnabled = Boolean(cluster)
   const { key } = useParams()
 
   // const [height, setHeight] = useState(0)
@@ -52,10 +53,11 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags, setForcedSidebarId 
   const { data: factoryData, isLoading: isFactoryLoading } = useK8sSmartResource<
     TFactoryResponse<TDynamicComponentsAppTypeMap>
   >({
-    cluster,
+    cluster: cluster || '',
     apiGroup: BASE_API_GROUP,
     apiVersion: BASE_API_VERSION,
     plural: 'factories',
+    isEnabled: clusterEnabled,
   })
 
   const { spec } = factoryData?.items.find(({ spec }) => spec.key === key) ?? { spec: undefined }

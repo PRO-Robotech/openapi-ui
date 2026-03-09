@@ -21,22 +21,28 @@ type TListInsideApisByApiGroupProps = {
 export const ListInsideApisByApiGroup: FC<TListInsideApisByApiGroupProps> = ({ namespace, apiGroup, apiVersion }) => {
   const cluster = useSelector((state: RootState) => state.cluster.cluster)
   const baseprefix = useSelector((state: RootState) => state.baseprefix.baseprefix)
+  const clusterEnabled = Boolean(cluster)
   const [filteredResources, setFilteredResources] = useState<TApiGroupResourceTypeList['resources']>()
 
   const [limit, setLimit] = useState('')
   const navigate = useNavigate()
 
   const { isPending, error, data } = useApiResourceTypesByGroup({
-    cluster,
+    cluster: cluster || '',
     apiGroup,
     apiVersion,
+    enabler: clusterEnabled,
   })
 
   useEffect(() => {
-    filterIfApiInstanceNamespaceScoped({ namespace, data, apiGroup, apiVersion, cluster }).then(data =>
+    if (!clusterEnabled) {
+      return
+    }
+
+    filterIfApiInstanceNamespaceScoped({ namespace, data, apiGroup, apiVersion, cluster: cluster || '' }).then(data =>
       setFilteredResources(data),
     )
-  }, [namespace, data, apiGroup, apiVersion, cluster])
+  }, [namespace, data, apiGroup, apiVersion, cluster, clusterEnabled])
 
   return (
     <>
