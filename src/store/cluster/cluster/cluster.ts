@@ -3,11 +3,11 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
 export type TState = {
-  cluster: string
+  cluster?: string
 }
 
 const initialState: TState = {
-  cluster: '',
+  cluster: undefined,
 }
 
 export const clusterSlice = createSlice({

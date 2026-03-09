@@ -1,5 +1,6 @@
 import React, { FC, useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+import { Alert } from 'antd'
 import { BlackholeFormProvider, TJSON } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
@@ -87,6 +88,10 @@ export const BlackholeForm: FC<TBlackholeFormProps> = ({ data, customizationId, 
   const urlParamsForPermissions = {
     apiGroup: params.apiGroup,
     plural: params.plural,
+  }
+
+  if (!cluster) {
+    return <Alert type="error" message="Error while defining cluster" description="No cluster has been set" />
   }
 
   return (

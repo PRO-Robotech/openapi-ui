@@ -14,6 +14,7 @@ type TUpdateBuiltinFormProps = {
 
 export const UpdateBuiltinForm: FC<TUpdateBuiltinFormProps> = ({ plural, name, namespace, backLink }) => {
   const cluster = useSelector((state: RootState) => state.cluster.cluster)
+  const clusterEnabled = Boolean(cluster)
 
   const [currentMode, setCurrentMode] = useState<string>('OpenAPI')
   const [currentModeDisabled, setCurrentModeDisabled] = useState<boolean>(false)
@@ -33,11 +34,12 @@ export const UpdateBuiltinForm: FC<TUpdateBuiltinFormProps> = ({ plural, name, n
   }
 
   const { data, isPending, error } = useBuiltinResourceSingle({
-    cluster,
+    cluster: cluster || '',
     namespace,
     plural,
     name,
     refetchInterval: false,
+    enabler: clusterEnabled,
   })
 
   if (isPending) {
