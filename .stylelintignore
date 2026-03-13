@@ -9,4 +9,4 @@ node_modules/
 *.jpg
 .history
 src/index.css
-
+tmp/

@@ -1,0 +1,1 @@
+export { RbacGraphPage } from './RbacGraphPage'

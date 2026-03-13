@@ -1,0 +1,1 @@
+export { RbacEdge } from './RbacEdge'

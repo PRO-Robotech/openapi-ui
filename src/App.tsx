@@ -25,6 +25,7 @@ import {
   FactoryPage,
   SearchPage,
   PluginRoute,
+  RbacGraphPage,
 } from 'pages'
 import { getBasePrefix } from 'utils/getBaseprefix'
 import { getConfigProviderProps } from 'utils/getConfigProviderProps'
@@ -71,6 +72,7 @@ export const App: FC<TAppProps> = ({ isFederation, forcedTheme }) => {
           <Route path="forms/builtin/:apiVersion/:plural/:name?/" element={<FormBuiltinPage />} />
           <Route path="factory/:key/*" element={<FactoryPage />} />
           <Route path="search/*" element={<SearchPage />} />
+          <Route path="rbac-graph" element={<RbacGraphPage />} />
 
           <Route path="plugins/:pluginName/*" element={<PluginRoute />} />
         </Route>

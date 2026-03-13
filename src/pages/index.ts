@@ -21,3 +21,5 @@ export { RedirectProjectsPage } from './RedirectProjectsPage'
 export { RedirectProjectInfoPage } from './RedirectProjectInfoPage'
 /* plugins */
 export { PluginRoute } from './PluginRoute'
+/* rbac graph */
+export { RbacGraphPage } from './RbacGraphPage'
