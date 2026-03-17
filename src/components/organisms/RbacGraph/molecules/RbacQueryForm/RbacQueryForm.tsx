@@ -1,10 +1,33 @@
 import React, { FC } from 'react'
-import { Select, InputNumber, Checkbox, Button } from 'antd'
+import { Select, Input, InputNumber, Checkbox, Button } from 'antd'
 import type { TRbacQueryPayload } from 'localTypes/rbacGraph'
 import { Styled } from './styled'
 
+type TSelectorOption = {
+  label: string
+  value: string
+}
+
 type TRbacQueryFormProps = {
   value: TRbacQueryPayload
+  selectorLoading: boolean
+  selectorOptions: {
+    apiGroups: TSelectorOption[]
+    apiVersions: TSelectorOption[]
+    resources: TSelectorOption[]
+    verbs: TSelectorOption[]
+    nonResourceURLs: TSelectorOption[]
+  }
+  selectedApiVersions: string[]
+  onSelectorChange: (
+    patch: Partial<{
+      apiGroups: string[]
+      apiVersions: string[]
+      resources: string[]
+      verbs: string[]
+      nonResourceURLs: string[]
+    }>,
+  ) => void
   onChange: (payload: TRbacQueryPayload) => void
   onSubmit: () => void
   loading: boolean
@@ -21,7 +44,16 @@ const updateSelector = (
   spec: { ...prev.spec, selector: { ...prev.spec.selector, ...patch } },
 })
 
-export const RbacQueryForm: FC<TRbacQueryFormProps> = ({ value, onChange, onSubmit, loading }) => {
+export const RbacQueryForm: FC<TRbacQueryFormProps> = ({
+  value,
+  selectorLoading,
+  selectorOptions,
+  selectedApiVersions,
+  onSelectorChange,
+  onChange,
+  onSubmit,
+  loading,
+}) => {
   const { spec } = value
   const { selector } = spec
 
@@ -30,20 +62,36 @@ export const RbacQueryForm: FC<TRbacQueryFormProps> = ({ value, onChange, onSubm
       <Styled.FormRow>
         <Styled.Label>API Groups</Styled.Label>
         <Select
-          mode="tags"
+          mode="multiple"
+          loading={selectorLoading}
           value={selector.apiGroups}
-          onChange={v => onChange(updateSelector(value, { apiGroups: v }))}
-          placeholder="e.g. apps, batch"
+          options={selectorOptions.apiGroups}
+          onChange={apiGroups => onSelectorChange({ apiGroups })}
+          placeholder="Select API groups"
+        />
+      </Styled.FormRow>
+
+      <Styled.FormRow>
+        <Styled.Label>Versions</Styled.Label>
+        <Select
+          mode="multiple"
+          loading={selectorLoading}
+          value={selectedApiVersions}
+          options={selectorOptions.apiVersions}
+          onChange={apiVersions => onSelectorChange({ apiVersions })}
+          placeholder="Select versions"
         />
       </Styled.FormRow>
 
       <Styled.FormRow>
         <Styled.Label>Resources</Styled.Label>
         <Select
-          mode="tags"
+          mode="multiple"
+          loading={selectorLoading}
           value={selector.resources}
-          onChange={v => onChange(updateSelector(value, { resources: v }))}
-          placeholder="e.g. pods, deployments"
+          options={selectorOptions.resources}
+          onChange={resources => onSelectorChange({ resources })}
+          placeholder="Select resources"
         />
       </Styled.FormRow>
 
@@ -51,8 +99,10 @@ export const RbacQueryForm: FC<TRbacQueryFormProps> = ({ value, onChange, onSubm
         <Styled.Label>Verbs</Styled.Label>
         <Select
           mode="tags"
+          loading={selectorLoading}
           value={selector.verbs}
-          onChange={v => onChange(updateSelector(value, { verbs: v }))}
+          options={selectorOptions.verbs}
+          onChange={verbs => onSelectorChange({ verbs })}
           placeholder="e.g. get, list, watch"
         />
       </Styled.FormRow>
@@ -71,8 +121,9 @@ export const RbacQueryForm: FC<TRbacQueryFormProps> = ({ value, onChange, onSubm
         <Styled.Label>Non-Resource URLs</Styled.Label>
         <Select
           mode="tags"
+          options={selectorOptions.nonResourceURLs}
           value={selector.nonResourceURLs}
-          onChange={v => onChange(updateSelector(value, { nonResourceURLs: v }))}
+          onChange={nonResourceURLs => onSelectorChange({ nonResourceURLs })}
           placeholder="e.g. /healthz, /metrics"
         />
       </Styled.FormRow>
@@ -118,6 +169,7 @@ export const RbacQueryForm: FC<TRbacQueryFormProps> = ({ value, onChange, onSubm
         <Styled.Label>Namespace Scope Namespaces</Styled.Label>
         <Select
           mode="tags"
+          tokenSeparators={[' ', ',']}
           value={spec.namespaceScope?.namespaces ?? []}
           onChange={v =>
             onChange(
@@ -153,23 +205,19 @@ export const RbacQueryForm: FC<TRbacQueryFormProps> = ({ value, onChange, onSubm
 
       <Styled.FormRow>
         <Styled.Label>Impersonate User</Styled.Label>
-        <Select
-          mode="tags"
-          value={spec.impersonateUser ? [spec.impersonateUser] : []}
-          onChange={v => onChange(updateSpec(value, { impersonateUser: v[0] ?? undefined }))}
+        <Input
+          value={spec.impersonateUser}
+          onChange={e => onChange(updateSpec(value, { impersonateUser: e.target.value || undefined }))}
           placeholder="Impersonate user"
-          maxCount={1}
         />
       </Styled.FormRow>
 
       <Styled.FormRow>
         <Styled.Label>Impersonate Group</Styled.Label>
-        <Select
-          mode="tags"
-          value={spec.impersonateGroup ? [spec.impersonateGroup] : []}
-          onChange={v => onChange(updateSpec(value, { impersonateGroup: v[0] ?? undefined }))}
+        <Input
+          value={spec.impersonateGroup}
+          onChange={e => onChange(updateSpec(value, { impersonateGroup: e.target.value || undefined }))}
           placeholder="Impersonate group"
-          maxCount={1}
         />
       </Styled.FormRow>
 

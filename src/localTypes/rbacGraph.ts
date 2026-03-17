@@ -101,10 +101,3 @@ export type TRbacGraphOptions = {
   includeWorkloads: boolean
   runtimeView: 'access' | 'ownership'
 }
-
-export type TRbacDiscoverResponse = {
-  verbs: string[]
-  apiGroups: string[]
-  resources: string[]
-  nonResourceURLs: string[]
-}

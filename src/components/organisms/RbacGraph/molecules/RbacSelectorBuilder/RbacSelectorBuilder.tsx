@@ -1,61 +1,70 @@
-import React, { FC, useState, useMemo } from 'react'
-import { Collapse, Button, Checkbox, Input } from 'antd'
-import type { TRbacDiscoverResponse } from 'localTypes/rbacGraph'
+import React, { FC, useMemo } from 'react'
+import { Collapse, Select, Spin } from 'antd'
+import type { TKindWithVersion } from '@prorobotech/openapi-k8s-toolkit'
 import { Styled } from './styled'
 
 type TRbacSelectorBuilderProps = {
-  discovered: TRbacDiscoverResponse | undefined
-  onDiscover: () => void
-  discoverLoading: boolean
-  selected: { verbs: string[]; apiGroups: string[]; resources: string[]; nonResourceURLs: string[] }
-  onSelectionChange: (sel: {
-    verbs: string[]
+  kindsWithVersion: TKindWithVersion[]
+  kindsLoading: boolean
+  selected: {
     apiGroups: string[]
+    apiVersions: string[]
     resources: string[]
+    verbs: string[]
+    nonResourceURLs: string[]
+  }
+  onSelectionChange: (sel: {
+    apiGroups: string[]
+    apiVersions: string[]
+    resources: string[]
+    verbs: string[]
     nonResourceURLs: string[]
   }) => void
 }
 
-type TGroupKey = 'verbs' | 'apiGroups' | 'resources' | 'nonResourceURLs'
+type TFilterKey = 'verbs' | 'nonResourceURLs'
 
-const GROUP_LABELS: Record<TGroupKey, string> = {
+const FILTER_LABELS: Record<TFilterKey, string> = {
   verbs: 'Verbs',
-  apiGroups: 'API Groups',
-  resources: 'Resources',
   nonResourceURLs: 'Non-Resource URLs',
 }
+const CORE_GROUP_VALUE = '__core__'
 
-const GROUPS: TGroupKey[] = ['verbs', 'apiGroups', 'resources', 'nonResourceURLs']
+const normalizeGroupValue = (value: string) => (value === '' ? CORE_GROUP_VALUE : value)
+const denormalizeGroupValue = (value: string) => (value === CORE_GROUP_VALUE ? '' : value)
 
 export const RbacSelectorBuilder: FC<TRbacSelectorBuilderProps> = ({
-  discovered,
-  onDiscover,
-  discoverLoading,
+  kindsWithVersion,
+  kindsLoading,
   selected,
   onSelectionChange,
 }) => {
-  const [filters, setFilters] = useState<Record<TGroupKey, string>>({
-    verbs: '',
-    apiGroups: '',
-    resources: '',
-    nonResourceURLs: '',
-  })
+  const kindOptions = useMemo(() => {
+    const groupValues = Array.from(new Set(kindsWithVersion.map(kind => kind.group))).sort((a, b) => a.localeCompare(b))
+    const allowedGroups = selected.apiGroups.length > 0 ? new Set(selected.apiGroups) : null
+    const versionValues = Array.from(
+      new Set(
+        kindsWithVersion
+          .filter(kind => !allowedGroups || allowedGroups.has(kind.group))
+          .map(kind => kind.version.version),
+      ),
+    ).sort((a, b) => a.localeCompare(b))
+    const allowedVersions = selected.apiVersions.length > 0 ? new Set(selected.apiVersions) : null
+    const resourceValues = Array.from(
+      new Set(
+        kindsWithVersion
+          .filter(kind => !allowedGroups || allowedGroups.has(kind.group))
+          .filter(kind => !allowedVersions || allowedVersions.has(kind.version.version))
+          .map(kind => kind.version.resource),
+      ),
+    ).sort((a, b) => a.localeCompare(b))
 
-  const filteredItems = useMemo(() => {
-    if (!discovered) return null
-    const result: Record<TGroupKey, string[]> = { verbs: [], apiGroups: [], resources: [], nonResourceURLs: [] }
-    GROUPS.forEach(g => {
-      const filter = filters[g].toLowerCase()
-      result[g] = (discovered[g] ?? []).filter(item => !filter || item.toLowerCase().includes(filter))
-    })
-    return result
-  }, [discovered, filters])
-
-  const handleToggle = (group: TGroupKey, item: string, checked: boolean) => {
-    const current = selected[group]
-    const next = checked ? [...current, item] : current.filter(v => v !== item)
-    onSelectionChange({ ...selected, [group]: next })
-  }
+    return {
+      groups: groupValues.map(value => ({ value: normalizeGroupValue(value), label: value || '(core)' })),
+      versions: versionValues.map(value => ({ value, label: value })),
+      resources: resourceValues.map(value => ({ value, label: value })),
+    }
+  }, [kindsWithVersion, selected.apiGroups, selected.apiVersions])
 
   return (
     <Styled.Container>
@@ -67,34 +76,67 @@ export const RbacSelectorBuilder: FC<TRbacSelectorBuilderProps> = ({
             label: 'Selector Builder',
             children: (
               <>
-                <Button size="small" onClick={onDiscover} loading={discoverLoading} style={{ marginBottom: 12 }}>
-                  Discover from cluster
-                </Button>
-                {filteredItems && (
-                  <Styled.GroupsGrid>
-                    {GROUPS.map(group => (
-                      <Styled.GroupColumn key={group}>
-                        <Styled.GroupTitle>{GROUP_LABELS[group]}</Styled.GroupTitle>
-                        <Input
-                          size="small"
-                          placeholder="Filter..."
-                          value={filters[group]}
-                          onChange={e => setFilters(prev => ({ ...prev, [group]: e.target.value }))}
-                        />
-                        <Styled.CheckboxList>
-                          {filteredItems[group].map(item => (
-                            <Checkbox
-                              key={item}
-                              checked={selected[group].includes(item)}
-                              onChange={e => handleToggle(group, item, e.target.checked)}
-                            >
-                              {item || '(core)'}
-                            </Checkbox>
-                          ))}
-                        </Styled.CheckboxList>
-                      </Styled.GroupColumn>
-                    ))}
-                  </Styled.GroupsGrid>
+                {kindsLoading ? (
+                  <Styled.LoadingContainer>
+                    <Spin size="small" />
+                  </Styled.LoadingContainer>
+                ) : (
+                  <Styled.SelectorsGrid>
+                    <Styled.SelectorColumn>
+                      <Styled.GroupTitle>API Groups</Styled.GroupTitle>
+                      <Select
+                        mode="multiple"
+                        allowClear
+                        placeholder="Select API groups"
+                        options={kindOptions.groups}
+                        value={selected.apiGroups.map(normalizeGroupValue)}
+                        onChange={values =>
+                          onSelectionChange({
+                            ...selected,
+                            apiGroups: values.map(denormalizeGroupValue),
+                          })
+                        }
+                      />
+                    </Styled.SelectorColumn>
+                    <Styled.SelectorColumn>
+                      <Styled.GroupTitle>Versions</Styled.GroupTitle>
+                      <Select
+                        mode="multiple"
+                        allowClear
+                        placeholder="Select versions"
+                        options={kindOptions.versions}
+                        value={selected.apiVersions}
+                        onChange={values => onSelectionChange({ ...selected, apiVersions: values })}
+                      />
+                    </Styled.SelectorColumn>
+                    <Styled.SelectorColumn>
+                      <Styled.GroupTitle>Resources</Styled.GroupTitle>
+                      <Select
+                        mode="multiple"
+                        allowClear
+                        placeholder="Select resources"
+                        options={kindOptions.resources}
+                        value={selected.resources}
+                        onChange={values => onSelectionChange({ ...selected, resources: values })}
+                      />
+                    </Styled.SelectorColumn>
+                  </Styled.SelectorsGrid>
+                )}
+                <Styled.GroupsGrid>
+                  {(['verbs', 'nonResourceURLs'] as TFilterKey[]).map(group => (
+                    <Styled.GroupColumn key={group}>
+                      <Styled.GroupTitle>{FILTER_LABELS[group]}</Styled.GroupTitle>
+                      <Select
+                        mode="tags"
+                        value={selected[group]}
+                        onChange={values => onSelectionChange({ ...selected, [group]: values })}
+                        placeholder={group === 'verbs' ? 'e.g. get, list, watch' : 'e.g. /healthz, /metrics'}
+                      />
+                    </Styled.GroupColumn>
+                  ))}
+                </Styled.GroupsGrid>
+                {!kindsLoading && !kindsWithVersion.length && (
+                  <Styled.EmptyState>No Kubernetes kinds available for selector options.</Styled.EmptyState>
                 )}
               </>
             ),
