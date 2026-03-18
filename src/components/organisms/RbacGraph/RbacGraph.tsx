@@ -1,5 +1,6 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable max-lines-per-function */
-import React, { FC, useState, useCallback, useEffect, useMemo } from 'react'
+import React, { FC, useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import {
   ReactFlow,
   MiniMap,
@@ -14,7 +15,8 @@ import {
 } from '@xyflow/react'
 import { useKinds, useK8sSmartResource } from '@prorobotech/openapi-k8s-toolkit'
 import '@xyflow/react/dist/style.css'
-import { Spin, Card, Alert } from 'antd'
+import { Spin, Card, Alert, Empty, theme } from 'antd'
+import { FOOTER_HEIGHT } from 'constants/blocksSizes'
 import type {
   TRbacQueryPayload,
   TRbacQueryResponse,
@@ -77,13 +79,25 @@ const toSortedOptions = (values: Set<string>) =>
     .sort((a, b) => a.localeCompare(b))
     .map(value => ({ value, label: value }))
 
+const EMPTY_SELECTOR_SELECTION = {
+  apiGroups: [] as string[],
+  apiVersions: [] as string[],
+  resources: [] as string[],
+  verbs: [] as string[],
+  nonResourceURLs: [] as string[],
+}
+
 const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
+  const { token } = theme.useToken()
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  const chromeRef = useRef<HTMLDivElement | null>(null)
   const [payload, setPayload] = useState<TRbacQueryPayload>(DEFAULT_PAYLOAD)
   const [options, setOptions] = useState<TRbacGraphOptions>(DEFAULT_OPTIONS)
   const [focusNodeId, setFocusNodeId] = useState<string | null>(null)
   const [graphData, setGraphData] = useState<TGraph | null>(null)
   const [stats, setStats] = useState<TRbacQueryResponse['stats']>()
   const [layouting, setLayouting] = useState(false)
+  const [canvasHeight, setCanvasHeight] = useState(320)
 
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
@@ -109,13 +123,7 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
     isEnabled: Boolean(clusterId),
   })
 
-  const [selectorSelection, setSelectorSelection] = useState({
-    apiGroups: [] as string[],
-    apiVersions: [] as string[],
-    resources: [] as string[],
-    verbs: [] as string[],
-    nonResourceURLs: [] as string[],
-  })
+  const [selectorSelection, setSelectorSelection] = useState(EMPTY_SELECTOR_SELECTION)
   const hasResourceFilters = Boolean(
     selectorSelection.apiGroups.length || selectorSelection.apiVersions.length || selectorSelection.resources.length,
   )
@@ -375,6 +383,17 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
     })
   }, [payload, queryMutation])
 
+  const handleReset = useCallback(() => {
+    setPayload(DEFAULT_PAYLOAD)
+    setOptions(DEFAULT_OPTIONS)
+    setSelectorSelection(EMPTY_SELECTOR_SELECTION)
+    setFocusNodeId(null)
+    setGraphData(null)
+    setStats(undefined)
+    setNodes([])
+    setEdges([])
+  }, [setEdges, setNodes])
+
   useEffect(() => {
     if (!graphData) return
     setLayouting(true)
@@ -404,66 +423,117 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
   const nonResourceUrlsErrorMessage =
     typeof nonResourceUrlsError === 'string' ? nonResourceUrlsError : nonResourceUrlsError?.message
 
+  useEffect(() => {
+    const updateCanvasHeight = () => {
+      const containerRect = containerRef.current?.getBoundingClientRect()
+      const chromeHeight = chromeRef.current?.getBoundingClientRect().height ?? 0
+
+      if (!containerRect) return
+
+      const viewportHeight = window.innerHeight
+      const nextHeight = Math.max(
+        320,
+        Math.floor(viewportHeight - containerRect.top - chromeHeight - FOOTER_HEIGHT - 16),
+      )
+
+      setCanvasHeight(prev => (prev === nextHeight ? prev : nextHeight))
+    }
+
+    updateCanvasHeight()
+
+    const resizeObserver = new ResizeObserver(() => updateCanvasHeight())
+    if (containerRef.current) resizeObserver.observe(containerRef.current)
+    if (chromeRef.current) resizeObserver.observe(chromeRef.current)
+
+    window.addEventListener('resize', updateCanvasHeight)
+
+    return () => {
+      resizeObserver.disconnect()
+      window.removeEventListener('resize', updateCanvasHeight)
+    }
+  }, [graphData, stats, kindsError, nonResourceUrlsError, isLoading])
+
   return (
-    <Styled.Container>
-      <Card size="small" styles={{ body: { padding: 0 } }}>
-        <RbacQueryForm
-          value={payload}
-          selectorLoading={kindsLoading || nonResourceUrlsLoading}
-          selectorOptions={selectorOptions}
-          selectedApiVersions={selectorSelection.apiVersions}
-          onSelectorChange={patch => handleSelectorChange({ ...selectorSelection, ...patch })}
-          onChange={setPayload}
-          onSubmit={handleSubmit}
-          loading={queryMutation.isPending}
-        />
-      </Card>
+    <Styled.Container ref={containerRef}>
+      <Styled.Chrome ref={chromeRef}>
+        <Card size="small" styles={{ body: { padding: 0 } }}>
+          <RbacQueryForm
+            value={payload}
+            selectorLoading={kindsLoading || nonResourceUrlsLoading}
+            selectorOptions={selectorOptions}
+            selectedApiVersions={selectorSelection.apiVersions}
+            onSelectorChange={patch => handleSelectorChange({ ...selectorSelection, ...patch })}
+            onChange={setPayload}
+            onSubmit={handleSubmit}
+            onReset={handleReset}
+            loading={queryMutation.isPending}
+          />
+        </Card>
 
-      {kindsError && (
-        <Alert
-          type="error"
-          message="Error while loading Kubernetes kinds"
-          description={kindsError.message}
-          style={{ marginTop: 8 }}
-        />
-      )}
+        {kindsError && (
+          <Alert
+            type="error"
+            message="Error while loading Kubernetes kinds"
+            description={kindsError.message}
+            style={{ marginTop: 8 }}
+          />
+        )}
 
-      {nonResourceUrlsError && (
-        <Alert
-          type="error"
-          message="Error while loading non-resource URLs"
-          description={nonResourceUrlsErrorMessage}
-          style={{ marginTop: 8 }}
-        />
-      )}
+        {nonResourceUrlsError && (
+          <Alert
+            type="error"
+            message="Error while loading non-resource URLs"
+            description={nonResourceUrlsErrorMessage}
+            style={{ marginTop: 8 }}
+          />
+        )}
 
-      <Card size="small" styles={{ body: { padding: 0 } }} style={{ marginTop: 8 }}>
-        <RbacGraphToggles value={options} onChange={setOptions} />
-      </Card>
+        <Card size="small" styles={{ body: { padding: 0 } }} style={{ marginTop: 8 }}>
+          <RbacGraphToggles value={options} onChange={setOptions} />
+        </Card>
 
-      {stats && (
-        <Styled.StatsBar>
-          <span>Roles: {stats.matchedRoles}</span>
-          <span>Bindings: {stats.matchedBindings}</span>
-          <span>Subjects: {stats.matchedSubjects}</span>
-        </Styled.StatsBar>
-      )}
+        {stats && (
+          <Styled.StatsBar>
+            <span>Roles: {stats.matchedRoles}</span>
+            <span>Bindings: {stats.matchedBindings}</span>
+            <span>Subjects: {stats.matchedSubjects}</span>
+          </Styled.StatsBar>
+        )}
 
-      <Styled.LegendRow>
-        {LEGEND.map(l => (
-          <Styled.LegendItem key={l.label}>
-            <Styled.LegendSwatch $color={l.color} $dashed={l.dashed} />
-            {l.label}
-          </Styled.LegendItem>
-        ))}
-      </Styled.LegendRow>
+        <Styled.LegendRow>
+          {LEGEND.map(l => (
+            <Styled.LegendItem key={l.label}>
+              <Styled.LegendSwatch $color={l.color} $dashed={l.dashed} />
+              {l.label}
+            </Styled.LegendItem>
+          ))}
+        </Styled.LegendRow>
+      </Styled.Chrome>
 
       {isLoading ? (
         <Styled.SpinContainer>
           <Spin tip="Computing layout..." />
         </Styled.SpinContainer>
+      ) : !graphData ? (
+        <Styled.EmptyState>
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description="Configure selectors and run a query to visualize the RBAC graph."
+          />
+        </Styled.EmptyState>
       ) : (
-        <Styled.CanvasWrapper>
+        <Styled.CanvasWrapper
+          $height={canvasHeight}
+          $colorBgContainer={token.colorBgContainer}
+          $colorBgElevated={token.colorBgElevated}
+          $colorBorder={token.colorBorder}
+          $colorFillSecondary={token.colorFillSecondary}
+          $colorPrimary={token.colorPrimary}
+          $colorText={token.colorText}
+          $colorTextSecondary={token.colorTextSecondary}
+          $borderRadius={token.borderRadius}
+          $boxShadowSecondary={token.boxShadowSecondary}
+        >
           <ReactFlow
             nodes={nodes}
             edges={edges}
@@ -473,10 +543,15 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
             edgeTypes={edgeTypes}
             onNodeClick={handleNodeClick}
             fitView
+            fitViewOptions={{ padding: 0.16 }}
             minZoom={0.05}
             proOptions={{ hideAttribution: true }}
           >
-            <MiniMap />
+            <MiniMap
+              bgColor={token.colorBgContainer}
+              maskColor={token.colorFillSecondary}
+              nodeColor={token.colorTextSecondary}
+            />
             <Controls />
           </ReactFlow>
         </Styled.CanvasWrapper>

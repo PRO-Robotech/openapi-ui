@@ -1,20 +1,84 @@
 import styled from 'styled-components'
 
+type TCanvasWrapperProps = {
+  $height: number
+  $colorBgContainer: string
+  $colorBgElevated: string
+  $colorBorder: string
+  $colorFillSecondary: string
+  $colorPrimary: string
+  $colorText: string
+  $colorTextSecondary: string
+  $borderRadius: number
+  $boxShadowSecondary: string
+}
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
-  min-height: 0;
+  gap: 8px;
 `
 
-const CanvasWrapper = styled.div`
-  flex: 1 1 auto;
-  min-height: 600px;
-  height: calc(100vh - 400px);
+const Chrome = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+const CanvasWrapper = styled.div<TCanvasWrapperProps>`
+  height: ${({ $height }) => `${$height}px`};
+  min-height: 320px;
   position: relative;
 
   .react-flow__edge {
     cursor: pointer;
+  }
+
+  .react-flow__minimap {
+    background: ${({ $colorBgElevated }) => $colorBgElevated};
+    border: 1px solid ${({ $colorBorder }) => $colorBorder};
+    border-radius: ${({ $borderRadius }) => `${$borderRadius}px`};
+    box-shadow: ${({ $boxShadowSecondary }) => $boxShadowSecondary};
+  }
+
+  .react-flow__minimap-mask {
+    fill: ${({ $colorFillSecondary }) => $colorFillSecondary};
+  }
+
+  .react-flow__controls {
+    overflow: hidden;
+    background: ${({ $colorBgElevated }) => $colorBgElevated};
+    border: 1px solid ${({ $colorBorder }) => $colorBorder};
+    border-radius: ${({ $borderRadius }) => `${$borderRadius}px`};
+    box-shadow: ${({ $boxShadowSecondary }) => $boxShadowSecondary};
+  }
+
+  .react-flow__controls-button {
+    background: ${({ $colorBgElevated }) => $colorBgElevated};
+    border-bottom: 1px solid ${({ $colorBorder }) => $colorBorder};
+    color: ${({ $colorText }) => $colorText};
+  }
+
+  .react-flow__controls-button:last-child {
+    border-bottom: 0;
+  }
+
+  .react-flow__controls-button:hover {
+    background: ${({ $colorFillSecondary }) => $colorFillSecondary};
+  }
+
+  .react-flow__controls-button svg {
+    fill: currentColor;
+  }
+
+  .react-flow__controls-button:hover,
+  .react-flow__controls-button:focus-visible {
+    color: ${({ $colorPrimary }) => $colorPrimary};
+  }
+
+  .react-flow__attribution {
+    background: ${({ $colorBgContainer }) => $colorBgContainer};
+    color: ${({ $colorTextSecondary }) => $colorTextSecondary};
+    border-top-left-radius: ${({ $borderRadius }) => `${$borderRadius}px`};
   }
 `
 
@@ -56,4 +120,23 @@ const SpinContainer = styled.div`
   min-height: 300px;
 `
 
-export const Styled = { Container, CanvasWrapper, StatsBar, LegendRow, LegendItem, LegendSwatch, SpinContainer }
+const EmptyState = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 300px;
+  padding: 24px 16px;
+`
+
+export const Styled = {
+  Container,
+  Chrome,
+  CanvasWrapper,
+  StatsBar,
+  LegendRow,
+  LegendItem,
+  LegendSwatch,
+  SpinContainer,
+  EmptyState,
+}
