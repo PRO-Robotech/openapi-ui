@@ -12,7 +12,7 @@ import {
   type NodeTypes,
   type EdgeTypes,
 } from '@xyflow/react'
-import { useKinds } from '@prorobotech/openapi-k8s-toolkit'
+import { useKinds, useK8sSmartResource } from '@prorobotech/openapi-k8s-toolkit'
 import '@xyflow/react/dist/style.css'
 import { Spin, Card, Alert } from 'antd'
 import type {
@@ -43,28 +43,6 @@ const LEGEND = [
   { label: 'Owned By', color: '#334155' },
 ]
 
-const NON_RESOURCE_URL_OPTIONS = [
-  '/',
-  '/api',
-  '/api/*',
-  '/apis',
-  '/apis/*',
-  '/healthz',
-  '/healthz/*',
-  '/livez',
-  '/livez/*',
-  '/readyz',
-  '/readyz/*',
-  '/metrics',
-  '/metrics/*',
-  '/openapi',
-  '/openapi/*',
-  '/openapi/v2',
-  '/openapi/v3',
-  '/openapi/v3/*',
-  '/version',
-]
-
 const DEFAULT_PAYLOAD: TRbacQueryPayload = {
   spec: {
     selector: { apiGroups: [], resources: [], verbs: [], resourceNames: [], nonResourceURLs: [] },
@@ -89,6 +67,15 @@ const DEFAULT_OPTIONS: TRbacGraphOptions = {
 }
 
 type TRbacGraphProps = { clusterId: string }
+type TNonResourceUrlItem = { url: string; verbs: string[]; roles: string[] }
+type TNonResourceUrlList = {
+  items: TNonResourceUrlItem[]
+}
+const hasWildcard = (value: string) => value.includes('*')
+const toSortedOptions = (values: Set<string>) =>
+  Array.from(values)
+    .sort((a, b) => a.localeCompare(b))
+    .map(value => ({ value, label: value }))
 
 const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
   const [payload, setPayload] = useState<TRbacQueryPayload>(DEFAULT_PAYLOAD)
@@ -110,6 +97,17 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
     cluster: clusterId,
     isEnabled: Boolean(clusterId),
   })
+  const {
+    data: nonResourceUrlsData,
+    isLoading: nonResourceUrlsLoading,
+    error: nonResourceUrlsError,
+  } = useK8sSmartResource<TNonResourceUrlList>({
+    cluster: clusterId,
+    apiGroup: 'rbacgraph.incloud.io',
+    apiVersion: 'v1alpha1',
+    plural: 'nonresourceurls',
+    isEnabled: Boolean(clusterId),
+  })
 
   const [selectorSelection, setSelectorSelection] = useState({
     apiGroups: [] as string[],
@@ -118,11 +116,29 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
     verbs: [] as string[],
     nonResourceURLs: [] as string[],
   })
+  const hasResourceFilters = Boolean(
+    selectorSelection.apiGroups.length || selectorSelection.apiVersions.length || selectorSelection.resources.length,
+  )
+  const hasNonResourceFilters = Boolean(selectorSelection.nonResourceURLs.length)
 
   const selectorRelations = useMemo(() => {
-    const kindsWithVersion = kindsData?.kindsWithVersion ?? []
+    const kindsWithVersion =
+      kindsData?.kindsWithVersion.map(kind => ({
+        ...kind,
+        version: {
+          ...kind.version,
+          verbs: (kind.version.verbs ?? []).filter(verb => !hasWildcard(verb)),
+        },
+      })) ?? []
+    const nonResourceItems =
+      nonResourceUrlsData?.items
+        .filter(item => !hasWildcard(item.url))
+        .map(item => ({
+          ...item,
+          verbs: item.verbs.filter(verb => !hasWildcard(verb)),
+        })) ?? []
 
-    const matchesSelection = (
+    const matchesResourceSelection = (
       kind: (typeof kindsWithVersion)[number],
       selection: {
         apiGroups: string[]
@@ -136,7 +152,17 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
       (selection.resources.length === 0 || selection.resources.includes(kind.version.resource)) &&
       (selection.verbs.length === 0 || selection.verbs.some(verb => kind.version.verbs?.includes(verb)))
 
-    const collectOptions = (
+    const matchesNonResourceSelection = (
+      item: TNonResourceUrlItem,
+      selection: {
+        nonResourceURLs: string[]
+        verbs: string[]
+      },
+    ) =>
+      (selection.nonResourceURLs.length === 0 || selection.nonResourceURLs.includes(item.url)) &&
+      (selection.verbs.length === 0 || selection.verbs.some(verb => item.verbs.includes(verb)))
+
+    const collectResourceOptions = (
       selection: {
         apiGroups: string[]
         apiVersions: string[]
@@ -146,7 +172,7 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
       ignoredKey?: 'apiGroups' | 'apiVersions' | 'resources' | 'verbs',
     ) => {
       const filteredKinds = kindsWithVersion.filter(kind =>
-        matchesSelection(kind, {
+        matchesResourceSelection(kind, {
           apiGroups: ignoredKey === 'apiGroups' ? [] : selection.apiGroups,
           apiVersions: ignoredKey === 'apiVersions' ? [] : selection.apiVersions,
           resources: ignoredKey === 'resources' ? [] : selection.resources,
@@ -162,44 +188,71 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
       }
     }
 
-    return {
-      matchesSelection,
-      collectOptions,
+    const collectNonResourceOptions = (
+      selection: {
+        nonResourceURLs: string[]
+        verbs: string[]
+      },
+      ignoredKey?: 'nonResourceURLs' | 'verbs',
+    ) => {
+      const filteredNonResourceItems = nonResourceItems.filter(item =>
+        matchesNonResourceSelection(item, {
+          nonResourceURLs: ignoredKey === 'nonResourceURLs' ? [] : selection.nonResourceURLs,
+          verbs: ignoredKey === 'verbs' ? [] : selection.verbs,
+        }),
+      )
+
+      return {
+        nonResourceURLs: new Set(filteredNonResourceItems.map(item => item.url)),
+        verbs: new Set(filteredNonResourceItems.flatMap(item => item.verbs)),
+      }
     }
-  }, [kindsData?.kindsWithVersion])
+
+    return {
+      collectResourceOptions,
+      collectNonResourceOptions,
+    }
+  }, [kindsData?.kindsWithVersion, nonResourceUrlsData?.items])
 
   const selectorConstraints = useMemo(() => {
-    const allowedGroups = selectorRelations.collectOptions(selectorSelection, 'apiGroups').apiGroups
-    const allowedVersions = selectorRelations.collectOptions(selectorSelection, 'apiVersions').apiVersions
-    const allowedResources = selectorRelations.collectOptions(selectorSelection, 'resources').resources
-    const allowedVerbs = selectorRelations.collectOptions(selectorSelection, 'verbs').verbs
+    const resourceOptionsForGroups = selectorRelations.collectResourceOptions(selectorSelection, 'apiGroups')
+    const resourceOptionsForVersions = selectorRelations.collectResourceOptions(selectorSelection, 'apiVersions')
+    const resourceOptionsForResources = selectorRelations.collectResourceOptions(selectorSelection, 'resources')
+    const resourceOptionsForVerbs = selectorRelations.collectResourceOptions(selectorSelection, 'verbs')
+    const nonResourceOptionsForUrls = selectorRelations.collectNonResourceOptions(selectorSelection, 'nonResourceURLs')
+    const nonResourceOptionsForVerbs = selectorRelations.collectNonResourceOptions(selectorSelection, 'verbs')
+    const allowedVerbs = new Set<string>()
+
+    if (hasResourceFilters || !hasNonResourceFilters) {
+      resourceOptionsForVerbs.verbs.forEach(verb => allowedVerbs.add(verb))
+    }
+
+    if (hasNonResourceFilters || !hasResourceFilters) {
+      nonResourceOptionsForVerbs.verbs.forEach(verb => allowedVerbs.add(verb))
+    }
 
     return {
-      allowedGroups,
-      allowedVersions,
-      allowedResources,
+      allowedGroups: resourceOptionsForGroups.apiGroups,
+      allowedVersions: resourceOptionsForVersions.apiVersions,
+      allowedResources: resourceOptionsForResources.resources,
       allowedVerbs,
+      allowedNonResourceURLs: nonResourceOptionsForUrls.nonResourceURLs,
     }
-  }, [selectorRelations, selectorSelection])
+  }, [hasNonResourceFilters, hasResourceFilters, selectorRelations, selectorSelection])
 
   const selectorOptions = useMemo(
     () => ({
       apiGroups: Array.from(selectorConstraints.allowedGroups)
         .sort((a, b) => a.localeCompare(b))
         .map(value => ({ value, label: value || '(core)' })),
-      apiVersions: Array.from(selectorConstraints.allowedVersions)
-        .sort((a, b) => a.localeCompare(b))
-        .map(value => ({ value, label: value })),
-      resources: Array.from(selectorConstraints.allowedResources)
-        .sort((a, b) => a.localeCompare(b))
-        .map(value => ({ value, label: value })),
-      verbs: Array.from(selectorConstraints.allowedVerbs)
-        .sort((a, b) => a.localeCompare(b))
-        .map(value => ({ value, label: value })),
-      nonResourceURLs: NON_RESOURCE_URL_OPTIONS.map(value => ({ value, label: value })),
+      apiVersions: toSortedOptions(selectorConstraints.allowedVersions),
+      resources: toSortedOptions(selectorConstraints.allowedResources),
+      verbs: toSortedOptions(selectorConstraints.allowedVerbs),
+      nonResourceURLs: toSortedOptions(selectorConstraints.allowedNonResourceURLs),
     }),
     [
       selectorConstraints.allowedGroups,
+      selectorConstraints.allowedNonResourceURLs,
       selectorConstraints.allowedResources,
       selectorConstraints.allowedVerbs,
       selectorConstraints.allowedVersions,
@@ -209,23 +262,46 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
   const handleSelectorChange = useCallback(
     (sel: typeof selectorSelection) => {
       const nextApiGroups = sel.apiGroups.filter(group =>
-        selectorRelations.collectOptions(sel, 'apiGroups').apiGroups.has(group),
+        selectorRelations.collectResourceOptions(sel, 'apiGroups').apiGroups.has(group),
       )
       const nextApiVersions = sel.apiVersions.filter(version =>
-        selectorRelations.collectOptions({ ...sel, apiGroups: nextApiGroups }, 'apiVersions').apiVersions.has(version),
+        selectorRelations
+          .collectResourceOptions({ ...sel, apiGroups: nextApiGroups }, 'apiVersions')
+          .apiVersions.has(version),
       )
       const nextResources = sel.resources.filter(resource =>
         selectorRelations
-          .collectOptions({ ...sel, apiGroups: nextApiGroups, apiVersions: nextApiVersions }, 'resources')
+          .collectResourceOptions({ ...sel, apiGroups: nextApiGroups, apiVersions: nextApiVersions }, 'resources')
           .resources.has(resource),
       )
-      const nextVerbs = sel.verbs.filter(verb =>
+      const nextHasResourceFilters = Boolean(nextApiGroups.length || nextApiVersions.length || nextResources.length)
+      const nextHasNonResourceFilters = Boolean(sel.nonResourceURLs.length)
+      const allowedVerbs = new Set<string>()
+      const resourceVerbs = selectorRelations.collectResourceOptions(
+        { ...sel, apiGroups: nextApiGroups, apiVersions: nextApiVersions, resources: nextResources },
+        'verbs',
+      ).verbs
+      const nonResourceVerbs = selectorRelations.collectNonResourceOptions({ ...sel }, 'verbs').verbs
+
+      if (nextHasResourceFilters || !nextHasNonResourceFilters) {
+        resourceVerbs.forEach(verb => allowedVerbs.add(verb))
+      }
+
+      if (nextHasNonResourceFilters || !nextHasResourceFilters) {
+        nonResourceVerbs.forEach(verb => allowedVerbs.add(verb))
+      }
+
+      const nextVerbs = sel.verbs.filter(verb => allowedVerbs.has(verb))
+      const nextNonResourceURLs = sel.nonResourceURLs.filter(nonResourceURL =>
         selectorRelations
-          .collectOptions(
-            { ...sel, apiGroups: nextApiGroups, apiVersions: nextApiVersions, resources: nextResources },
-            'verbs',
+          .collectNonResourceOptions(
+            {
+              nonResourceURLs: sel.nonResourceURLs,
+              verbs: nextVerbs,
+            },
+            'nonResourceURLs',
           )
-          .verbs.has(verb),
+          .nonResourceURLs.has(nonResourceURL),
       )
       const nextSelection = {
         ...sel,
@@ -233,6 +309,7 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
         apiVersions: nextApiVersions,
         resources: nextResources,
         verbs: nextVerbs,
+        nonResourceURLs: nextNonResourceURLs,
       }
 
       setSelectorSelection(nextSelection)
@@ -261,13 +338,17 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
       apiVersions: selectorSelection.apiVersions.filter(version => selectorConstraints.allowedVersions.has(version)),
       resources: selectorSelection.resources.filter(resource => selectorConstraints.allowedResources.has(resource)),
       verbs: selectorSelection.verbs.filter(verb => selectorConstraints.allowedVerbs.has(verb)),
+      nonResourceURLs: selectorSelection.nonResourceURLs.filter(nonResourceURL =>
+        selectorConstraints.allowedNonResourceURLs.has(nonResourceURL),
+      ),
     }
 
     const selectionChanged =
       normalizedSelection.apiGroups.length !== selectorSelection.apiGroups.length ||
       normalizedSelection.apiVersions.length !== selectorSelection.apiVersions.length ||
       normalizedSelection.resources.length !== selectorSelection.resources.length ||
-      normalizedSelection.verbs.length !== selectorSelection.verbs.length
+      normalizedSelection.verbs.length !== selectorSelection.verbs.length ||
+      normalizedSelection.nonResourceURLs.length !== selectorSelection.nonResourceURLs.length
 
     if (selectionChanged) {
       handleSelectorChange(normalizedSelection)
@@ -276,9 +357,11 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
     handleSelectorChange,
     kindsData?.kindsWithVersion,
     selectorConstraints.allowedGroups,
+    selectorConstraints.allowedNonResourceURLs,
     selectorConstraints.allowedResources,
     selectorConstraints.allowedVerbs,
     selectorConstraints.allowedVersions,
+    nonResourceUrlsData?.items,
     selectorSelection,
   ])
 
@@ -318,13 +401,15 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
   )
 
   const isLoading = queryMutation.isPending || layouting
+  const nonResourceUrlsErrorMessage =
+    typeof nonResourceUrlsError === 'string' ? nonResourceUrlsError : nonResourceUrlsError?.message
 
   return (
     <Styled.Container>
       <Card size="small" styles={{ body: { padding: 0 } }}>
         <RbacQueryForm
           value={payload}
-          selectorLoading={kindsLoading}
+          selectorLoading={kindsLoading || nonResourceUrlsLoading}
           selectorOptions={selectorOptions}
           selectedApiVersions={selectorSelection.apiVersions}
           onSelectorChange={patch => handleSelectorChange({ ...selectorSelection, ...patch })}
@@ -339,6 +424,15 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
           type="error"
           message="Error while loading Kubernetes kinds"
           description={kindsError.message}
+          style={{ marginTop: 8 }}
+        />
+      )}
+
+      {nonResourceUrlsError && (
+        <Alert
+          type="error"
+          message="Error while loading non-resource URLs"
+          description={nonResourceUrlsErrorMessage}
           style={{ marginTop: 8 }}
         />
       )}
