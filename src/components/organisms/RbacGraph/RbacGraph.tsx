@@ -63,6 +63,7 @@ const DEFAULT_OPTIONS: TRbacGraphOptions = {
   onlyReachable: false,
   showPermissions: false,
   focusMode: false,
+  reduceEdgeCrossings: true,
   includePods: false,
   includeWorkloads: false,
   runtimeView: 'access',
@@ -397,16 +398,18 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
   useEffect(() => {
     if (!graphData) return
     setLayouting(true)
-    const links = graphData.edges.map(e => ({ source: e.from, target: e.to }))
+    const links = graphData.edges.map(e => ({ source: e.from, target: e.to, type: e.type }))
     const nodeIds = graphData.nodes.map(n => n.id)
     const namespaceMap = new Map(graphData.nodes.map(node => [node.id, node.namespace]))
-    layoutRbacGraph(nodeIds, links, namespaceMap).then(positions => {
-      const model = buildRbacFlowModel(graphData, positions, options)
-      const focused = applyFocusToModel(model.nodes, model.edges, focusNodeId, options.focusMode)
-      setNodes(focused.nodes)
-      setEdges(focused.edges)
-      setLayouting(false)
-    })
+    layoutRbacGraph(nodeIds, links, namespaceMap, { reduceEdgeCrossings: options.reduceEdgeCrossings }).then(
+      positions => {
+        const model = buildRbacFlowModel(graphData, positions, options)
+        const focused = applyFocusToModel(model.nodes, model.edges, focusNodeId, options.focusMode)
+        setNodes(focused.nodes)
+        setEdges(focused.edges)
+        setLayouting(false)
+      },
+    )
   }, [graphData, options, focusNodeId, setNodes, setEdges])
 
   const handleNodeClick = useCallback(

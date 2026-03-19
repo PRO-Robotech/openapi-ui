@@ -30,6 +30,21 @@ const NODE_TYPE_LABELS: Record<TRbacNodeType, string> = {
 }
 
 const isStructuralEdge = (type: TRbacEdgeType) => type === 'grants' || type === 'subjects'
+const HORIZONTAL_ROUTE_RATIO = 1.15
+
+const pickEdgeHandles = (
+  sourcePosition: { x: number; y: number },
+  targetPosition: { x: number; y: number },
+): { sourceHandle?: string; targetHandle?: string } => {
+  const deltaX = targetPosition.x - sourcePosition.x
+  const deltaY = targetPosition.y - sourcePosition.y
+
+  if (deltaX >= 0 && Math.abs(deltaX) >= Math.abs(deltaY) * HORIZONTAL_ROUTE_RATIO) {
+    return {}
+  }
+
+  return { sourceHandle: 'bottom', targetHandle: 'top' }
+}
 
 const bfs = (startId: string, adjacency: Map<string, Set<string>>): Set<string> => {
   const visited = new Set<string>()
@@ -154,10 +169,16 @@ export const buildRbacFlowModel = (
     })
   })
 
+  const flowNodePositions = new Map(flowNodes.map(node => [node.id, node.position]))
+
   const flowEdges: Edge[] = filteredEdges.map(edge => ({
     id: edge.id,
     source: edge.from,
     target: edge.to,
+    ...pickEdgeHandles(
+      flowNodePositions.get(edge.from) ?? { x: 0, y: 0 },
+      flowNodePositions.get(edge.to) ?? { x: 0, y: 0 },
+    ),
     type: 'rbacEdge',
     data: { edgeType: edge.type, explain: edge.explain },
     style: {

@@ -34,6 +34,11 @@ export const RbacGraphToggles: FC<TRbacGraphTogglesProps> = ({ value, onChange }
       </Styled.ToggleItem>
 
       <Styled.ToggleItem>
+        <Switch size="small" checked={value.reduceEdgeCrossings} onChange={toggle('reduceEdgeCrossings')} />
+        Reduce crossings
+      </Styled.ToggleItem>
+
+      <Styled.ToggleItem>
         <Switch size="small" checked={value.includePods} onChange={toggle('includePods')} />
         Pods
       </Styled.ToggleItem>
