@@ -100,5 +100,4 @@ export type TRbacGraphOptions = {
   reduceEdgeCrossings: boolean
   includePods: boolean
   includeWorkloads: boolean
-  runtimeView: 'access' | 'ownership'
 }

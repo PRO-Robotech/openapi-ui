@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Switch, Select } from 'antd'
+import { Switch } from 'antd'
 import type { TRbacGraphOptions } from 'localTypes/rbacGraph'
 import { Styled } from './styled'
 
@@ -46,18 +46,6 @@ export const RbacGraphToggles: FC<TRbacGraphTogglesProps> = ({ value, onChange }
       <Styled.ToggleItem>
         <Switch size="small" checked={value.includeWorkloads} onChange={toggle('includeWorkloads')} />
         Workloads
-      </Styled.ToggleItem>
-
-      <Styled.ToggleItem>
-        <Select
-          size="small"
-          value={value.runtimeView}
-          onChange={v => onChange({ ...value, runtimeView: v })}
-          style={{ width: 140 }}
-        >
-          <Select.Option value="access">Access-first</Select.Option>
-          <Select.Option value="ownership">Ownership-first</Select.Option>
-        </Select>
       </Styled.ToggleItem>
     </Styled.Container>
   )

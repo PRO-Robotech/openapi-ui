@@ -1,5 +1,6 @@
 import type { Node, Edge } from '@xyflow/react'
 import type { TRbacGraph, TRbacEdgeType, TRbacGraphOptions, TRbacNodeType } from 'localTypes/rbacGraph'
+import type { TRbacLayoutResult, TRoutePoint } from 'utils/rbacForceLayout'
 
 const EDGE_COLORS: Record<string, string> = {
   grants: '#0f766e',
@@ -32,6 +33,20 @@ const NODE_TYPE_LABELS: Record<TRbacNodeType, string> = {
 const isStructuralEdge = (type: TRbacEdgeType) => type === 'grants' || type === 'subjects'
 const HORIZONTAL_ROUTE_RATIO = 1.15
 
+type TRbacFlowEdgeData = {
+  edgeType: TRbacEdgeType
+  explain?: string
+  route?: TRoutePoint[]
+}
+
+const getForcedHandlesForEdge = (edgeType: TRbacEdgeType): { sourceHandle?: string; targetHandle?: string } | null => {
+  if (edgeType === 'ownedBy') {
+    return { sourceHandle: 'right', targetHandle: 'left' }
+  }
+
+  return null
+}
+
 const pickEdgeHandles = (
   sourcePosition: { x: number; y: number },
   targetPosition: { x: number; y: number },
@@ -40,10 +55,39 @@ const pickEdgeHandles = (
   const deltaY = targetPosition.y - sourcePosition.y
 
   if (deltaX >= 0 && Math.abs(deltaX) >= Math.abs(deltaY) * HORIZONTAL_ROUTE_RATIO) {
-    return {}
+    return { sourceHandle: 'right', targetHandle: 'left' }
   }
 
   return { sourceHandle: 'bottom', targetHandle: 'top' }
+}
+
+const inferSourceHandle = (route?: TRoutePoint[]): string | undefined => {
+  if (!route || route.length < 2) return undefined
+
+  const [start, next] = route
+  const deltaX = next.x - start.x
+  const deltaY = next.y - start.y
+
+  if (Math.abs(deltaX) >= Math.abs(deltaY)) {
+    return deltaX >= 0 ? 'right' : 'left'
+  }
+
+  return deltaY >= 0 ? 'bottom' : 'top'
+}
+
+const inferTargetHandle = (route?: TRoutePoint[]): string | undefined => {
+  if (!route || route.length < 2) return undefined
+
+  const end = route[route.length - 1]
+  const previous = route[route.length - 2]
+  const deltaX = end.x - previous.x
+  const deltaY = end.y - previous.y
+
+  if (Math.abs(deltaX) >= Math.abs(deltaY)) {
+    return deltaX >= 0 ? 'left' : 'right'
+  }
+
+  return deltaY >= 0 ? 'top' : 'bottom'
 }
 
 const bfs = (startId: string, adjacency: Map<string, Set<string>>): Set<string> => {
@@ -67,9 +111,10 @@ const bfs = (startId: string, adjacency: Map<string, Set<string>>): Set<string> 
 
 export const buildRbacFlowModel = (
   graph: TRbacGraph,
-  positions: Map<string, { x: number; y: number }>,
+  layout: TRbacLayoutResult,
   options: TRbacGraphOptions,
 ): { nodes: Node[]; edges: Edge[] } => {
+  const { positions, namespaceBounds } = layout
   let filteredNodes = [...graph.nodes]
   let filteredEdges = [...graph.edges]
 
@@ -109,10 +154,6 @@ export const buildRbacFlowModel = (
     filteredEdges = filteredEdges.filter(e => nodeIdSet.has(e.from) && nodeIdSet.has(e.to))
   }
 
-  if (options.runtimeView === 'ownership') {
-    filteredEdges = filteredEdges.map(e => (e.type === 'ownedBy' ? { ...e, from: e.to, to: e.from } : e))
-  }
-
   const flowNodes: Node[] = filteredNodes.map(node => {
     const pos = positions.get(node.id) ?? { x: 0, y: 0 }
     return {
@@ -147,21 +188,28 @@ export const buildRbacFlowModel = (
   })
 
   nsBuckets.forEach((groupNodes, ns) => {
-    let minX = Infinity
-    let minY = Infinity
-    let maxX = -Infinity
-    let maxY = -Infinity
-    groupNodes.forEach(n => {
-      minX = Math.min(minX, n.position.x)
-      minY = Math.min(minY, n.position.y)
-      maxX = Math.max(maxX, n.position.x + NS_NODE_W)
-      maxY = Math.max(maxY, n.position.y + NS_NODE_H)
-    })
+    const providedBounds = namespaceBounds?.get(ns)
+    let minX = providedBounds?.x ?? Infinity
+    let minY = providedBounds?.y ?? Infinity
+    let maxX = providedBounds ? providedBounds.x + providedBounds.width : -Infinity
+    let maxY = providedBounds ? providedBounds.y + providedBounds.height : -Infinity
+
+    if (!providedBounds) {
+      groupNodes.forEach(n => {
+        minX = Math.min(minX, n.position.x)
+        minY = Math.min(minY, n.position.y)
+        maxX = Math.max(maxX, n.position.x + NS_NODE_W)
+        maxY = Math.max(maxY, n.position.y + NS_NODE_H)
+      })
+    }
+
     flowNodes.push({
       id: `ns-group-${ns}`,
       type: 'namespaceGroup',
-      position: { x: minX - NS_PAD, y: minY - NS_PAD - NS_LABEL_H },
-      style: { width: maxX - minX + 2 * NS_PAD, height: maxY - minY + 2 * NS_PAD + NS_LABEL_H },
+      position: providedBounds ? { x: minX, y: minY } : { x: minX - NS_PAD, y: minY - NS_PAD - NS_LABEL_H },
+      style: providedBounds
+        ? { width: providedBounds.width, height: providedBounds.height }
+        : { width: maxX - minX + 2 * NS_PAD, height: maxY - minY + 2 * NS_PAD + NS_LABEL_H },
       data: { namespace: ns },
       zIndex: -1,
       selectable: false,
@@ -171,23 +219,30 @@ export const buildRbacFlowModel = (
 
   const flowNodePositions = new Map(flowNodes.map(node => [node.id, node.position]))
 
-  const flowEdges: Edge[] = filteredEdges.map(edge => ({
-    id: edge.id,
-    source: edge.from,
-    target: edge.to,
-    ...pickEdgeHandles(
+  const flowEdges: Edge[] = filteredEdges.map(edge => {
+    const route = layout.edgeRoutes?.get(edge.id)
+    const forcedHandles = getForcedHandlesForEdge(edge.type)
+    const fallbackHandles = pickEdgeHandles(
       flowNodePositions.get(edge.from) ?? { x: 0, y: 0 },
       flowNodePositions.get(edge.to) ?? { x: 0, y: 0 },
-    ),
-    type: 'rbacEdge',
-    data: { edgeType: edge.type, explain: edge.explain },
-    style: {
-      stroke: EDGE_COLORS[edge.type] ?? '#475569',
-      strokeWidth: 1.5,
-      strokeDasharray: DASHED_EDGES.has(edge.type) ? '6 3' : undefined,
-    },
-    animated: false,
-  }))
+    )
+
+    return {
+      id: edge.id,
+      source: edge.from,
+      target: edge.to,
+      sourceHandle: forcedHandles?.sourceHandle ?? inferSourceHandle(route) ?? fallbackHandles.sourceHandle,
+      targetHandle: forcedHandles?.targetHandle ?? inferTargetHandle(route) ?? fallbackHandles.targetHandle,
+      type: 'rbacEdge',
+      data: { edgeType: edge.type, explain: edge.explain, route } as TRbacFlowEdgeData,
+      style: {
+        stroke: EDGE_COLORS[edge.type] ?? '#475569',
+        strokeWidth: 1.5,
+        strokeDasharray: DASHED_EDGES.has(edge.type) ? '6 3' : undefined,
+      },
+      animated: false,
+    }
+  })
 
   return { nodes: flowNodes, edges: flowEdges }
 }

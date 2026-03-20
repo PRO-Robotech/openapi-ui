@@ -5,6 +5,7 @@ import {
   ReactFlow,
   MiniMap,
   Controls,
+  useReactFlow,
   useNodesState,
   useEdgesState,
   ReactFlowProvider,
@@ -66,7 +67,6 @@ const DEFAULT_OPTIONS: TRbacGraphOptions = {
   reduceEdgeCrossings: true,
   includePods: false,
   includeWorkloads: false,
-  runtimeView: 'access',
 }
 
 type TRbacGraphProps = { clusterId: string }
@@ -88,17 +88,23 @@ const EMPTY_SELECTOR_SELECTION = {
   nonResourceURLs: [] as string[],
 }
 
+type TFlowModel = { nodes: Node[]; edges: Edge[] }
+
 const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
   const { token } = theme.useToken()
+  const { fitView } = useReactFlow()
   const containerRef = useRef<HTMLDivElement | null>(null)
   const chromeRef = useRef<HTMLDivElement | null>(null)
   const [payload, setPayload] = useState<TRbacQueryPayload>(DEFAULT_PAYLOAD)
   const [options, setOptions] = useState<TRbacGraphOptions>(DEFAULT_OPTIONS)
+  const previousReduceEdgeCrossingsRef = useRef(DEFAULT_OPTIONS.reduceEdgeCrossings)
+  const shouldFitViewAfterLayoutRef = useRef(false)
   const [focusNodeId, setFocusNodeId] = useState<string | null>(null)
   const [graphData, setGraphData] = useState<TGraph | null>(null)
   const [stats, setStats] = useState<TRbacQueryResponse['stats']>()
   const [layouting, setLayouting] = useState(false)
   const [canvasHeight, setCanvasHeight] = useState(320)
+  const [baseModel, setBaseModel] = useState<TFlowModel | null>(null)
 
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
@@ -129,6 +135,15 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
     selectorSelection.apiGroups.length || selectorSelection.apiVersions.length || selectorSelection.resources.length,
   )
   const hasNonResourceFilters = Boolean(selectorSelection.nonResourceURLs.length)
+  const {
+    includePods,
+    includeWorkloads,
+    onlyReachable,
+    reduceEdgeCrossings,
+    showAggregateEdges,
+    showPermissions,
+    focusMode,
+  } = options
 
   const selectorRelations = useMemo(() => {
     const kindsWithVersion =
@@ -389,6 +404,7 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
     setOptions(DEFAULT_OPTIONS)
     setSelectorSelection(EMPTY_SELECTOR_SELECTION)
     setFocusNodeId(null)
+    setBaseModel(null)
     setGraphData(null)
     setStats(undefined)
     setNodes([])
@@ -396,30 +412,81 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
   }, [setEdges, setNodes])
 
   useEffect(() => {
+    if (previousReduceEdgeCrossingsRef.current !== reduceEdgeCrossings) {
+      previousReduceEdgeCrossingsRef.current = reduceEdgeCrossings
+      shouldFitViewAfterLayoutRef.current = Boolean(graphData)
+    }
+  }, [graphData, reduceEdgeCrossings])
+
+  useEffect(() => {
     if (!graphData) return
+
     setLayouting(true)
-    const links = graphData.edges.map(e => ({ source: e.from, target: e.to, type: e.type }))
-    const nodeIds = graphData.nodes.map(n => n.id)
-    const namespaceMap = new Map(graphData.nodes.map(node => [node.id, node.namespace]))
-    layoutRbacGraph(nodeIds, links, namespaceMap, { reduceEdgeCrossings: options.reduceEdgeCrossings }).then(
-      positions => {
-        const model = buildRbacFlowModel(graphData, positions, options)
-        const focused = applyFocusToModel(model.nodes, model.edges, focusNodeId, options.focusMode)
-        setNodes(focused.nodes)
-        setEdges(focused.edges)
+    const applyLayout = async () => {
+      try {
+        const links = graphData.edges.map(e => ({ id: e.id, source: e.from, target: e.to, type: e.type }))
+        const nodeIds = graphData.nodes.map(n => n.id)
+        const namespaceMap = new Map(graphData.nodes.map(node => [node.id, node.namespace]))
+        const layout = await layoutRbacGraph(nodeIds, links, namespaceMap, {
+          reduceEdgeCrossings,
+        })
+        const model = buildRbacFlowModel(graphData, layout, {
+          includePods,
+          includeWorkloads,
+          onlyReachable,
+          focusMode,
+          reduceEdgeCrossings,
+          showAggregateEdges,
+          showPermissions,
+        })
+        setBaseModel(model)
+      } finally {
         setLayouting(false)
-      },
-    )
-  }, [graphData, options, focusNodeId, setNodes, setEdges])
+      }
+    }
+
+    applyLayout()
+  }, [
+    graphData,
+    focusMode,
+    includePods,
+    includeWorkloads,
+    onlyReachable,
+    reduceEdgeCrossings,
+    showAggregateEdges,
+    showPermissions,
+  ])
+
+  useEffect(() => {
+    if (!baseModel) {
+      setNodes([])
+      setEdges([])
+      return
+    }
+
+    const focused = applyFocusToModel(baseModel.nodes, baseModel.edges, focusNodeId, focusMode)
+    setNodes(focused.nodes)
+    setEdges(focused.edges)
+  }, [baseModel, focusMode, focusNodeId, setEdges, setNodes])
+
+  useEffect(() => {
+    if (!shouldFitViewAfterLayoutRef.current || layouting || nodes.length === 0) return
+
+    shouldFitViewAfterLayoutRef.current = false
+    window.requestAnimationFrame(() => {
+      // eslint-disable-next-line no-void
+      void fitView({ padding: 0.16 })
+    })
+  }, [fitView, layouting, nodes])
 
   const handleNodeClick = useCallback(
     (_: React.MouseEvent, node: { id: string }) => {
       if (node.id.startsWith('ns-group-')) return
-      if (options.focusMode) {
+      if (focusMode) {
         setFocusNodeId(prev => (prev === node.id ? null : node.id))
       }
     },
-    [options.focusMode],
+    [focusMode],
   )
 
   const isLoading = queryMutation.isPending || layouting
@@ -545,6 +612,7 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}
             onNodeClick={handleNodeClick}
+            nodesDraggable={false}
             fitView
             fitViewOptions={{ padding: 0.16 }}
             minZoom={0.05}

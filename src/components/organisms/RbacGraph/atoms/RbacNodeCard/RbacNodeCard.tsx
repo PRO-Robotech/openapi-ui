@@ -33,6 +33,7 @@ export const RbacNodeCard: FC<NodeProps> = memo(({ data }) => {
   const { token } = theme.useToken()
   const { label, nodeType, typeLabel, namespace, focusDim, focusRoot } = data as unknown as TRbacNodeData
   const borderColor = NODE_COLORS[nodeType] ?? '#475569'
+  const hiddenHandleStyle = { opacity: 0, width: 8, height: 8, pointerEvents: 'none' } as const
 
   return (
     <Styled.Card
@@ -41,13 +42,17 @@ export const RbacNodeCard: FC<NodeProps> = memo(({ data }) => {
       $isRoot={focusRoot}
       style={{ background: token.colorBgContainer }}
     >
-      <Handle type="target" position={Position.Left} />
-      <Handle type="target" position={Position.Top} id="top" />
+      <Handle type="target" position={Position.Left} id="left" style={hiddenHandleStyle} />
+      <Handle type="target" position={Position.Top} id="top" style={hiddenHandleStyle} />
+      <Handle type="target" position={Position.Right} id="right" style={hiddenHandleStyle} />
+      <Handle type="target" position={Position.Bottom} id="bottom" style={hiddenHandleStyle} />
+      <Handle type="source" position={Position.Left} id="left" style={hiddenHandleStyle} />
+      <Handle type="source" position={Position.Top} id="top" style={hiddenHandleStyle} />
+      <Handle type="source" position={Position.Right} id="right" style={hiddenHandleStyle} />
+      <Handle type="source" position={Position.Bottom} id="bottom" style={hiddenHandleStyle} />
       <Styled.TypeBadge $color={borderColor}>{typeLabel}</Styled.TypeBadge>
       <Styled.Title style={{ color: token.colorText }}>{label}</Styled.Title>
       {namespace && <Styled.Subtitle style={{ color: token.colorTextSecondary }}>{namespace}</Styled.Subtitle>}
-      <Handle type="source" position={Position.Right} />
-      <Handle type="source" position={Position.Bottom} id="bottom" />
     </Styled.Card>
   )
 })

@@ -32,6 +32,7 @@ const Container = styled.div<TContainerProps>`
 
   .ant-collapse-item {
     border: 1px solid ${({ $colorBorder }) => $colorBorder};
+    /* stylelint-disable declaration-no-important */
     border-radius: ${({ $borderRadiusLG }) => `${$borderRadiusLG}px`} !important;
     background: ${({ $colorBgContainer }) => $colorBgContainer};
   }
@@ -146,11 +147,11 @@ const SectionGrid = styled.div`
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px 16px;
 
-  @media (max-width: 1200px) {
+  @media (width <= 1200px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     grid-template-columns: minmax(0, 1fr);
   }
 `
@@ -160,11 +161,11 @@ const PrimarySectionGrid = styled.div`
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 12px 16px;
 
-  @media (max-width: 1200px) {
+  @media (width <= 1200px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     grid-template-columns: minmax(0, 1fr);
   }
 `
@@ -175,7 +176,7 @@ const FormRow = styled.div<{ $span?: number }>`
   gap: 4px;
   grid-column: span ${({ $span = 1 }) => $span};
 
-  @media (max-width: 1200px) {
+  @media (width <= 1200px) {
     grid-column: auto;
   }
 `
