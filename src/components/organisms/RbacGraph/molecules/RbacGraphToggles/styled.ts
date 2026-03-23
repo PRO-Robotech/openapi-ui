@@ -15,4 +15,15 @@ const ToggleItem = styled.div`
   font-size: 13px;
 `
 
-export const Styled = { Container, ToggleItem }
+const SelectItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`
+
+const SelectLabel = styled.span`
+  font-size: 13px;
+  white-space: nowrap;
+`
+
+export const Styled = { Container, ToggleItem, SelectItem, SelectLabel }

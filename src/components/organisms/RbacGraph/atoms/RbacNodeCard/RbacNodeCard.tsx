@@ -10,6 +10,7 @@ type TRbacNodeData = {
   typeLabel: string
   namespace?: string
   aggregated?: boolean
+  filteredDim: boolean
   focusDim: boolean
   focusRoot: boolean
 }
@@ -29,17 +30,17 @@ const NODE_COLORS: Record<TRbacNodeType, string> = {
 }
 
 // eslint-disable-next-line react/prop-types
-export const RbacNodeCard: FC<NodeProps> = memo(({ data }) => {
+export const RbacNodeCard: FC<NodeProps> = memo(({ data, selected }) => {
   const { token } = theme.useToken()
-  const { label, nodeType, typeLabel, namespace, focusDim, focusRoot } = data as unknown as TRbacNodeData
+  const { label, nodeType, typeLabel, namespace, filteredDim, focusDim, focusRoot } = data as unknown as TRbacNodeData
   const borderColor = NODE_COLORS[nodeType] ?? '#475569'
   const hiddenHandleStyle = { opacity: 0, width: 8, height: 8, pointerEvents: 'none' } as const
 
   return (
     <Styled.Card
       $borderColor={borderColor}
-      $dimmed={focusDim}
-      $isRoot={focusRoot}
+      $dimmed={filteredDim || focusDim}
+      $isRoot={focusRoot || selected}
       style={{ background: token.colorBgContainer }}
     >
       <Handle type="target" position={Position.Left} id="left" style={hiddenHandleStyle} />

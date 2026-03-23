@@ -93,9 +93,13 @@ export type TRbacQueryResponse = {
 }
 
 export type TRbacGraphOptions = {
+  showRoles: boolean
+  showBindings: boolean
+  showSubjects: boolean
   showAggregateEdges: boolean
   onlyReachable: boolean
   showPermissions: boolean
+  starMode: boolean
   focusMode: boolean
   reduceEdgeCrossings: boolean
   includePods: boolean

@@ -33,6 +33,10 @@ const CanvasWrapper = styled.div<TCanvasWrapperProps>`
     cursor: pointer;
   }
 
+  .react-flow__node {
+    z-index: 2;
+  }
+
   .react-flow__minimap {
     background: ${({ $colorBgElevated }) => $colorBgElevated};
     border: 1px solid ${({ $colorBorder }) => $colorBorder};

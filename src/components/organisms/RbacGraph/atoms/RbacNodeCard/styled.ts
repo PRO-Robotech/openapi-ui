@@ -1,17 +1,20 @@
 import styled from 'styled-components'
 
 const Card = styled.div<{ $borderColor: string; $dimmed: boolean; $isRoot: boolean }>`
+  position: relative;
   min-width: 180px;
   max-width: 260px;
   border: 2px solid ${({ $borderColor }) => $borderColor};
   border-radius: 8px;
   padding: 8px 12px;
+  background-clip: padding-box;
   opacity: ${({ $dimmed }) => ($dimmed ? 0.25 : 1)};
   box-shadow: ${({ $isRoot }) => ($isRoot ? '0 0 0 3px rgba(24, 144, 255, 0.4)' : 'none')};
   transition:
     opacity 0.2s,
     box-shadow 0.2s;
   cursor: pointer;
+  z-index: 1;
 `
 
 const TypeBadge = styled.span<{ $color: string }>`

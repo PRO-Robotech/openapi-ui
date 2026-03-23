@@ -20,6 +20,7 @@ export type TRbacLayoutLink = {
 
 type TLayoutOptions = {
   reduceEdgeCrossings?: boolean
+  useStarLayout?: boolean
 }
 
 type TNodeDatum = SimulationNodeDatum & {
@@ -541,6 +542,10 @@ export const layoutRbacGraph = async (
 ): Promise<TRbacLayoutResult> => {
   const effectiveNamespaceMap = namespaceMap ?? new Map<string, string | undefined>()
   const forceLinks = createForceLinks(links)
+
+  if (options.useStarLayout) {
+    return { positions: layoutFlatGraphLegacy(nodeIds, forceLinks) }
+  }
 
   if (!options.reduceEdgeCrossings) {
     return layoutRbacGraphLegacy(nodeIds, forceLinks, namespaceMap)
