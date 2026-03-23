@@ -17,6 +17,14 @@ const Card = styled.div<{ $borderColor: string; $dimmed: boolean; $isRoot: boole
   z-index: 1;
 `
 
+const BadgeRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 2px;
+`
+
 const TypeBadge = styled.span<{ $color: string }>`
   display: inline-block;
   font-size: 10px;
@@ -24,7 +32,22 @@ const TypeBadge = styled.span<{ $color: string }>`
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: ${({ $color }) => $color};
-  margin-bottom: 2px;
+  min-width: 0;
+`
+
+const RuleCountBadge = styled.span<{ $color: string }>`
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border: 1px solid ${({ $color }) => $color};
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: ${({ $color }) => $color};
 `
 
 const Title = styled.div`
@@ -44,4 +67,4 @@ const Subtitle = styled.div`
   white-space: nowrap;
 `
 
-export const Styled = { Card, TypeBadge, Title, Subtitle }
+export const Styled = { Card, BadgeRow, TypeBadge, RuleCountBadge, Title, Subtitle }

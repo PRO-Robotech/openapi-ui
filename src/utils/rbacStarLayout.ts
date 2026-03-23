@@ -14,7 +14,7 @@ import type { TRbacGraph, TRbacNode, TRbacEdge } from 'localTypes/rbacGraph'
 import type { TPositionMap } from './rbacForceLayout'
 
 const NODE_W = 260
-const NODE_H = 56
+const NODE_H = 80
 const HW = NODE_W / 2
 const HH = NODE_H / 2
 

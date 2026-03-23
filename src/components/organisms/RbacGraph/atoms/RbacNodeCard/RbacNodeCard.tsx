@@ -10,6 +10,7 @@ type TRbacNodeData = {
   typeLabel: string
   namespace?: string
   aggregated?: boolean
+  ruleCount: number
   filteredDim: boolean
   focusDim: boolean
   focusRoot: boolean
@@ -29,12 +30,16 @@ const NODE_COLORS: Record<TRbacNodeType, string> = {
   subject: '#475569',
 }
 
+const RULE_COUNT_NODE_TYPES = new Set<TRbacNodeType>(['role', 'clusterRole', 'roleBinding', 'clusterRoleBinding'])
+
 // eslint-disable-next-line react/prop-types
 export const RbacNodeCard: FC<NodeProps> = memo(({ data, selected }) => {
   const { token } = theme.useToken()
-  const { label, nodeType, typeLabel, namespace, filteredDim, focusDim, focusRoot } = data as unknown as TRbacNodeData
+  const { label, nodeType, typeLabel, namespace, ruleCount, filteredDim, focusDim, focusRoot } =
+    data as unknown as TRbacNodeData
   const borderColor = NODE_COLORS[nodeType] ?? '#475569'
   const hiddenHandleStyle = { opacity: 0, width: 8, height: 8, pointerEvents: 'none' } as const
+  const showRuleCount = RULE_COUNT_NODE_TYPES.has(nodeType) && ruleCount > 0
 
   return (
     <Styled.Card
@@ -51,7 +56,10 @@ export const RbacNodeCard: FC<NodeProps> = memo(({ data, selected }) => {
       <Handle type="source" position={Position.Top} id="top" style={hiddenHandleStyle} />
       <Handle type="source" position={Position.Right} id="right" style={hiddenHandleStyle} />
       <Handle type="source" position={Position.Bottom} id="bottom" style={hiddenHandleStyle} />
-      <Styled.TypeBadge $color={borderColor}>{typeLabel}</Styled.TypeBadge>
+      <Styled.BadgeRow>
+        <Styled.TypeBadge $color={borderColor}>{typeLabel}</Styled.TypeBadge>
+        {showRuleCount && <Styled.RuleCountBadge $color={borderColor}>RULES {ruleCount}</Styled.RuleCountBadge>}
+      </Styled.BadgeRow>
       <Styled.Title style={{ color: token.colorText }}>{label}</Styled.Title>
       {namespace && <Styled.Subtitle style={{ color: token.colorTextSecondary }}>{namespace}</Styled.Subtitle>}
     </Styled.Card>

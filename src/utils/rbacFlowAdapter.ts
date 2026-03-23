@@ -247,6 +247,7 @@ export const buildRbacFlowModel = (
         namespace: node.namespace,
         aggregated: node.aggregated,
         matchedRuleRefs: node.matchedRuleRefs,
+        ruleCount: node.matchedRuleRefs?.length ?? 0,
         filteredDim: false,
         focusDim: false,
         focusRoot: false,
