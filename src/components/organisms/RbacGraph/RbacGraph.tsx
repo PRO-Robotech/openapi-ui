@@ -871,7 +871,8 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
         onCancel={() => setDetailsNodeId(null)}
         footer={null}
         width={1400}
-        destroyOnClose
+        centered
+        destroyOnHidden
       >
         {roleDetails && (
           <Styled.DetailsLayout
