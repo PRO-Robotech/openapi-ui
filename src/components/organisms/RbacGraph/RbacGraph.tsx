@@ -16,13 +16,15 @@ import {
 } from '@xyflow/react'
 import { useKinds, useK8sSmartResource } from '@prorobotech/openapi-k8s-toolkit'
 import '@xyflow/react/dist/style.css'
-import { Spin, Card, Alert, Empty, theme } from 'antd'
+import { Alert, Button, Card, Checkbox, Collapse, Empty, Modal, Spin, Tag, Typography, theme } from 'antd'
 import { FOOTER_HEIGHT } from 'constants/blocksSizes'
 import type {
+  TRbacRuleRef,
   TRbacQueryPayload,
   TRbacQueryResponse,
   TRbacGraphOptions,
   TRbacGraph as TGraph,
+  TRbacNode,
 } from 'localTypes/rbacGraph'
 import { useRbacGraphQuery } from 'hooks/useRbacGraphQuery'
 import { layoutRbacGraph } from 'utils/rbacForceLayout'
@@ -99,6 +101,136 @@ const EMPTY_SELECTOR_SELECTION = {
 }
 
 type TFlowModel = { nodes: Node[]; edges: Edge[] }
+type TParsedPermission = {
+  id: string
+  label: string
+  verb: string
+  target: string
+  ruleKeys: string[]
+}
+
+type TRoleRuleDetail = {
+  key: string
+  ruleRef: TRbacRuleRef
+  expandedPermissionCount: number
+}
+
+type TRoleDetails = {
+  node: TRbacNode
+  rules: TRoleRuleDetail[]
+  permissions: TParsedPermission[]
+}
+
+const ROLE_NODE_TYPES = new Set<TRbacNode['type']>(['role', 'clusterRole'])
+const sortValues = (values?: string[]) => Array.from(new Set(values ?? [])).sort((a, b) => a.localeCompare(b))
+const normalizeRuleRef = (ruleRef: TRbacRuleRef): TRbacRuleRef => ({
+  apiGroups: sortValues(ruleRef.apiGroups),
+  resources: sortValues(ruleRef.resources),
+  verbs: sortValues(ruleRef.verbs),
+  resourceNames: sortValues(ruleRef.resourceNames),
+  nonResourceURLs: sortValues(ruleRef.nonResourceURLs),
+})
+const serializeRuleRef = (ruleRef: TRbacRuleRef) => JSON.stringify(normalizeRuleRef(ruleRef))
+const formatJoinedValues = (values?: string[], empty = '*') => {
+  const normalized = sortValues(values)
+  return normalized.length > 0 ? normalized.join(', ') : empty
+}
+const formatRuleTarget = (ruleRef: TRbacRuleRef) => {
+  const resources = formatJoinedValues(ruleRef.resources)
+  const nonResourceURLs = formatJoinedValues(ruleRef.nonResourceURLs)
+  return sortValues(ruleRef.nonResourceURLs).length > 0 ? nonResourceURLs : resources
+}
+const formatRuleVerb = (ruleRef: TRbacRuleRef) => formatJoinedValues(ruleRef.verbs)
+const formatApiGroups = (ruleRef: TRbacRuleRef) => {
+  const apiGroups = sortValues(ruleRef.apiGroups).map(value => value || '<core>')
+  return apiGroups.length > 0 ? apiGroups.join(', ') : '<all>'
+}
+const hasWildcardValue = (values?: string[]) => (values ?? []).some(value => value.includes('*'))
+const parsePermissionLabel = (label: string) => {
+  const match = label.match(/^([A-Z*]+)\s+(.+)$/)
+
+  if (!match) {
+    return { verb: '*', target: label }
+  }
+
+  return { verb: match[1], target: match[2] }
+}
+const collectRoleDetails = (graph: TGraph | null, nodeId: string | null): TRoleDetails | null => {
+  if (!graph || !nodeId) return null
+
+  const node = graph.nodes.find(item => item.id === nodeId)
+  if (!node || !ROLE_NODE_TYPES.has(node.type)) return null
+
+  const nodeById = new Map(graph.nodes.map(item => [item.id, item]))
+  const ruleMap = new Map<string, TRoleRuleDetail>()
+  const permissionMap = new Map<string, TParsedPermission>()
+
+  ;(node.matchedRuleRefs ?? []).forEach(ruleRef => {
+    const key = serializeRuleRef(ruleRef)
+    if (!ruleMap.has(key)) {
+      ruleMap.set(key, {
+        key,
+        ruleRef: normalizeRuleRef(ruleRef),
+        expandedPermissionCount: 0,
+      })
+    }
+  })
+
+  graph.edges.forEach(edge => {
+    if (edge.type !== 'permissions-role' || edge.from !== node.id) return
+
+    const permissionNode = nodeById.get(edge.to)
+    if (!permissionNode) return
+
+    const normalizedRuleRefs = (edge.ruleRefs ?? []).map(normalizeRuleRef)
+    const ruleKeys = normalizedRuleRefs.map(serializeRuleRef)
+    const { verb, target } = parsePermissionLabel(permissionNode.name)
+
+    normalizedRuleRefs.forEach((ruleRef, index) => {
+      const key = ruleKeys[index]
+      if (!ruleMap.has(key)) {
+        ruleMap.set(key, {
+          key,
+          ruleRef,
+          expandedPermissionCount: 0,
+        })
+      }
+    })
+
+    const permissionKey = `${permissionNode.id}:${ruleKeys.join('|') || 'all'}`
+    if (!permissionMap.has(permissionKey)) {
+      permissionMap.set(permissionKey, {
+        id: permissionKey,
+        label: permissionNode.name,
+        verb,
+        target,
+        ruleKeys,
+      })
+    }
+  })
+
+  permissionMap.forEach(permission => {
+    const targets = permission.ruleKeys.length > 0 ? permission.ruleKeys : Array.from(ruleMap.keys())
+    targets.forEach(ruleKey => {
+      const rule = ruleMap.get(ruleKey)
+      if (rule) {
+        rule.expandedPermissionCount += 1
+      }
+    })
+  })
+
+  return {
+    node,
+    rules: Array.from(ruleMap.values()).sort((left, right) =>
+      formatRuleVerb(left.ruleRef)
+        .concat(formatRuleTarget(left.ruleRef))
+        .localeCompare(formatRuleVerb(right.ruleRef).concat(formatRuleTarget(right.ruleRef))),
+    ),
+    permissions: Array.from(permissionMap.values()).sort(
+      (left, right) => left.target.localeCompare(right.target) || left.verb.localeCompare(right.verb),
+    ),
+  }
+}
 
 const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
   const { token } = theme.useToken()
@@ -116,9 +248,38 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
   const [layouting, setLayouting] = useState(false)
   const [canvasHeight, setCanvasHeight] = useState(320)
   const [baseModel, setBaseModel] = useState<TFlowModel | null>(null)
+  const [detailsNodeId, setDetailsNodeId] = useState<string | null>(null)
+  const [selectedRuleKeys, setSelectedRuleKeys] = useState<string[]>([])
 
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
+  const roleDetails = useMemo(() => collectRoleDetails(graphData, detailsNodeId), [detailsNodeId, graphData])
+  const selectedRuleKeySet = useMemo(() => new Set(selectedRuleKeys), [selectedRuleKeys])
+  const filteredPermissions = useMemo(() => {
+    if (!roleDetails) return []
+    if (selectedRuleKeySet.size === 0) return []
+
+    return roleDetails.permissions.filter(
+      permission =>
+        permission.ruleKeys.length === 0 || permission.ruleKeys.some(ruleKey => selectedRuleKeySet.has(ruleKey)),
+    )
+  }, [roleDetails, selectedRuleKeySet])
+  const groupedPermissions = useMemo(() => {
+    const groups = new Map<string, TParsedPermission[]>()
+
+    filteredPermissions.forEach(permission => {
+      const bucket = groups.get(permission.target) ?? []
+      bucket.push(permission)
+      groups.set(permission.target, bucket)
+    })
+
+    return Array.from(groups.entries())
+      .sort((left, right) => left[0].localeCompare(right[0]))
+      .map(([target, permissions]) => ({
+        target,
+        permissions: permissions.sort((left, right) => left.verb.localeCompare(right.verb)),
+      }))
+  }, [filteredPermissions])
 
   const queryMutation = useRbacGraphQuery()
   const {
@@ -403,6 +564,15 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
     selectorSelection,
   ])
 
+  useEffect(() => {
+    if (!roleDetails) {
+      setSelectedRuleKeys([])
+      return
+    }
+
+    setSelectedRuleKeys(roleDetails.rules.map(rule => rule.key))
+  }, [roleDetails])
+
   const handleSubmit = useCallback(() => {
     queryMutation.mutate(payload, {
       onSuccess: (data: TRbacQueryResponse) => {
@@ -410,6 +580,7 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
         setStats(data.stats)
         setFocusNodeId(null)
         setStarSelectedNodeId(null)
+        setDetailsNodeId(null)
       },
     })
   }, [payload, queryMutation])
@@ -423,6 +594,8 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
     setBaseModel(null)
     setGraphData(null)
     setStats(undefined)
+    setDetailsNodeId(null)
+    setSelectedRuleKeys([])
     setNodes([])
     setEdges([])
   }, [setEdges, setNodes])
@@ -529,8 +702,11 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
   }, [fitView, layouting, nodes, starMode])
 
   const handleNodeClick = useCallback(
-    (_: React.MouseEvent, node: { id: string }) => {
+    (_: React.MouseEvent, node: { id: string; data?: { nodeType?: TRbacNode['type'] } }) => {
       if (node.id.startsWith('ns-group-')) return
+      if (node.data?.nodeType && ROLE_NODE_TYPES.has(node.data.nodeType)) {
+        setDetailsNodeId(node.id)
+      }
       if (starMode) {
         setStarSelectedNodeId(prev => (prev === node.id ? null : node.id))
         return
@@ -550,6 +726,9 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
   const isLoading = queryMutation.isPending || layouting
   const nonResourceUrlsErrorMessage =
     typeof nonResourceUrlsError === 'string' ? nonResourceUrlsError : nonResourceUrlsError?.message
+  const roleDetailsTitle = roleDetails
+    ? `${roleDetails.node.type === 'clusterRole' ? 'clusterRole' : 'role'}: ${roleDetails.node.name}`
+    : ''
 
   useEffect(() => {
     const updateCanvasHeight = () => {
@@ -686,6 +865,139 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
           </ReactFlow>
         </Styled.CanvasWrapper>
       )}
+      <Modal
+        open={Boolean(roleDetails)}
+        title={roleDetailsTitle}
+        onCancel={() => setDetailsNodeId(null)}
+        footer={null}
+        width={1400}
+        destroyOnClose
+      >
+        {roleDetails && (
+          <Styled.DetailsLayout
+            $colorBgElevated={token.colorBgElevated}
+            $colorBgContainer={token.colorBgContainer}
+            $colorBorder={token.colorBorder}
+            $colorBorderSecondary={token.colorBorderSecondary}
+            $colorFillAlter={token.colorFillAlter}
+            $colorPrimary={token.colorPrimary}
+            $colorPrimaryBg={token.colorPrimaryBg}
+            $colorPrimaryBorder={token.colorPrimaryBorder}
+            $colorPrimaryText={token.colorPrimaryText}
+            $colorText={token.colorText}
+            $colorTextSecondary={token.colorTextSecondary}
+            $boxShadowSecondary={token.boxShadowSecondary}
+            $borderRadius={token.borderRadius}
+          >
+            <Styled.DetailsSection>
+              <Styled.DetailsSectionHeader>
+                <Styled.DetailsSectionTitle>Original Rules</Styled.DetailsSectionTitle>
+              </Styled.DetailsSectionHeader>
+              <Styled.DetailsToolbar>
+                <Styled.DetailsToolbarActions>
+                  <Button size="small" onClick={() => setSelectedRuleKeys(roleDetails.rules.map(rule => rule.key))}>
+                    Select All
+                  </Button>
+                  <Button size="small" onClick={() => setSelectedRuleKeys([])}>
+                    Deselect All
+                  </Button>
+                </Styled.DetailsToolbarActions>
+                <Styled.DetailsToolbarMeta>{roleDetails.rules.length} wildcard rules</Styled.DetailsToolbarMeta>
+              </Styled.DetailsToolbar>
+
+              {roleDetails.rules.length === 0 ? (
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No rule metadata available for this role." />
+              ) : (
+                <Styled.RuleList>
+                  {roleDetails.rules.map(rule => {
+                    const checked = selectedRuleKeySet.has(rule.key)
+
+                    return (
+                      <Styled.RuleCard
+                        key={rule.key}
+                        type="button"
+                        $selected={checked}
+                        onClick={() =>
+                          setSelectedRuleKeys(prev =>
+                            prev.includes(rule.key) ? prev.filter(key => key !== rule.key) : [...prev, rule.key],
+                          )
+                        }
+                      >
+                        <Styled.RuleCardHeader>
+                          <Checkbox checked={checked} style={{ pointerEvents: 'none' }} />
+                          <Styled.RuleCardBody>
+                            <Styled.RuleHeadline>
+                              <Styled.RuleVerb>{formatRuleVerb(rule.ruleRef)}</Styled.RuleVerb>
+                              <Styled.RuleTarget>{formatRuleTarget(rule.ruleRef)}</Styled.RuleTarget>
+                            </Styled.RuleHeadline>
+                            <Styled.RuleMeta>{rule.expandedPermissionCount} expanded permissions</Styled.RuleMeta>
+                            <Styled.RuleTagRow>
+                              {hasWildcardValue(rule.ruleRef.resources) && <Tag color="gold">* resource</Tag>}
+                              {hasWildcardValue(rule.ruleRef.verbs) && <Tag color="gold">* verb</Tag>}
+                              {sortValues(rule.ruleRef.nonResourceURLs).length > 0 && (
+                                <Tag color="blue">non-resource</Tag>
+                              )}
+                              <Tag>{`apiGroup: ${formatApiGroups(rule.ruleRef)}`}</Tag>
+                              {sortValues(rule.ruleRef.resourceNames).length > 0 && (
+                                <Tag>{`resourceNames: ${formatJoinedValues(rule.ruleRef.resourceNames)}`}</Tag>
+                              )}
+                            </Styled.RuleTagRow>
+                          </Styled.RuleCardBody>
+                        </Styled.RuleCardHeader>
+                      </Styled.RuleCard>
+                    )
+                  })}
+                </Styled.RuleList>
+              )}
+            </Styled.DetailsSection>
+
+            <Styled.DetailsSection>
+              <Styled.DetailsSectionHeader>
+                <Styled.DetailsSectionTitle>Expanded Permissions</Styled.DetailsSectionTitle>
+              </Styled.DetailsSectionHeader>
+              <Styled.PermissionPanel>
+                <Styled.PermissionHeader>
+                  <Typography.Text strong style={{ color: token.colorText }}>
+                    {roleDetailsTitle}
+                  </Typography.Text>
+                  <Tag color="blue">Expanded: resource</Tag>
+                  <Tag>{`${filteredPermissions.length} permissions`}</Tag>
+                </Styled.PermissionHeader>
+
+                {groupedPermissions.length === 0 ? (
+                  <Empty
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    description={
+                      selectedRuleKeys.length === 0
+                        ? 'Select at least one rule to inspect expanded permissions.'
+                        : 'No expanded permissions matched the selected rules.'
+                    }
+                  />
+                ) : (
+                  <Collapse
+                    ghost
+                    defaultActiveKey={groupedPermissions.map(group => group.target)}
+                    items={groupedPermissions.map(group => ({
+                      key: group.target,
+                      label: `${group.target} (${group.permissions.length})`,
+                      children: (
+                        <Styled.PermissionPillRow>
+                          {group.permissions.map(permission => (
+                            <Styled.PermissionPill key={permission.id}>
+                              <Styled.PermissionVerb>{permission.verb}</Styled.PermissionVerb>
+                              <Styled.PermissionTarget>{permission.target}</Styled.PermissionTarget>
+                            </Styled.PermissionPill>
+                          ))}
+                        </Styled.PermissionPillRow>
+                      ),
+                    }))}
+                  />
+                )}
+              </Styled.PermissionPanel>
+            </Styled.DetailsSection>
+          </Styled.DetailsLayout>
+        )}
+      </Modal>
     </Styled.Container>
   )
 }
