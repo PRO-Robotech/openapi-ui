@@ -2,6 +2,7 @@ import React, { FC, memo } from 'react'
 import { Handle, Position, type NodeProps } from '@xyflow/react'
 import { theme } from 'antd'
 import type { TRbacNodeType } from 'localTypes/rbacGraph'
+import { RbacResourceLabel } from '../RbacResourceLabel'
 import { Styled } from './styled'
 
 type TRbacNodeData = {
@@ -14,6 +15,10 @@ type TRbacNodeData = {
   filteredDim: boolean
   focusDim: boolean
   focusRoot: boolean
+  titlePrefix?: string
+  titleValue?: string
+  titleShowsBadge?: boolean
+  badgeValue?: string
 }
 
 const NODE_COLORS: Record<TRbacNodeType, string> = {
@@ -35,8 +40,20 @@ const RULE_COUNT_NODE_TYPES = new Set<TRbacNodeType>(['role', 'clusterRole', 'ro
 // eslint-disable-next-line react/prop-types
 export const RbacNodeCard: FC<NodeProps> = memo(({ data, selected }) => {
   const { token } = theme.useToken()
-  const { label, nodeType, typeLabel, namespace, ruleCount, filteredDim, focusDim, focusRoot } =
-    data as unknown as TRbacNodeData
+  const {
+    label,
+    nodeType,
+    typeLabel,
+    namespace,
+    ruleCount,
+    filteredDim,
+    focusDim,
+    focusRoot,
+    titlePrefix,
+    titleValue = label,
+    titleShowsBadge = true,
+    badgeValue,
+  } = data as unknown as TRbacNodeData
   const borderColor = NODE_COLORS[nodeType] ?? '#475569'
   const hiddenHandleStyle = { opacity: 0, width: 8, height: 8, pointerEvents: 'none' } as const
   const showRuleCount = RULE_COUNT_NODE_TYPES.has(nodeType) && ruleCount > 0
@@ -60,7 +77,15 @@ export const RbacNodeCard: FC<NodeProps> = memo(({ data, selected }) => {
         <Styled.TypeBadge $color={borderColor}>{typeLabel}</Styled.TypeBadge>
         {showRuleCount && <Styled.RuleCountBadge $color={borderColor}>RULES {ruleCount}</Styled.RuleCountBadge>}
       </Styled.BadgeRow>
-      <Styled.Title style={{ color: token.colorText }}>{label}</Styled.Title>
+      <Styled.Title style={{ color: token.colorText }}>
+        {titlePrefix && <Styled.TitlePrefix>{titlePrefix}</Styled.TitlePrefix>}
+        <RbacResourceLabel
+          badgeId={`rbac-node-${nodeType}-${titleValue}`}
+          value={titleValue}
+          badgeValue={badgeValue}
+          showBadge={titleShowsBadge}
+        />
+      </Styled.Title>
       {namespace && <Styled.Subtitle style={{ color: token.colorTextSecondary }}>{namespace}</Styled.Subtitle>}
     </Styled.Card>
   )

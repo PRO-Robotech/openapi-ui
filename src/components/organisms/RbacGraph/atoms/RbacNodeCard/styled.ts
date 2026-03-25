@@ -51,12 +51,17 @@ const RuleCountBadge = styled.span<{ $color: string }>`
 `
 
 const Title = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
   font-size: 13px;
   font-weight: 600;
   line-height: 1.3;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+`
+
+const TitlePrefix = styled.span`
+  font-weight: 700;
 `
 
 const Subtitle = styled.div`
@@ -67,4 +72,4 @@ const Subtitle = styled.div`
   white-space: nowrap;
 `
 
-export const Styled = { Card, BadgeRow, TypeBadge, RuleCountBadge, Title, Subtitle }
+export const Styled = { Card, BadgeRow, TypeBadge, RuleCountBadge, Title, TitlePrefix, Subtitle }

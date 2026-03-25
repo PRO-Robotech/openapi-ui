@@ -278,6 +278,13 @@ const RuleTarget = styled.span`
   word-break: break-all;
 `
 
+const RuleTargetList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+`
+
 const RuleMeta = styled.div`
   margin-top: 6px;
   font-size: 12px;
@@ -344,6 +351,27 @@ const PermissionTarget = styled.span`
   word-break: break-all;
 `
 
+const ResourceLabel = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+
+  > span:last-child {
+    min-width: 0;
+    word-break: break-all;
+  }
+`
+
+const ResourceBadgeAbbr = styled.span<{ $bgColor: string }>`
+  background-color: ${({ $bgColor }) => $bgColor};
+  border-radius: 13px;
+  padding: 1px 5px;
+  font-size: 13px;
+  height: min-content;
+  flex-shrink: 0;
+`
+
 export const Styled = {
   Container,
   Chrome,
@@ -368,6 +396,7 @@ export const Styled = {
   RuleHeadline,
   RuleVerb,
   RuleTarget,
+  RuleTargetList,
   RuleMeta,
   RuleTagRow,
   PermissionPanel,
@@ -376,4 +405,6 @@ export const Styled = {
   PermissionPill,
   PermissionVerb,
   PermissionTarget,
+  ResourceLabel,
+  ResourceBadgeAbbr,
 }
