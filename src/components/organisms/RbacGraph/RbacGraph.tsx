@@ -1180,12 +1180,6 @@ const RbacGraphInner: FC<TRbacGraphProps> = ({ clusterId }) => {
                           {group.permissions.map(permission => (
                             <Styled.PermissionPill key={permission.id}>
                               <Styled.PermissionVerb>{permission.verb}</Styled.PermissionVerb>
-                              <Styled.PermissionTarget>
-                                {renderResolvedResourceLabel(permission.target, {
-                                  apiGroups: permission.apiGroups,
-                                  badgeId: permission.id,
-                                })}
-                              </Styled.PermissionTarget>
                             </Styled.PermissionPill>
                           ))}
                         </Styled.PermissionPillRow>
