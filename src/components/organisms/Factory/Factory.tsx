@@ -7,6 +7,7 @@ import {
   TDynamicComponentsAppTypeMap,
   useK8sSmartResource,
   TFactoryResponse,
+  ErrorBoundary,
   // ContentCard,
 } from '@prorobotech/openapi-k8s-toolkit'
 import { Result } from 'antd'
@@ -89,27 +90,31 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags, setForcedSidebarId 
   if (spec.withScrollableMainContentCard) {
     // <ContentCard flexGrow={1} displayFlex flexFlow="column" maxHeight={height}>
     return (
-      <ContentCardMain>
-        <DynamicRendererWithProviders
-          urlsToFetch={spec.urlsToFetch ?? []}
-          theme={theme}
-          nodeTerminalDefaultProfile={NODE_TERMINAL_DEFAULT_PROFILE}
-          items={spec.data}
-          components={DynamicComponents}
-        />
-      </ContentCardMain>
+      <ErrorBoundary>
+        <ContentCardMain>
+          <DynamicRendererWithProviders
+            urlsToFetch={spec.urlsToFetch ?? []}
+            theme={theme}
+            nodeTerminalDefaultProfile={NODE_TERMINAL_DEFAULT_PROFILE}
+            items={spec.data}
+            components={DynamicComponents}
+          />
+        </ContentCardMain>
+      </ErrorBoundary>
     )
     // </ContentCard>
   }
 
   return (
-    <DynamicRendererWithProviders
-      urlsToFetch={spec.urlsToFetch ?? []}
-      theme={theme}
-      nodeTerminalDefaultProfile={NODE_TERMINAL_DEFAULT_PROFILE}
-      items={spec.data}
-      components={DynamicComponents}
-      key={key}
-    />
+    <ErrorBoundary>
+      <DynamicRendererWithProviders
+        urlsToFetch={spec.urlsToFetch ?? []}
+        theme={theme}
+        nodeTerminalDefaultProfile={NODE_TERMINAL_DEFAULT_PROFILE}
+        items={spec.data}
+        components={DynamicComponents}
+        key={key}
+      />
+    </ErrorBoundary>
   )
 }
