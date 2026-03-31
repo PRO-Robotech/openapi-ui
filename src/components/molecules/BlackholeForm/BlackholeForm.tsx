@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from 'react'
+import React, { FC, useState, useEffect, useMemo } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import { Alert } from 'antd'
 import { BlackholeFormProvider, TJSON } from '@prorobotech/openapi-k8s-toolkit'
@@ -90,7 +90,7 @@ export const BlackholeForm: FC<TBlackholeFormProps> = ({ data, customizationId, 
     apiGroup: params.apiGroup,
     plural: params.plural,
   }
-  const partsOfUrl = location.pathname.split('/')
+  const partsOfUrl = useMemo(() => location.pathname.split('/'), [location.pathname])
 
   if (!cluster) {
     return <Alert type="error" message="Error while defining cluster" description="No cluster has been set" />
