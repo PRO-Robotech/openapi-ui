@@ -165,6 +165,9 @@ const THEME_TOKENS_COMPONENTS_DARK =
 const THEME_TOKENS_USE_MERGE_STRATEGY =
   process.env.LOCAL === 'true' ? options?.THEME_TOKENS_USE_MERGE_STRATEGY : process.env.THEME_TOKENS_USE_MERGE_STRATEGY
 
+const PLUGIN_LOADING_SPINNER =
+  process.env.LOCAL === 'true' ? options?.PLUGIN_LOADING_SPINNER : process.env.PLUGIN_LOADING_SPINNER
+
 type TPluginConfig = {
   name: string
   entry: string
@@ -456,6 +459,9 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
       THEME_TOKENS_COMPONENTS_DARK: ${JSON.stringify(PARSED_THEME_TOKENS_COMPONENTS_DARK) || '"check envs"'},
       THEME_TOKENS_USE_MERGE_STRATEGY: ${
         THEME_TOKENS_USE_MERGE_STRATEGY ? JSON.stringify(THEME_TOKENS_USE_MERGE_STRATEGY).toLowerCase() : '"false"'
+      },
+      PLUGIN_LOADING_SPINNER: ${
+        PLUGIN_LOADING_SPINNER ? JSON.stringify(PLUGIN_LOADING_SPINNER).toLowerCase() : '"false"'
       }
     }
     `,
