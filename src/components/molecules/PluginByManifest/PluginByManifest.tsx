@@ -44,6 +44,7 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
     const pluginId = `plugin-${manifestEntry.name}`
 
     const load = async (plugin: TPluginManifestEntry) => {
+      if (cancelled) return
       setRemoteLoading(true)
       setLoadError(null)
       setComponent(null)
