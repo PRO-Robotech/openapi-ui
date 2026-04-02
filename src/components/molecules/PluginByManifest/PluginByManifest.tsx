@@ -9,9 +9,9 @@ import {
 } from 'virtual:__federation__'
 import { TPluginManifestEntry } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector, useDispatch } from 'react-redux'
+import { Spin } from 'antd'
 import type { RootState } from 'store/store'
 import { setTheme } from 'store/theme/theme/theme'
-import { addLoadingPlugin, removeLoadingPlugin } from 'store/pluginLoading/pluginLoading/pluginLoading'
 import { THEME_EVENT } from 'constants/theme'
 import { PLUGIN_LOADING_SPINNER } from 'constants/customizationApiGroupAndVersion'
 
@@ -41,13 +41,11 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
     if (!manifestEntry) return undefined
 
     let cancelled = false
-    const pluginId = manifestEntry.name
 
     const load = async (plugin: TPluginManifestEntry) => {
       setRemoteLoading(true)
       setLoadError(null)
       setComponent(null)
-      dispatch(addLoadingPlugin(pluginId))
 
       try {
         // register remote at runtime
@@ -71,7 +69,6 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
       } finally {
         if (!cancelled) {
           setRemoteLoading(false)
-          dispatch(removeLoadingPlugin(pluginId))
         }
       }
     }
@@ -85,9 +82,8 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
 
     return () => {
       cancelled = true
-      dispatch(removeLoadingPlugin(pluginId))
     }
-  }, [manifestEntry, dispatch])
+  }, [manifestEntry])
 
   console.log('manifestEntry', manifestEntry)
 
@@ -105,11 +101,18 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
 
   // STEP 2 – render states
 
-  if (remoteLoading) {
+  if (remoteLoading || !Component) {
     if (PLUGIN_LOADING_SPINNER) {
-      return null // Global overlay handles loading state
+      return (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
+          <Spin size="large" />
+        </div>
+      )
     }
-    return <div>Loading plugin {manifestEntry.name}…</div>
+    if (remoteLoading) {
+      return <div>Loading plugin {manifestEntry.name}…</div>
+    }
+    return <div>No plugin component available. {JSON.stringify(manifestEntry)}</div>
   }
   if (loadError)
     return (
@@ -117,12 +120,6 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
         Failed to load plugin {manifestEntry.name}: {loadError}
       </div>
     )
-  if (!Component) {
-    if (PLUGIN_LOADING_SPINNER) {
-      return null // Global overlay handles loading state
-    }
-    return <div>No plugin component available. {JSON.stringify(manifestEntry)}</div>
-  }
 
   return (
     <Component
