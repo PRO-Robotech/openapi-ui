@@ -11,7 +11,9 @@ import { TPluginManifestEntry } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector, useDispatch } from 'react-redux'
 import type { RootState } from 'store/store'
 import { setTheme } from 'store/theme/theme/theme'
+import { addLoadingPlugin, removeLoadingPlugin } from 'store/pluginLoading/pluginLoading/pluginLoading'
 import { THEME_EVENT } from 'constants/theme'
+import { PLUGIN_LOADING_SPINNER } from 'constants/customizationApiGroupAndVersion'
 
 type TParams = {
   cluster: string
@@ -39,11 +41,13 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
     if (!manifestEntry) return undefined
 
     let cancelled = false
+    const pluginId = `manifest-${manifestEntry.name}`
 
     const load = async (plugin: TPluginManifestEntry) => {
       setRemoteLoading(true)
       setLoadError(null)
       setComponent(null)
+      dispatch(addLoadingPlugin(pluginId))
 
       try {
         // register remote at runtime
@@ -67,6 +71,7 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
       } finally {
         if (!cancelled) {
           setRemoteLoading(false)
+          dispatch(removeLoadingPlugin(pluginId))
         }
       }
     }
@@ -80,8 +85,9 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
 
     return () => {
       cancelled = true
+      dispatch(removeLoadingPlugin(pluginId))
     }
-  }, [manifestEntry])
+  }, [manifestEntry, dispatch])
 
   console.log('manifestEntry', manifestEntry)
 
@@ -100,6 +106,9 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
   // STEP 2 – render states
 
   if (remoteLoading || !Component) {
+    if (PLUGIN_LOADING_SPINNER) {
+      return null
+    }
     if (remoteLoading) {
       return <div>Loading plugin {manifestEntry.name}…</div>
     }
