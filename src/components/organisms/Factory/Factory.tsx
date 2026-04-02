@@ -99,6 +99,7 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags, setForcedSidebarId 
             items={spec.data}
             components={DynamicComponents}
             effectiveReqIndexes={spec.effectiveReqIndexes}
+            effectiveItemsPath={spec.effectiveItemsPath}
           />
         </ContentCardMain>
       </ErrorBoundary>
