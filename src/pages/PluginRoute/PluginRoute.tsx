@@ -1,14 +1,16 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// src/pages/PluginRoute.tsx
 import React, { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import {
   __federation_method_getRemote as getRemote,
   __federation_method_setRemote as setRemote,
   __federation_method_unwrapDefault as unwrapModule,
 } from 'virtual:__federation__'
 import { usePluginManifest, TPluginManifestEntry } from '@prorobotech/openapi-k8s-toolkit'
+import { addLoadingPlugin, removeLoadingPlugin } from 'store/pluginLoading/pluginLoading/pluginLoading'
+import { PLUGIN_LOADING_SPINNER } from 'constants/customizationApiGroupAndVersion'
 
 type TParams = {
   cluster: string
@@ -20,6 +22,7 @@ type TParams = {
 
 export const PluginRoute: FC = () => {
   const { cluster, namespace, syntheticProject, pluginName, '*': pluginPath } = useParams<TParams>()
+  const dispatch = useDispatch()
 
   const {
     data: manifest,
@@ -31,16 +34,30 @@ export const PluginRoute: FC = () => {
   const [loadError, setLoadError] = useState<string | null>(null)
   const [remoteLoading, setRemoteLoading] = useState(false)
 
+  // Track manifest loading in global state
+  useEffect(() => {
+    if (manifestLoading) {
+      dispatch(addLoadingPlugin('manifest'))
+    } else {
+      dispatch(removeLoadingPlugin('manifest'))
+    }
+    return () => {
+      dispatch(removeLoadingPlugin('manifest'))
+    }
+  }, [manifestLoading, dispatch])
+
   // STEP 1 – when manifest is loaded, dynamically load the plugin remote
   useEffect(() => {
     if (!manifest || !pluginName) return undefined
 
     let cancelled = false
+    const pluginId = `route-${pluginName}`
 
     const load = async (plugin: TPluginManifestEntry) => {
       setRemoteLoading(true)
       setLoadError(null)
       setComponent(null)
+      dispatch(addLoadingPlugin(pluginId))
 
       try {
         // register remote at runtime
@@ -64,6 +81,7 @@ export const PluginRoute: FC = () => {
       } finally {
         if (!cancelled) {
           setRemoteLoading(false)
+          dispatch(removeLoadingPlugin(pluginId))
         }
       }
     }
@@ -77,17 +95,24 @@ export const PluginRoute: FC = () => {
 
     return () => {
       cancelled = true
+      dispatch(removeLoadingPlugin(pluginId))
     }
-  }, [manifest, manifest?.data, pluginName])
+  }, [manifest, manifest?.data, pluginName, dispatch])
 
   console.log('pluginName from URL:', pluginName)
   console.log('manifest keys:', Object.keys(manifest || {}))
 
   // STEP 2 – render states
 
-  if (manifestLoading) return <div>Loading plugins manifest…</div>
+  if (manifestLoading) {
+    if (PLUGIN_LOADING_SPINNER) return null // Global overlay handles loading state
+    return <div>Loading plugins manifest…</div>
+  }
   if (manifestError) return <div>Manifest error: {(manifestError as Error).message}</div>
-  if (remoteLoading) return <div>Loading plugin {pluginName}…</div>
+  if (remoteLoading) {
+    if (PLUGIN_LOADING_SPINNER) return null // Global overlay handles loading state
+    return <div>Loading plugin {pluginName}…</div>
+  }
   if (loadError)
     return (
       <div>

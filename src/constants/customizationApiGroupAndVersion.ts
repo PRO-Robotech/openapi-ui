@@ -207,3 +207,10 @@ export const THEME_TOKENS_COMPONENTS_DARK = import.meta.env.DEV
 export const THEME_TOKENS_USE_MERGE_STRATEGY = import.meta.env.DEV
   ? window._env_.THEME_TOKENS_USE_MERGE_STRATEGY || import.meta.env.VITE_THEME_TOKENS_USE_MERGE_STRATEGY
   : window._env_.THEME_TOKENS_USE_MERGE_STRATEGY
+
+export const PLUGIN_LOADING_SPINNER: boolean = (() => {
+  const value = import.meta.env.DEV
+    ? window._env_.PLUGIN_LOADING_SPINNER || import.meta.env.VITE_PLUGIN_LOADING_SPINNER
+    : window._env_.PLUGIN_LOADING_SPINNER
+  return value === 'true'
+})()

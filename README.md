@@ -72,6 +72,7 @@ This app can be configured through environment variables.
 | `THEME_TOKENS_COMPONENTS_LIGHT`             | `string`  | No               | JSON for AntD Tokens: check [this](https://ant.design/theme-editor) out.                |
 | `THEME_TOKENS_COMPONENTS_DARK`              | `string`  | No               | JSON for AntD Tokens: check [this](https://ant.design/theme-editor) out.                |
 | `THEME_TOKENS_USE_MERGE_STRATEGY`           | `boolean` | No               | Use merge instead of replace for theme tokens. Doesn't work for components.             |
+| `PLUGIN_LOADING_SPINNER`                    | `boolean` | No               | Show spinner while plugins are loading. Defaults to `false`.                            |
 
 ## 🤝 Contributing
 

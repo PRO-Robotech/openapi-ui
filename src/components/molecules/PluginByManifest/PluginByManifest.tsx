@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// src/pages/PluginRoute.tsx
 import React, { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
@@ -12,7 +11,9 @@ import { TPluginManifestEntry } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector, useDispatch } from 'react-redux'
 import type { RootState } from 'store/store'
 import { setTheme } from 'store/theme/theme/theme'
+import { addLoadingPlugin, removeLoadingPlugin } from 'store/pluginLoading/pluginLoading/pluginLoading'
 import { THEME_EVENT } from 'constants/theme'
+import { PLUGIN_LOADING_SPINNER } from 'constants/customizationApiGroupAndVersion'
 
 type TParams = {
   cluster: string
@@ -28,6 +29,8 @@ type TPluginByManifestProps = {
 
 export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) => {
   const { cluster, namespace, syntheticProject, '*': pluginPath } = useParams<TParams>()
+  const dispatch = useDispatch()
+  const theme = useSelector((state: RootState) => state.openapiTheme.theme)
 
   const [Component, setComponent] = useState<React.ComponentType<any> | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -38,11 +41,13 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
     if (!manifestEntry) return undefined
 
     let cancelled = false
+    const pluginId = manifestEntry.name
 
     const load = async (plugin: TPluginManifestEntry) => {
       setRemoteLoading(true)
       setLoadError(null)
       setComponent(null)
+      dispatch(addLoadingPlugin(pluginId))
 
       try {
         // register remote at runtime
@@ -66,6 +71,7 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
       } finally {
         if (!cancelled) {
           setRemoteLoading(false)
+          dispatch(removeLoadingPlugin(pluginId))
         }
       }
     }
@@ -79,13 +85,11 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
 
     return () => {
       cancelled = true
+      dispatch(removeLoadingPlugin(pluginId))
     }
-  }, [manifestEntry])
+  }, [manifestEntry, dispatch])
 
   console.log('manifestEntry', manifestEntry)
-
-  const dispatch = useDispatch()
-  const theme = useSelector((state: RootState) => state.openapiTheme.theme)
 
   const toggleTheme = (checked: boolean) => {
     if (checked) {
@@ -101,14 +105,24 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
 
   // STEP 2 – render states
 
-  if (remoteLoading) return <div>Loading plugin {manifestEntry.name}…</div>
+  if (remoteLoading) {
+    if (PLUGIN_LOADING_SPINNER) {
+      return null // Global overlay handles loading state
+    }
+    return <div>Loading plugin {manifestEntry.name}…</div>
+  }
   if (loadError)
     return (
       <div>
         Failed to load plugin {manifestEntry.name}: {loadError}
       </div>
     )
-  if (!Component) return <div>No plugin component available. {JSON.stringify(manifestEntry)}</div>
+  if (!Component) {
+    if (PLUGIN_LOADING_SPINNER) {
+      return null // Global overlay handles loading state
+    }
+    return <div>No plugin component available. {JSON.stringify(manifestEntry)}</div>
+  }
 
   return (
     <Component
