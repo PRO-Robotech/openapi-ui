@@ -34,18 +34,6 @@ export const PluginRoute: FC = () => {
   const [loadError, setLoadError] = useState<string | null>(null)
   const [remoteLoading, setRemoteLoading] = useState(false)
 
-  // Track manifest loading in global state
-  useEffect(() => {
-    if (manifestLoading) {
-      dispatch(addLoadingPlugin('manifest'))
-    } else {
-      dispatch(removeLoadingPlugin('manifest'))
-    }
-    return () => {
-      dispatch(removeLoadingPlugin('manifest'))
-    }
-  }, [manifestLoading, dispatch])
-
   // STEP 1 – when manifest is loaded, dynamically load the plugin remote
   useEffect(() => {
     if (!manifest || !pluginName) return undefined
