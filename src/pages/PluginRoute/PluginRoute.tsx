@@ -8,7 +8,8 @@ import {
   __federation_method_unwrapDefault as unwrapModule,
 } from 'virtual:__federation__'
 import { usePluginManifest, TPluginManifestEntry } from '@prorobotech/openapi-k8s-toolkit'
-import { Spin } from 'antd'
+import { useDispatch } from 'react-redux'
+import { addLoadingPlugin, removeLoadingPlugin } from 'store/pluginLoading/pluginLoading/pluginLoading'
 import { PLUGIN_LOADING_SPINNER } from 'constants/customizationApiGroupAndVersion'
 
 type TParams = {
@@ -21,6 +22,7 @@ type TParams = {
 
 export const PluginRoute: FC = () => {
   const { cluster, namespace, syntheticProject, pluginName, '*': pluginPath } = useParams<TParams>()
+  const dispatch = useDispatch()
 
   const {
     data: manifest,
@@ -32,16 +34,30 @@ export const PluginRoute: FC = () => {
   const [loadError, setLoadError] = useState<string | null>(null)
   const [remoteLoading, setRemoteLoading] = useState(false)
 
+  // Track manifest loading in global state
+  useEffect(() => {
+    if (manifestLoading) {
+      dispatch(addLoadingPlugin('manifest'))
+    } else {
+      dispatch(removeLoadingPlugin('manifest'))
+    }
+    return () => {
+      dispatch(removeLoadingPlugin('manifest'))
+    }
+  }, [manifestLoading, dispatch])
+
   // STEP 1 – when manifest is loaded, dynamically load the plugin remote
   useEffect(() => {
     if (!manifest || !pluginName) return undefined
 
     let cancelled = false
+    const pluginId = `route-${pluginName}`
 
     const load = async (plugin: TPluginManifestEntry) => {
       setRemoteLoading(true)
       setLoadError(null)
       setComponent(null)
+      dispatch(addLoadingPlugin(pluginId))
 
       try {
         // register remote at runtime
@@ -65,6 +81,7 @@ export const PluginRoute: FC = () => {
       } finally {
         if (!cancelled) {
           setRemoteLoading(false)
+          dispatch(removeLoadingPlugin(pluginId))
         }
       }
     }
@@ -78,8 +95,9 @@ export const PluginRoute: FC = () => {
 
     return () => {
       cancelled = true
+      dispatch(removeLoadingPlugin(pluginId))
     }
-  }, [manifest, manifest?.data, pluginName])
+  }, [manifest, manifest?.data, pluginName, dispatch])
 
   console.log('pluginName from URL:', pluginName)
   console.log('manifest keys:', Object.keys(manifest || {}))
@@ -88,22 +106,14 @@ export const PluginRoute: FC = () => {
 
   if (manifestLoading) {
     if (PLUGIN_LOADING_SPINNER) {
-      return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
-          <Spin size="large" />
-        </div>
-      )
+      return null
     }
     return <div>Loading plugins manifest…</div>
   }
   if (manifestError) return <div>Manifest error: {(manifestError as Error).message}</div>
   if (remoteLoading) {
     if (PLUGIN_LOADING_SPINNER) {
-      return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
-          <Spin size="large" />
-        </div>
-      )
+      return null
     }
     return <div>Loading plugin {pluginName}…</div>
   }

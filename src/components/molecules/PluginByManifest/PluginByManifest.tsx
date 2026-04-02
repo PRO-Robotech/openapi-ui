@@ -9,9 +9,9 @@ import {
 } from 'virtual:__federation__'
 import { TPluginManifestEntry } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector, useDispatch } from 'react-redux'
-import { Spin } from 'antd'
 import type { RootState } from 'store/store'
 import { setTheme } from 'store/theme/theme/theme'
+import { addLoadingPlugin, removeLoadingPlugin } from 'store/pluginLoading/pluginLoading/pluginLoading'
 import { THEME_EVENT } from 'constants/theme'
 import { PLUGIN_LOADING_SPINNER } from 'constants/customizationApiGroupAndVersion'
 
@@ -41,11 +41,13 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
     if (!manifestEntry) return undefined
 
     let cancelled = false
+    const pluginId = `manifest-${manifestEntry.name}`
 
     const load = async (plugin: TPluginManifestEntry) => {
       setRemoteLoading(true)
       setLoadError(null)
       setComponent(null)
+      dispatch(addLoadingPlugin(pluginId))
 
       try {
         // register remote at runtime
@@ -69,6 +71,7 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
       } finally {
         if (!cancelled) {
           setRemoteLoading(false)
+          dispatch(removeLoadingPlugin(pluginId))
         }
       }
     }
@@ -82,8 +85,9 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
 
     return () => {
       cancelled = true
+      dispatch(removeLoadingPlugin(pluginId))
     }
-  }, [manifestEntry])
+  }, [manifestEntry, dispatch])
 
   console.log('manifestEntry', manifestEntry)
 
@@ -103,11 +107,7 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
 
   if (remoteLoading || !Component) {
     if (PLUGIN_LOADING_SPINNER) {
-      return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
-          <Spin size="large" />
-        </div>
-      )
+      return null
     }
     if (remoteLoading) {
       return <div>Loading plugin {manifestEntry.name}…</div>

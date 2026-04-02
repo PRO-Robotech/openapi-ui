@@ -4,6 +4,7 @@ import { federationSlice } from './federation/federation/federation'
 import { baseprefixSlice } from './federation/federation/baseprefix'
 import { clusterListSlice } from './clusterList/clusterList/clusterList'
 import { clusterSlice } from './cluster/cluster/cluster'
+import { pluginLoadingSlice } from './pluginLoading/pluginLoading/pluginLoading'
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     baseprefix: baseprefixSlice.reducer,
     clusterList: clusterListSlice.reducer,
     cluster: clusterSlice.reducer,
+    pluginLoading: pluginLoadingSlice.reducer,
   },
 })
 
