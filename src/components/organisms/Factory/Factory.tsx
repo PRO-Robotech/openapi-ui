@@ -98,6 +98,8 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags, setForcedSidebarId 
             nodeTerminalDefaultProfile={NODE_TERMINAL_DEFAULT_PROFILE}
             items={spec.data}
             components={DynamicComponents}
+            effectiveReqIndexes={spec.effectiveReqIndexes}
+            effectiveItemsPath={spec.effectiveItemsPath}
           />
         </ContentCardMain>
       </ErrorBoundary>
@@ -113,6 +115,7 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags, setForcedSidebarId 
         nodeTerminalDefaultProfile={NODE_TERMINAL_DEFAULT_PROFILE}
         items={spec.data}
         components={DynamicComponents}
+        effectiveReqIndexes={spec.effectiveReqIndexes}
         key={key}
       />
     </ErrorBoundary>
