@@ -72,7 +72,11 @@ This app can be configured through environment variables.
 | `THEME_TOKENS_COMPONENTS_LIGHT`             | `string`  | No               | JSON for AntD Tokens: check [this](https://ant.design/theme-editor) out.                |
 | `THEME_TOKENS_COMPONENTS_DARK`              | `string`  | No               | JSON for AntD Tokens: check [this](https://ant.design/theme-editor) out.                |
 | `THEME_TOKENS_USE_MERGE_STRATEGY`           | `boolean` | No               | Use merge instead of replace for theme tokens. Doesn't work for components.             |
-| `PLUGIN_LOADING_SPINNER`                    | `boolean` | No               | Show spinner while plugins are loading. Defaults to `false`.                            |
+| `PLUGIN_LOADING_SPINNER_HEADER`             | `boolean` | No               | Show spinner while header plugin is loading. Defaults to `false`.                       |
+| `PLUGIN_LOADING_SPINNER_SIDEBAR`            | `boolean` | No               | Show spinner while sidebar plugin is loading. Defaults to `false`.                      |
+| `PLUGIN_LOADING_SPINNER_NAVIGATION`         | `boolean` | No               | Show spinner while navigation plugin is loading. Defaults to `false`.                   |
+| `PLUGIN_LOADING_SPINNER_ROUTE`              | `boolean` | No               | Show spinner while route plugins are loading. Defaults to `false`.                      |
+| `PLUGIN_LOADING_SPINNER_MODE`               | `string`  | No               | Spinner mode: `inline` (in container) or `global` (center of viewport). Defaults to `inline`. |
 
 ## 🤝 Contributing
 

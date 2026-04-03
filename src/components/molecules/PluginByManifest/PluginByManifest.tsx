@@ -8,12 +8,18 @@ import {
   __federation_method_unwrapDefault as unwrapModule,
 } from 'virtual:__federation__'
 import { TPluginManifestEntry } from '@prorobotech/openapi-k8s-toolkit'
+import { Spin } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 import type { RootState } from 'store/store'
 import { setTheme } from 'store/theme/theme/theme'
 import { addLoadingPlugin, removeLoadingPlugin } from 'store/pluginLoading/pluginLoading/pluginLoading'
 import { THEME_EVENT } from 'constants/theme'
-import { PLUGIN_LOADING_SPINNER } from 'constants/customizationApiGroupAndVersion'
+import {
+  PLUGIN_LOADING_SPINNER_HEADER,
+  PLUGIN_LOADING_SPINNER_SIDEBAR,
+  PLUGIN_LOADING_SPINNER_NAVIGATION,
+  PLUGIN_LOADING_SPINNER_MODE,
+} from 'constants/customizationApiGroupAndVersion'
 
 type TParams = {
   cluster: string
@@ -27,6 +33,13 @@ type TPluginByManifestProps = {
   manifestEntry: TPluginManifestEntry
 }
 
+const getSpinnerEnabled = (pluginName: string): boolean => {
+  if (pluginName === 'plugin-header') return PLUGIN_LOADING_SPINNER_HEADER
+  if (pluginName === 'plugin-sidebar') return PLUGIN_LOADING_SPINNER_SIDEBAR
+  if (pluginName === 'plugin-navigation') return PLUGIN_LOADING_SPINNER_NAVIGATION
+  return false
+}
+
 export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) => {
   const { cluster, namespace, syntheticProject, '*': pluginPath } = useParams<TParams>()
   const dispatch = useDispatch()
@@ -35,6 +48,10 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
   const [Component, setComponent] = useState<React.ComponentType<any> | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [remoteLoading, setRemoteLoading] = useState(false)
+
+  const spinnerEnabled = getSpinnerEnabled(manifestEntry.name)
+  const showInlineSpinner = spinnerEnabled && PLUGIN_LOADING_SPINNER_MODE === 'inline'
+  const showGlobalSpinner = spinnerEnabled && PLUGIN_LOADING_SPINNER_MODE === 'global'
 
   // STEP 1 – when manifest is loaded, dynamically load the plugin remote
   useEffect(() => {
@@ -48,7 +65,10 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
       setRemoteLoading(true)
       setLoadError(null)
       setComponent(null)
-      dispatch(addLoadingPlugin(pluginId))
+      // Track in Redux only for global spinner mode
+      if (showGlobalSpinner) {
+        dispatch(addLoadingPlugin(pluginId))
+      }
 
       try {
         // register remote at runtime
@@ -72,7 +92,9 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
       } finally {
         if (!cancelled) {
           setRemoteLoading(false)
-          dispatch(removeLoadingPlugin(pluginId))
+          if (showGlobalSpinner) {
+            dispatch(removeLoadingPlugin(pluginId))
+          }
         }
       }
     }
@@ -86,9 +108,11 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
 
     return () => {
       cancelled = true
-      dispatch(removeLoadingPlugin(pluginId))
+      if (showGlobalSpinner) {
+        dispatch(removeLoadingPlugin(pluginId))
+      }
     }
-  }, [manifestEntry, dispatch])
+  }, [manifestEntry, dispatch, showGlobalSpinner])
 
   console.log('manifestEntry', manifestEntry)
 
@@ -106,13 +130,19 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
 
   // STEP 2 – render states
 
-  if (remoteLoading || !Component) {
-    if (PLUGIN_LOADING_SPINNER) {
+  if (remoteLoading) {
+    // Global mode: return null, GlobalPluginLoader shows the spinner
+    if (showGlobalSpinner) {
       return null
     }
-    if (remoteLoading) {
-      return <div>Loading plugin {manifestEntry.name}…</div>
+    // Inline mode: show spinner in place
+    if (showInlineSpinner) {
+      return <Spin size="large" />
     }
+    // No spinner enabled: show text
+    return <div>Loading plugin {manifestEntry.name}…</div>
+  }
+  if (!Component) {
     return <div>No plugin component available. {JSON.stringify(manifestEntry)}</div>
   }
   if (loadError)

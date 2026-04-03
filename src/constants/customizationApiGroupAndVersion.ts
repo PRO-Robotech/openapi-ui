@@ -208,9 +208,39 @@ export const THEME_TOKENS_USE_MERGE_STRATEGY = import.meta.env.DEV
   ? window._env_.THEME_TOKENS_USE_MERGE_STRATEGY || import.meta.env.VITE_THEME_TOKENS_USE_MERGE_STRATEGY
   : window._env_.THEME_TOKENS_USE_MERGE_STRATEGY
 
-export const PLUGIN_LOADING_SPINNER: boolean = (() => {
+export const PLUGIN_LOADING_SPINNER_HEADER: boolean = (() => {
   const value = import.meta.env.DEV
-    ? window._env_.PLUGIN_LOADING_SPINNER || import.meta.env.VITE_PLUGIN_LOADING_SPINNER
-    : window._env_.PLUGIN_LOADING_SPINNER
+    ? window._env_.PLUGIN_LOADING_SPINNER_HEADER || import.meta.env.VITE_PLUGIN_LOADING_SPINNER_HEADER
+    : window._env_.PLUGIN_LOADING_SPINNER_HEADER
   return value === 'true'
+})()
+
+export const PLUGIN_LOADING_SPINNER_SIDEBAR: boolean = (() => {
+  const value = import.meta.env.DEV
+    ? window._env_.PLUGIN_LOADING_SPINNER_SIDEBAR || import.meta.env.VITE_PLUGIN_LOADING_SPINNER_SIDEBAR
+    : window._env_.PLUGIN_LOADING_SPINNER_SIDEBAR
+  return value === 'true'
+})()
+
+export const PLUGIN_LOADING_SPINNER_NAVIGATION: boolean = (() => {
+  const value = import.meta.env.DEV
+    ? window._env_.PLUGIN_LOADING_SPINNER_NAVIGATION || import.meta.env.VITE_PLUGIN_LOADING_SPINNER_NAVIGATION
+    : window._env_.PLUGIN_LOADING_SPINNER_NAVIGATION
+  return value === 'true'
+})()
+
+export const PLUGIN_LOADING_SPINNER_ROUTE: boolean = (() => {
+  const value = import.meta.env.DEV
+    ? window._env_.PLUGIN_LOADING_SPINNER_ROUTE || import.meta.env.VITE_PLUGIN_LOADING_SPINNER_ROUTE
+    : window._env_.PLUGIN_LOADING_SPINNER_ROUTE
+  return value === 'true'
+})()
+
+export type TPluginLoadingSpinnerMode = 'inline' | 'global'
+
+export const PLUGIN_LOADING_SPINNER_MODE: TPluginLoadingSpinnerMode = (() => {
+  const value = import.meta.env.DEV
+    ? window._env_.PLUGIN_LOADING_SPINNER_MODE || import.meta.env.VITE_PLUGIN_LOADING_SPINNER_MODE
+    : window._env_.PLUGIN_LOADING_SPINNER_MODE
+  return value === 'global' ? 'global' : 'inline'
 })()

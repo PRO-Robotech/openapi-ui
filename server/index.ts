@@ -165,8 +165,18 @@ const THEME_TOKENS_COMPONENTS_DARK =
 const THEME_TOKENS_USE_MERGE_STRATEGY =
   process.env.LOCAL === 'true' ? options?.THEME_TOKENS_USE_MERGE_STRATEGY : process.env.THEME_TOKENS_USE_MERGE_STRATEGY
 
-const PLUGIN_LOADING_SPINNER =
-  process.env.LOCAL === 'true' ? options?.PLUGIN_LOADING_SPINNER : process.env.PLUGIN_LOADING_SPINNER
+const PLUGIN_LOADING_SPINNER_HEADER =
+  process.env.LOCAL === 'true' ? options?.PLUGIN_LOADING_SPINNER_HEADER : process.env.PLUGIN_LOADING_SPINNER_HEADER
+const PLUGIN_LOADING_SPINNER_SIDEBAR =
+  process.env.LOCAL === 'true' ? options?.PLUGIN_LOADING_SPINNER_SIDEBAR : process.env.PLUGIN_LOADING_SPINNER_SIDEBAR
+const PLUGIN_LOADING_SPINNER_NAVIGATION =
+  process.env.LOCAL === 'true'
+    ? options?.PLUGIN_LOADING_SPINNER_NAVIGATION
+    : process.env.PLUGIN_LOADING_SPINNER_NAVIGATION
+const PLUGIN_LOADING_SPINNER_ROUTE =
+  process.env.LOCAL === 'true' ? options?.PLUGIN_LOADING_SPINNER_ROUTE : process.env.PLUGIN_LOADING_SPINNER_ROUTE
+const PLUGIN_LOADING_SPINNER_MODE =
+  process.env.LOCAL === 'true' ? options?.PLUGIN_LOADING_SPINNER_MODE : process.env.PLUGIN_LOADING_SPINNER_MODE
 
 type TPluginConfig = {
   name: string
@@ -460,9 +470,19 @@ app.get(`${basePrefix ? basePrefix : ''}/env.js`, (_, res) => {
       THEME_TOKENS_USE_MERGE_STRATEGY: ${
         THEME_TOKENS_USE_MERGE_STRATEGY ? JSON.stringify(THEME_TOKENS_USE_MERGE_STRATEGY).toLowerCase() : '"false"'
       },
-      PLUGIN_LOADING_SPINNER: ${
-        PLUGIN_LOADING_SPINNER ? JSON.stringify(PLUGIN_LOADING_SPINNER).toLowerCase() : '"false"'
-      }
+      PLUGIN_LOADING_SPINNER_HEADER: ${
+        PLUGIN_LOADING_SPINNER_HEADER ? JSON.stringify(PLUGIN_LOADING_SPINNER_HEADER).toLowerCase() : '"false"'
+      },
+      PLUGIN_LOADING_SPINNER_SIDEBAR: ${
+        PLUGIN_LOADING_SPINNER_SIDEBAR ? JSON.stringify(PLUGIN_LOADING_SPINNER_SIDEBAR).toLowerCase() : '"false"'
+      },
+      PLUGIN_LOADING_SPINNER_NAVIGATION: ${
+        PLUGIN_LOADING_SPINNER_NAVIGATION ? JSON.stringify(PLUGIN_LOADING_SPINNER_NAVIGATION).toLowerCase() : '"false"'
+      },
+      PLUGIN_LOADING_SPINNER_ROUTE: ${
+        PLUGIN_LOADING_SPINNER_ROUTE ? JSON.stringify(PLUGIN_LOADING_SPINNER_ROUTE).toLowerCase() : '"false"'
+      },
+      PLUGIN_LOADING_SPINNER_MODE: ${JSON.stringify(PLUGIN_LOADING_SPINNER_MODE) || '"inline"'}
     }
     `,
   )
