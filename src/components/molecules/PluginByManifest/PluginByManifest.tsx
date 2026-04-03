@@ -15,10 +15,11 @@ import { setTheme } from 'store/theme/theme/theme'
 import { addLoadingPlugin, removeLoadingPlugin } from 'store/pluginLoading/pluginLoading/pluginLoading'
 import { THEME_EVENT } from 'constants/theme'
 import {
-  PLUGIN_LOADING_SPINNER_HEADER,
-  PLUGIN_LOADING_SPINNER_SIDEBAR,
-  PLUGIN_LOADING_SPINNER_NAVIGATION,
+  PLUGIN_LOADING_INDICATOR_HEADER,
+  PLUGIN_LOADING_INDICATOR_SIDEBAR,
+  PLUGIN_LOADING_INDICATOR_NAVIGATION,
   PLUGIN_LOADING_SPINNER_MODE,
+  TPluginLoadingIndicator,
 } from 'constants/customizationApiGroupAndVersion'
 
 type TParams = {
@@ -33,11 +34,11 @@ type TPluginByManifestProps = {
   manifestEntry: TPluginManifestEntry
 }
 
-const getSpinnerEnabled = (pluginName: string): boolean => {
-  if (pluginName === 'plugin-header') return PLUGIN_LOADING_SPINNER_HEADER
-  if (pluginName === 'plugin-sidebar') return PLUGIN_LOADING_SPINNER_SIDEBAR
-  if (pluginName === 'plugin-navigation') return PLUGIN_LOADING_SPINNER_NAVIGATION
-  return false
+const getLoadingIndicator = (pluginName: string): TPluginLoadingIndicator => {
+  if (pluginName === 'plugin-header') return PLUGIN_LOADING_INDICATOR_HEADER
+  if (pluginName === 'plugin-sidebar') return PLUGIN_LOADING_INDICATOR_SIDEBAR
+  if (pluginName === 'plugin-navigation') return PLUGIN_LOADING_INDICATOR_NAVIGATION
+  return 'text'
 }
 
 export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) => {
@@ -49,9 +50,9 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
   const [loadError, setLoadError] = useState<string | null>(null)
   const [remoteLoading, setRemoteLoading] = useState(false)
 
-  const spinnerEnabled = getSpinnerEnabled(manifestEntry.name)
-  const showInlineSpinner = spinnerEnabled && PLUGIN_LOADING_SPINNER_MODE === 'inline'
-  const showGlobalSpinner = spinnerEnabled && PLUGIN_LOADING_SPINNER_MODE === 'global'
+  const loadingIndicator = getLoadingIndicator(manifestEntry.name)
+  const showInlineSpinner = loadingIndicator === 'spinner' && PLUGIN_LOADING_SPINNER_MODE === 'inline'
+  const showGlobalSpinner = loadingIndicator === 'spinner' && PLUGIN_LOADING_SPINNER_MODE === 'global'
 
   // STEP 1 – when manifest is loaded, dynamically load the plugin remote
   useEffect(() => {
@@ -139,7 +140,11 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
     if (showInlineSpinner) {
       return <Spin size="large" />
     }
-    // No spinner enabled: show text
+    // None: show nothing
+    if (loadingIndicator === 'none') {
+      return null
+    }
+    // Text (default): show text
     return <div>Loading plugin {manifestEntry.name}…</div>
   }
   if (!Component) {

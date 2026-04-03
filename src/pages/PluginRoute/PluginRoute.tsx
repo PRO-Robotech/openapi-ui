@@ -12,7 +12,7 @@ import { Spin } from 'antd'
 import { useDispatch } from 'react-redux'
 import { addLoadingPlugin, removeLoadingPlugin } from 'store/pluginLoading/pluginLoading/pluginLoading'
 import {
-  PLUGIN_LOADING_SPINNER_ROUTE,
+  PLUGIN_LOADING_INDICATOR_ROUTE,
   PLUGIN_LOADING_SPINNER_MODE,
 } from 'constants/customizationApiGroupAndVersion'
 
@@ -38,8 +38,9 @@ export const PluginRoute: FC = () => {
   const [loadError, setLoadError] = useState<string | null>(null)
   const [remoteLoading, setRemoteLoading] = useState(false)
 
-  const showInlineSpinner = PLUGIN_LOADING_SPINNER_ROUTE && PLUGIN_LOADING_SPINNER_MODE === 'inline'
-  const showGlobalSpinner = PLUGIN_LOADING_SPINNER_ROUTE && PLUGIN_LOADING_SPINNER_MODE === 'global'
+  const loadingIndicator = PLUGIN_LOADING_INDICATOR_ROUTE
+  const showInlineSpinner = loadingIndicator === 'spinner' && PLUGIN_LOADING_SPINNER_MODE === 'inline'
+  const showGlobalSpinner = loadingIndicator === 'spinner' && PLUGIN_LOADING_SPINNER_MODE === 'global'
 
   // Track manifest loading in global spinner
   useEffect(() => {
@@ -127,6 +128,9 @@ export const PluginRoute: FC = () => {
     if (showInlineSpinner) {
       return <Spin size="large" />
     }
+    if (loadingIndicator === 'none') {
+      return null
+    }
     return <div>Loading plugins manifest…</div>
   }
   if (manifestError) return <div>Manifest error: {(manifestError as Error).message}</div>
@@ -136,6 +140,9 @@ export const PluginRoute: FC = () => {
     }
     if (showInlineSpinner) {
       return <Spin size="large" />
+    }
+    if (loadingIndicator === 'none') {
+      return null
     }
     return <div>Loading plugin {pluginName}…</div>
   }

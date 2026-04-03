@@ -208,32 +208,39 @@ export const THEME_TOKENS_USE_MERGE_STRATEGY = import.meta.env.DEV
   ? window._env_.THEME_TOKENS_USE_MERGE_STRATEGY || import.meta.env.VITE_THEME_TOKENS_USE_MERGE_STRATEGY
   : window._env_.THEME_TOKENS_USE_MERGE_STRATEGY
 
-export const PLUGIN_LOADING_SPINNER_HEADER: boolean = (() => {
+export type TPluginLoadingIndicator = 'spinner' | 'text' | 'none'
+
+const parseIndicator = (value: string | undefined): TPluginLoadingIndicator => {
+  if (value === 'spinner' || value === 'none') return value
+  return 'text' // default
+}
+
+export const PLUGIN_LOADING_INDICATOR_HEADER: TPluginLoadingIndicator = (() => {
   const value = import.meta.env.DEV
-    ? window._env_.PLUGIN_LOADING_SPINNER_HEADER || import.meta.env.VITE_PLUGIN_LOADING_SPINNER_HEADER
-    : window._env_.PLUGIN_LOADING_SPINNER_HEADER
-  return value === 'true'
+    ? window._env_.PLUGIN_LOADING_INDICATOR_HEADER || import.meta.env.VITE_PLUGIN_LOADING_INDICATOR_HEADER
+    : window._env_.PLUGIN_LOADING_INDICATOR_HEADER
+  return parseIndicator(value)
 })()
 
-export const PLUGIN_LOADING_SPINNER_SIDEBAR: boolean = (() => {
+export const PLUGIN_LOADING_INDICATOR_SIDEBAR: TPluginLoadingIndicator = (() => {
   const value = import.meta.env.DEV
-    ? window._env_.PLUGIN_LOADING_SPINNER_SIDEBAR || import.meta.env.VITE_PLUGIN_LOADING_SPINNER_SIDEBAR
-    : window._env_.PLUGIN_LOADING_SPINNER_SIDEBAR
-  return value === 'true'
+    ? window._env_.PLUGIN_LOADING_INDICATOR_SIDEBAR || import.meta.env.VITE_PLUGIN_LOADING_INDICATOR_SIDEBAR
+    : window._env_.PLUGIN_LOADING_INDICATOR_SIDEBAR
+  return parseIndicator(value)
 })()
 
-export const PLUGIN_LOADING_SPINNER_NAVIGATION: boolean = (() => {
+export const PLUGIN_LOADING_INDICATOR_NAVIGATION: TPluginLoadingIndicator = (() => {
   const value = import.meta.env.DEV
-    ? window._env_.PLUGIN_LOADING_SPINNER_NAVIGATION || import.meta.env.VITE_PLUGIN_LOADING_SPINNER_NAVIGATION
-    : window._env_.PLUGIN_LOADING_SPINNER_NAVIGATION
-  return value === 'true'
+    ? window._env_.PLUGIN_LOADING_INDICATOR_NAVIGATION || import.meta.env.VITE_PLUGIN_LOADING_INDICATOR_NAVIGATION
+    : window._env_.PLUGIN_LOADING_INDICATOR_NAVIGATION
+  return parseIndicator(value)
 })()
 
-export const PLUGIN_LOADING_SPINNER_ROUTE: boolean = (() => {
+export const PLUGIN_LOADING_INDICATOR_ROUTE: TPluginLoadingIndicator = (() => {
   const value = import.meta.env.DEV
-    ? window._env_.PLUGIN_LOADING_SPINNER_ROUTE || import.meta.env.VITE_PLUGIN_LOADING_SPINNER_ROUTE
-    : window._env_.PLUGIN_LOADING_SPINNER_ROUTE
-  return value === 'true'
+    ? window._env_.PLUGIN_LOADING_INDICATOR_ROUTE || import.meta.env.VITE_PLUGIN_LOADING_INDICATOR_ROUTE
+    : window._env_.PLUGIN_LOADING_INDICATOR_ROUTE
+  return parseIndicator(value)
 })()
 
 export type TPluginLoadingSpinnerMode = 'inline' | 'global'
