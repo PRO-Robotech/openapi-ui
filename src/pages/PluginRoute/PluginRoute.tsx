@@ -10,10 +10,7 @@ import { usePluginManifest, TPluginManifestEntry } from '@prorobotech/openapi-k8
 import { Spin } from 'antd'
 import { useDispatch } from 'react-redux'
 import { addLoadingPlugin, removeLoadingPlugin } from 'store/pluginLoading/pluginLoading/pluginLoading'
-import {
-  PLUGIN_LOADING_INDICATOR_ROUTE,
-  PLUGIN_LOADING_SPINNER_MODE,
-} from 'constants/customizationApiGroupAndVersion'
+import { PLUGIN_LOADING_INDICATOR_ROUTE, PLUGIN_LOADING_SPINNER_MODE } from 'constants/customizationApiGroupAndVersion'
 
 type TParams = {
   cluster: string
@@ -109,9 +106,8 @@ export const PluginRoute: FC = () => {
 
     return () => {
       cancelled = true
-      if (showGlobalSpinner) {
-        dispatch(removeLoadingPlugin(pluginId))
-      }
+      // Always dispatch remove to avoid stale state if mode changed
+      dispatch(removeLoadingPlugin(pluginId))
     }
   }, [manifest, manifest?.data, pluginName, dispatch, showGlobalSpinner])
 

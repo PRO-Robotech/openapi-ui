@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface PluginLoadingState {
@@ -18,7 +19,7 @@ export const pluginLoadingSlice = createSlice({
       }
     },
     removeLoadingPlugin: (state, action: PayloadAction<string>) => {
-      state.loadingPlugins = state.loadingPlugins.filter((id) => id !== action.payload)
+      state.loadingPlugins = state.loadingPlugins.filter(id => id !== action.payload)
     },
   },
 })

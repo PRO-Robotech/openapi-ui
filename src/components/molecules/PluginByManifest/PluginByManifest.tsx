@@ -108,9 +108,8 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
 
     return () => {
       cancelled = true
-      if (showGlobalSpinner) {
-        dispatch(removeLoadingPlugin(pluginId))
-      }
+      // Always dispatch remove to avoid stale state if mode changed
+      dispatch(removeLoadingPlugin(pluginId))
     }
   }, [manifestEntry, dispatch, showGlobalSpinner])
 
@@ -144,15 +143,15 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
     // Text (default): show text
     return <div>Loading plugin {manifestEntry.name}…</div>
   }
-  if (!Component) {
-    return <div>No plugin component available. {JSON.stringify(manifestEntry)}</div>
-  }
   if (loadError)
     return (
       <div>
         Failed to load plugin {manifestEntry.name}: {loadError}
       </div>
     )
+  if (!Component) {
+    return <div>No plugin component available. {JSON.stringify(manifestEntry)}</div>
+  }
 
   return (
     <Component

@@ -30,6 +30,7 @@ import { getBasePrefix } from 'utils/getBaseprefix'
 import { getConfigProviderProps } from 'utils/getConfigProviderProps'
 import { MainLayout, AppShell } from 'templates'
 import { GlobalPluginLoader } from 'components/molecules'
+import { PLUGIN_LOADING_SPINNER_MODE } from 'constants/customizationApiGroupAndVersion'
 
 type TAppProps = {
   isFederation?: boolean
@@ -99,7 +100,7 @@ export const App: FC<TAppProps> = ({ isFederation, forcedTheme }) => {
     <QueryClientProvider client={queryClient}>
       {import.meta.env.MODE === 'development' && <ReactQueryDevtools />}
       <ConfigProvider theme={antdConfig}>
-        <GlobalPluginLoader />
+        {PLUGIN_LOADING_SPINNER_MODE === 'global' && <GlobalPluginLoader />}
         {isFederation ? renderRoutes() : <BrowserRouter>{renderRoutes(basePrefix)}</BrowserRouter>}
       </ConfigProvider>
     </QueryClientProvider>
