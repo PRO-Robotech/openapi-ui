@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -115,9 +114,6 @@ export const PluginRoute: FC = () => {
       }
     }
   }, [manifest, manifest?.data, pluginName, dispatch, showGlobalSpinner])
-
-  console.log('pluginName from URL:', pluginName)
-  console.log('manifest keys:', Object.keys(manifest || {}))
 
   // STEP 2 – render states
 

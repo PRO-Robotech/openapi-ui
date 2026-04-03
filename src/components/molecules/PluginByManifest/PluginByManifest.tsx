@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -114,8 +113,6 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
       }
     }
   }, [manifestEntry, dispatch, showGlobalSpinner])
-
-  console.log('manifestEntry', manifestEntry)
 
   const toggleTheme = (checked: boolean) => {
     if (checked) {
