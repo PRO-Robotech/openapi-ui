@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { useSelector } from 'react-redux'
 import { Spin } from 'antd'
 import type { RootState } from 'store/store'
-import { PLUGIN_LOADING_SPINNER_MODE } from 'constants/customizationApiGroupAndVersion'
+import { PLUGIN_GLOBAL_SPINNER_SIZE, PLUGIN_LOADING_SPINNER_MODE } from 'constants/customizationApiGroupAndVersion'
 import { SpinnerContainer } from './styled'
 
 export const GlobalPluginLoader: FC = () => {
@@ -16,7 +16,7 @@ export const GlobalPluginLoader: FC = () => {
 
   return (
     <SpinnerContainer>
-      <Spin size="large" />
+      {PLUGIN_GLOBAL_SPINNER_SIZE ? <Spin size={PLUGIN_GLOBAL_SPINNER_SIZE} /> : <Spin />}
     </SpinnerContainer>
   )
 }

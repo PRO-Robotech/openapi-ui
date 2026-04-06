@@ -10,7 +10,11 @@ import { usePluginManifest, TPluginManifestEntry } from '@prorobotech/openapi-k8
 import { Spin } from 'antd'
 import { useDispatch } from 'react-redux'
 import { addLoadingPlugin, removeLoadingPlugin } from 'store/pluginLoading/pluginLoading/pluginLoading'
-import { PLUGIN_LOADING_INDICATOR_ROUTE, PLUGIN_LOADING_SPINNER_MODE } from 'constants/customizationApiGroupAndVersion'
+import {
+  PLUGIN_LOADING_INDICATOR_ROUTE,
+  PLUGIN_LOADING_SPINNER_MODE,
+  PLUGIN_LOADING_SPINNER_SIZE,
+} from 'constants/customizationApiGroupAndVersion'
 
 type TParams = {
   cluster: string
@@ -118,7 +122,7 @@ export const PluginRoute: FC = () => {
       return null
     }
     if (showInlineSpinner) {
-      return <Spin size="large" />
+      return PLUGIN_LOADING_SPINNER_SIZE ? <Spin size={PLUGIN_LOADING_SPINNER_SIZE} /> : <Spin />
     }
     if (loadingIndicator === 'none') {
       return null
@@ -131,7 +135,7 @@ export const PluginRoute: FC = () => {
       return null
     }
     if (showInlineSpinner) {
-      return <Spin size="large" />
+      return PLUGIN_LOADING_SPINNER_SIZE ? <Spin size={PLUGIN_LOADING_SPINNER_SIZE} /> : <Spin />
     }
     if (loadingIndicator === 'none') {
       return null

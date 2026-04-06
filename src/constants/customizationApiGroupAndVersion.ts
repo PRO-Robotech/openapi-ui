@@ -260,10 +260,30 @@ export const PLUGIN_LOADING_INDICATOR_ROUTE: TPluginLoadingIndicator = (() => {
 })()
 
 export type TPluginLoadingSpinnerMode = 'inline' | 'global'
+export type TPluginLoadingSpinnerSize = 'small' | 'default' | 'large'
+
+const parseSpinnerSize = (value: string | undefined): TPluginLoadingSpinnerSize | undefined => {
+  if (value === 'small' || value === 'default' || value === 'large') return value
+  return undefined
+}
 
 export const PLUGIN_LOADING_SPINNER_MODE: TPluginLoadingSpinnerMode = (() => {
   const value = import.meta.env.DEV
     ? window._env_.PLUGIN_LOADING_SPINNER_MODE || import.meta.env.VITE_PLUGIN_LOADING_SPINNER_MODE
     : window._env_.PLUGIN_LOADING_SPINNER_MODE
   return value === 'global' ? 'global' : 'inline'
+})()
+
+export const PLUGIN_LOADING_SPINNER_SIZE: TPluginLoadingSpinnerSize | undefined = (() => {
+  const value = import.meta.env.DEV
+    ? window._env_.PLUGIN_LOADING_SPINNER_SIZE || import.meta.env.VITE_PLUGIN_LOADING_SPINNER_SIZE
+    : window._env_.PLUGIN_LOADING_SPINNER_SIZE
+  return parseSpinnerSize(value)
+})()
+
+export const PLUGIN_GLOBAL_SPINNER_SIZE: TPluginLoadingSpinnerSize | undefined = (() => {
+  const value = import.meta.env.DEV
+    ? window._env_.PLUGIN_GLOBAL_SPINNER_SIZE || import.meta.env.VITE_PLUGIN_GLOBAL_SPINNER_SIZE
+    : window._env_.PLUGIN_GLOBAL_SPINNER_SIZE
+  return parseSpinnerSize(value)
 })()

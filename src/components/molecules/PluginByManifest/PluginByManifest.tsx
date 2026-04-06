@@ -18,6 +18,7 @@ import {
   PLUGIN_LOADING_INDICATOR_SIDEBAR,
   PLUGIN_LOADING_INDICATOR_NAVIGATION,
   PLUGIN_LOADING_SPINNER_MODE,
+  PLUGIN_LOADING_SPINNER_SIZE,
   TPluginLoadingIndicator,
 } from 'constants/customizationApiGroupAndVersion'
 
@@ -134,7 +135,7 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
     }
     // Inline mode: show spinner in place
     if (showInlineSpinner) {
-      return <Spin size="large" />
+      return PLUGIN_LOADING_SPINNER_SIZE ? <Spin size={PLUGIN_LOADING_SPINNER_SIZE} /> : <Spin />
     }
     // None: show nothing
     if (loadingIndicator === 'none') {
