@@ -1,6 +1,4 @@
-/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// src/pages/PluginRoute.tsx
 import React, { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
@@ -9,6 +7,10 @@ import {
   __federation_method_unwrapDefault as unwrapModule,
 } from 'virtual:__federation__'
 import { usePluginManifest, TPluginManifestEntry } from '@prorobotech/openapi-k8s-toolkit'
+import { Spin } from 'antd'
+import { useDispatch } from 'react-redux'
+import { addLoadingPlugin, removeLoadingPlugin } from 'store/pluginLoading/pluginLoading/pluginLoading'
+import { PLUGIN_LOADING_INDICATOR_ROUTE, PLUGIN_LOADING_SPINNER_MODE } from 'constants/customizationApiGroupAndVersion'
 
 type TParams = {
   cluster: string
@@ -20,6 +22,7 @@ type TParams = {
 
 export const PluginRoute: FC = () => {
   const { cluster, namespace, syntheticProject, pluginName, '*': pluginPath } = useParams<TParams>()
+  const dispatch = useDispatch()
 
   const {
     data: manifest,
@@ -31,16 +34,39 @@ export const PluginRoute: FC = () => {
   const [loadError, setLoadError] = useState<string | null>(null)
   const [remoteLoading, setRemoteLoading] = useState(false)
 
+  const loadingIndicator = PLUGIN_LOADING_INDICATOR_ROUTE
+  const showInlineSpinner = loadingIndicator === 'spinner' && PLUGIN_LOADING_SPINNER_MODE === 'inline'
+  const showGlobalSpinner = loadingIndicator === 'spinner' && PLUGIN_LOADING_SPINNER_MODE === 'global'
+
+  // Track manifest loading in global spinner
+  useEffect(() => {
+    if (!showGlobalSpinner) return undefined
+    const manifestLoadingId = 'manifest-loading'
+    if (manifestLoading) {
+      dispatch(addLoadingPlugin(manifestLoadingId))
+    } else {
+      dispatch(removeLoadingPlugin(manifestLoadingId))
+    }
+    return () => {
+      dispatch(removeLoadingPlugin(manifestLoadingId))
+    }
+  }, [manifestLoading, dispatch, showGlobalSpinner])
+
   // STEP 1 – when manifest is loaded, dynamically load the plugin remote
   useEffect(() => {
     if (!manifest || !pluginName) return undefined
 
     let cancelled = false
+    const pluginId = `route-${pluginName}`
 
     const load = async (plugin: TPluginManifestEntry) => {
+      if (cancelled) return
       setRemoteLoading(true)
       setLoadError(null)
       setComponent(null)
+      if (showGlobalSpinner) {
+        dispatch(addLoadingPlugin(pluginId))
+      }
 
       try {
         // register remote at runtime
@@ -64,6 +90,9 @@ export const PluginRoute: FC = () => {
       } finally {
         if (!cancelled) {
           setRemoteLoading(false)
+          if (showGlobalSpinner) {
+            dispatch(removeLoadingPlugin(pluginId))
+          }
         }
       }
     }
@@ -77,17 +106,38 @@ export const PluginRoute: FC = () => {
 
     return () => {
       cancelled = true
+      // Always dispatch remove to avoid stale state if mode changed
+      dispatch(removeLoadingPlugin(pluginId))
     }
-  }, [manifest, manifest?.data, pluginName])
-
-  console.log('pluginName from URL:', pluginName)
-  console.log('manifest keys:', Object.keys(manifest || {}))
+  }, [manifest, manifest?.data, pluginName, dispatch, showGlobalSpinner])
 
   // STEP 2 – render states
 
-  if (manifestLoading) return <div>Loading plugins manifest…</div>
+  if (manifestLoading) {
+    if (showGlobalSpinner) {
+      return null
+    }
+    if (showInlineSpinner) {
+      return <Spin size="large" />
+    }
+    if (loadingIndicator === 'none') {
+      return null
+    }
+    return <div>Loading plugins manifest…</div>
+  }
   if (manifestError) return <div>Manifest error: {(manifestError as Error).message}</div>
-  if (remoteLoading) return <div>Loading plugin {pluginName}…</div>
+  if (remoteLoading) {
+    if (showGlobalSpinner) {
+      return null
+    }
+    if (showInlineSpinner) {
+      return <Spin size="large" />
+    }
+    if (loadingIndicator === 'none') {
+      return null
+    }
+    return <div>Loading plugin {pluginName}…</div>
+  }
   if (loadError)
     return (
       <div>
