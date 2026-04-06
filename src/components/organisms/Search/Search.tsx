@@ -41,6 +41,7 @@ export const Search: FC = () => {
 
   const cluster = useSelector((state: RootState) => state.cluster.cluster)
   const theme = useSelector((state: RootState) => state.openapiTheme.theme)
+  const clusterEnabled = Boolean(cluster)
 
   const [form] = Form.useForm()
 
@@ -86,7 +87,14 @@ export const Search: FC = () => {
     }
   }, [])
 
-  const { data: kindsData, isLoading: kindsLoading, error: kindsError } = useKinds({ cluster })
+  const {
+    data: kindsData,
+    isLoading: kindsLoading,
+    error: kindsError,
+  } = useKinds({
+    cluster: cluster || '',
+    isEnabled: clusterEnabled,
+  })
 
   const watchedKinds = Form.useWatch<string[] | undefined>(FIELD_NAME, form)
   const watchedName = Form.useWatch<string | undefined>(FIELD_NAME_STRING, form)
@@ -231,6 +239,10 @@ export const Search: FC = () => {
 
   if (kindsError) {
     return <Alert type="error" message="Error while loading kinds" description={kindsError?.message} />
+  }
+
+  if (!cluster) {
+    return <Alert type="error" message="Error while defining cluster" description="No cluster has been set" />
   }
 
   return (

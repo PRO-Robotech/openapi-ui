@@ -23,6 +23,7 @@ export const UpdateApisForm: FC<TUpdateApisFormProps> = ({
   backLink,
 }) => {
   const cluster = useSelector((state: RootState) => state.cluster.cluster)
+  const clusterEnabled = Boolean(cluster)
 
   const [currentMode, setCurrentMode] = useState<string>('OpenAPI')
   const [currentModeDisabled, setCurrentModeDisabled] = useState<boolean>(false)
@@ -42,13 +43,14 @@ export const UpdateApisForm: FC<TUpdateApisFormProps> = ({
   }
 
   const { data, isPending, error } = useApiResourceSingle({
-    cluster,
+    cluster: cluster || '',
     namespace,
     apiGroup,
     apiVersion,
     plural,
     name,
     refetchInterval: false,
+    enabler: clusterEnabled,
   })
 
   if (isPending) {

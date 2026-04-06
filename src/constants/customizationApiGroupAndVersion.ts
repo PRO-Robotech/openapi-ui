@@ -208,6 +208,22 @@ export const THEME_TOKENS_USE_MERGE_STRATEGY = import.meta.env.DEV
   ? window._env_.THEME_TOKENS_USE_MERGE_STRATEGY || import.meta.env.VITE_THEME_TOKENS_USE_MERGE_STRATEGY
   : window._env_.THEME_TOKENS_USE_MERGE_STRATEGY
 
+export const CURRENT_CLUSTER = import.meta.env.DEV
+  ? window._env_.CURRENT_CLUSTER || import.meta.env.VITE_CURRENT_CLUSTER
+  : window._env_.CURRENT_CLUSTER
+
+export const CLUSTERLIST_API_RESOURCE_API_GROUP = import.meta.env.DEV
+  ? window._env_.CLUSTERLIST_API_RESOURCE_API_GROUP || import.meta.env.VITE_CLUSTERLIST_API_RESOURCE_API_GROUP
+  : window._env_.CLUSTERLIST_API_RESOURCE_API_GROUP
+
+export const CLUSTERLIST_API_RESOURCE_API_VERSION = import.meta.env.DEV
+  ? window._env_.CLUSTERLIST_API_RESOURCE_API_VERSION || import.meta.env.VITE_CLUSTERLIST_API_RESOURCE_API_VERSION
+  : window._env_.CLUSTERLIST_API_RESOURCE_API_VERSION
+
+export const CLUSTERLIST_API_RESOURCE_PLURAL = import.meta.env.DEV
+  ? window._env_.CLUSTERLIST_API_RESOURCE_PLURAL || import.meta.env.VITE_CLUSTERLIST_API_RESOURCE_PLURAL
+  : window._env_.CLUSTERLIST_API_RESOURCE_PLURAL
+
 export type TPluginLoadingIndicator = 'spinner' | 'text' | 'none'
 
 const parseIndicator = (value: string | undefined): TPluginLoadingIndicator => {

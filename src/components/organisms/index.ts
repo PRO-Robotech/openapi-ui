@@ -1,4 +1,5 @@
 export * from './ListClusters'
+export * from './ListClustersByResources'
 export * from './ListInsideClusterAndNs'
 export * from './ListInsideAllResources'
 export * from './ListInsideCrdsByApiGroup'

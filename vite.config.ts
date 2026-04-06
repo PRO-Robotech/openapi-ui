@@ -38,15 +38,17 @@ export default defineConfig({
       remotes: {
         __dummy_remote__: '',
       },
-      shared: [
-        'react',
-        'react-dom',
-        'react-redux',
-        '@reduxjs/toolkit',
-        'react-router-dom',
-        'antd',
-        '@tanstack/react-query',
-      ],
+      shared: {
+        react: { requiredVersion: false },
+        'react-dom': { requiredVersion: false },
+        'react-redux': { requiredVersion: false },
+        '@reduxjs/toolkit': { requiredVersion: false },
+        'react-router-dom': { requiredVersion: false },
+        antd: { requiredVersion: false },
+        '@tanstack/react-query': { requiredVersion: false },
+        '@xyflow/react': { requiredVersion: false },
+        'styled-components': { requiredVersion: false },
+      },
     }),
     nodePolyfills({
       include: ['buffer', 'process', 'path'],

@@ -23,3 +23,7 @@ public/env.js
 
 .yalc/
 yalc.lock
+
+/*.md
+!/README.md
+.claude

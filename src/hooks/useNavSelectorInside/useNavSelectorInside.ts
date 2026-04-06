@@ -17,10 +17,36 @@ import {
 } from 'constants/customizationApiGroupAndVersion'
 import { parseAll } from './utils'
 
-const mappedClusterToOptionInSidebar = ({ name }: TClusterList[number]): { value: string; label: string } => ({
-  value: name,
-  label: name,
-})
+type TClusterLike = Partial<TClusterList[number]> & {
+  displayName?: string
+  metadata?: {
+    name?: string
+  }
+}
+
+const getClusterName = (cluster: TClusterLike): string => {
+  const byName = typeof cluster.name === 'string' ? cluster.name.trim() : ''
+  if (byName.length > 0) {
+    return byName
+  }
+
+  const byMetadataName = typeof cluster.metadata?.name === 'string' ? cluster.metadata.name.trim() : ''
+  return byMetadataName
+}
+
+const mappedClusterToOptionInSidebar = (cluster: TClusterLike): { value: string; label: string } | undefined => {
+  const name = getClusterName(cluster)
+  if (name.length === 0) {
+    return undefined
+  }
+
+  const displayName = typeof cluster.displayName === 'string' ? cluster.displayName.trim() : ''
+
+  return {
+    value: name,
+    label: displayName || name,
+  }
+}
 
 const mappedNamespaceToOptionInSidebar = ({
   namespace,
@@ -87,7 +113,10 @@ export const useNavSelectorInside = (cluster?: string) => {
   })
 
   const clustersInSidebar = clusterList
-    ? clusterList.map(mappedClusterToOptionInSidebar).sort((a, b) => a.label.localeCompare(b.label))
+    ? (clusterList as unknown as TClusterLike[])
+        .map(mappedClusterToOptionInSidebar)
+        .filter((cluster): cluster is { value: string; label: string } => Boolean(cluster))
+        .sort((a, b) => a.label.localeCompare(b.label))
     : []
   const namespacesInSidebar =
     cluster && namespaces

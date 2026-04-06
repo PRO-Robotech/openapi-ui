@@ -21,6 +21,7 @@ import {
   CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP,
   CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION,
   CUSTOM_NAMESPACE_API_RESOURCE_PLURAL,
+  CURRENT_CLUSTER,
   CUSTOMIZATION_SIDEBAR_FALLBACK_ID,
 } from 'constants/customizationApiGroupAndVersion'
 import { Styled } from './styled'
@@ -41,7 +42,11 @@ export const ManageableSidebar: FC<TManageableSidebarProps> = ({
   const location = useLocation()
   const { pathname, search } = location
   const params = useParams()
-  const cluster = params?.cluster || ''
+  const pathnameParts = pathname.split('/').filter(Boolean)
+  const isClusterListPage =
+    pathnameParts[pathnameParts.length - 1] === 'clusters' && pathnameParts[pathnameParts.length - 2] !== 'inside'
+  const cluster =
+    params?.cluster || (isClusterListPage && CURRENT_CLUSTER && CURRENT_CLUSTER.length > 0 ? CURRENT_CLUSTER : '')
   const namespace = params?.namespace || ''
   const syntheticProject = params?.syntheticProject || ''
   const theme = useSelector((state: RootState) => state.openapiTheme.theme)
@@ -120,12 +125,13 @@ export const ManageableSidebar: FC<TManageableSidebarProps> = ({
     }
   }, [])
 
-  const replaceValuesPartsOfUrls = location.pathname
-    .split('/')
-    .reduce<Record<string, string | undefined>>((acc, value, index) => {
+  const replaceValuesPartsOfUrls = {
+    ...location.pathname.split('/').reduce<Record<string, string | undefined>>((acc, value, index) => {
       acc[index.toString()] = value
       return acc
-    }, {})
+    }, {}),
+    ...(isClusterListPage && CURRENT_CLUSTER && CURRENT_CLUSTER.length > 0 ? { 2: CURRENT_CLUSTER } : {}),
+  }
 
   return (
     <Styled.Container

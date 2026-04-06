@@ -1,5 +1,5 @@
 import React, { FC, useState, useMemo } from 'react'
-import { Outlet, useParams } from 'react-router-dom'
+import { Outlet, useLocation, useParams } from 'react-router-dom'
 import { theme as antdtheme } from 'antd'
 import { useKinds } from '@prorobotech/openapi-k8s-toolkit'
 import { BaseTemplate } from 'templates'
@@ -11,6 +11,7 @@ import { BASE_HIDE_BREADCRUMBS } from 'constants/customizationApiGroupAndVersion
 export type TChromeCtx = {
   setCurrentTags: (tags?: string[]) => void
   setSidebarSuffix: (suffix?: string) => void
+  setForcedSidebarId: (id?: string) => void
   setBreadcrumbsSuffix: (suffix?: string) => void
   setBacklinkTo: (backlinkTo?: string) => void
   setBacklinkTitle: (backlinkTitle?: string) => void
@@ -20,7 +21,13 @@ export type TChromeCtx = {
 
 export const AppShell: FC<{ inside?: boolean }> = ({ inside }) => {
   const { token } = antdtheme.useToken()
+  const { pathname } = useLocation()
   const { cluster, namespace, syntheticProject } = useParams()
+  const pathnameParts = pathname.split('/').filter(Boolean)
+  const isClusterListPage =
+    pathnameParts[pathnameParts.length - 1] === 'clusters' &&
+    pathnameParts[pathnameParts.length - 2] !== 'inside' &&
+    !cluster
 
   // fetch in advance
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -35,6 +42,7 @@ export const AppShell: FC<{ inside?: boolean }> = ({ inside }) => {
 
   const [currentTags, setCurrentTagsState] = useState<string[] | undefined>()
   const [sidebarSuffix, setSidebarSuffix] = useState<string | undefined>()
+  const [forcedSidebarId, setForcedSidebarId] = useState<string | undefined>()
   const [breadcrumbsSuffix, setBreadcrumbsSuffix] = useState<string | undefined>()
   const [backlinkTo, setBacklinkTo] = useState<string | undefined>()
   const [backlinkTitle, setBacklinkTitle] = useState<string | undefined>()
@@ -52,13 +60,15 @@ export const AppShell: FC<{ inside?: boolean }> = ({ inside }) => {
     })
   }, [])
 
-  const sidebarId = useMemo(
-    () =>
-      `${getSidebarIdPrefix({ instance: !!syntheticProject, project: !!namespace, useOnlyNamespace, inside })}${
-        sidebarSuffix ?? 'app-shell'
-      }`,
-    [syntheticProject, namespace, sidebarSuffix, useOnlyNamespace, inside],
-  )
+  const sidebarId = useMemo(() => {
+    if (forcedSidebarId) {
+      return forcedSidebarId
+    }
+
+    return `${getSidebarIdPrefix({ instance: !!syntheticProject, project: !!namespace, useOnlyNamespace, inside })}${
+      sidebarSuffix ?? 'app-shell'
+    }`
+  }, [forcedSidebarId, syntheticProject, namespace, sidebarSuffix, useOnlyNamespace, inside])
 
   const breadcrumbsId = useMemo(
     () =>
@@ -88,6 +98,7 @@ export const AppShell: FC<{ inside?: boolean }> = ({ inside }) => {
     () => ({
       setCurrentTags,
       setSidebarSuffix,
+      setForcedSidebarId,
       setBreadcrumbsSuffix,
       setBacklinkTo,
       setBacklinkTitle,
@@ -99,7 +110,7 @@ export const AppShell: FC<{ inside?: boolean }> = ({ inside }) => {
 
   return (
     <BaseTemplate inside={inside} sidebar={sidebarEl} isSearch={baseTemplateSearchBoolean}>
-      {BASE_HIDE_BREADCRUMBS !== 'true' && (
+      {BASE_HIDE_BREADCRUMBS !== 'true' && !isClusterListPage && (
         <NavigationContainer $bgColor={token.colorBgLayout}>
           <ManageableBreadcrumbs idToCompare={breadcrumbsId} inside={inside} />
           {backlinkTo && backlinkTitle && <BackLink to={backlinkTo} title={backlinkTitle} />}

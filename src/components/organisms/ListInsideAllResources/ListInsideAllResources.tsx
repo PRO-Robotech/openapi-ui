@@ -25,6 +25,7 @@ export const ListInsideAllResources: FC<TListInsideAllResourcesProps> = ({ names
   const navigate = useNavigate()
   const cluster = useSelector((state: RootState) => state.cluster.cluster)
   const baseprefix = useSelector((state: RootState) => state.baseprefix.baseprefix)
+  const clusterEnabled = Boolean(cluster)
   const [groupsByCategory, setGroupsByCategory] = useState<{
     crdGroups?: TApiGroupList['groups']
     nonCrdGroups?: TApiGroupList['groups']
@@ -33,23 +34,29 @@ export const ListInsideAllResources: FC<TListInsideAllResourcesProps> = ({ names
   }>()
 
   const apiGroupList = useApisResourceTypes({
-    cluster,
+    cluster: cluster || '',
+    enabler: clusterEnabled,
   })
 
   const builtInData = useBuiltinResourceTypes({
-    cluster,
+    cluster: cluster || '',
+    enabler: clusterEnabled,
   })
 
   useEffect(() => {
+    if (!clusterEnabled) {
+      return
+    }
+
     getGroupsByCategory({
-      cluster,
+      cluster: cluster || '',
       namespace,
       apiGroupListData: apiGroupList.data,
       builtinResourceTypesData: builtInData.data,
     }).then(data => {
       setGroupsByCategory(data)
     })
-  }, [cluster, namespace, apiGroupList.data, builtInData.data])
+  }, [cluster, clusterEnabled, namespace, apiGroupList.data, builtInData.data])
 
   // const { crdGroups, nonCrdGroups, builtinGroups, apiExtensionVersion } = groupsByCategory || {}
   const { nonCrdGroups, builtinGroups } = groupsByCategory || {}
