@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { FC, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useOutletContext, useParams } from 'react-router-dom'
 import {
   __federation_method_getRemote as getRemote,
   __federation_method_setRemote as setRemote,
@@ -15,6 +15,7 @@ import {
   PLUGIN_LOADING_SPINNER_MODE,
   PLUGIN_LOADING_SPINNER_SIZE,
 } from 'constants/customizationApiGroupAndVersion'
+import { TChromeCtx } from 'templates'
 
 type TParams = {
   cluster: string
@@ -26,6 +27,7 @@ type TParams = {
 
 export const PluginRoute: FC = () => {
   const { cluster, namespace, syntheticProject, pluginName, '*': pluginPath } = useParams<TParams>()
+  const { setCurrentTags, setSidebarSuffix, setBreadcrumbsSuffix } = useOutletContext<TChromeCtx>()
   const dispatch = useDispatch()
 
   const {
@@ -41,6 +43,20 @@ export const PluginRoute: FC = () => {
   const loadingIndicator = PLUGIN_LOADING_INDICATOR_ROUTE
   const showInlineSpinner = loadingIndicator === 'spinner' && PLUGIN_LOADING_SPINNER_MODE === 'inline'
   const showGlobalSpinner = loadingIndicator === 'spinner' && PLUGIN_LOADING_SPINNER_MODE === 'global'
+
+  useEffect(() => {
+    if (!pluginName) return undefined
+
+    setSidebarSuffix(`plugin-${pluginName}`)
+    setBreadcrumbsSuffix(`plugin-${pluginName}`)
+    setCurrentTags([pluginName])
+
+    return () => {
+      setCurrentTags(undefined)
+      setSidebarSuffix(undefined)
+      setBreadcrumbsSuffix(undefined)
+    }
+  }, [pluginName, setBreadcrumbsSuffix, setCurrentTags, setSidebarSuffix])
 
   // Track manifest loading in global spinner
   useEffect(() => {
