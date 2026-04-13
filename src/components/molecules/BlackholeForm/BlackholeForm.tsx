@@ -1,5 +1,6 @@
-import React, { FC, useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { FC, useState, useEffect, useMemo } from 'react'
+import { useLocation, useParams } from 'react-router-dom'
+import { Alert } from 'antd'
 import { BlackholeFormProvider, TJSON } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import type { RootState } from 'store/store'
@@ -50,6 +51,7 @@ export const BlackholeForm: FC<TBlackholeFormProps> = ({ data, customizationId, 
   const theme = useSelector((state: RootState) => state.openapiTheme.theme)
   const cluster = useSelector((state: RootState) => state.cluster.cluster)
   const params = useParams()
+  const location = useLocation()
 
   const [height, setHeight] = useState(0)
 
@@ -88,11 +90,17 @@ export const BlackholeForm: FC<TBlackholeFormProps> = ({ data, customizationId, 
     apiGroup: params.apiGroup,
     plural: params.plural,
   }
+  const partsOfUrl = useMemo(() => location.pathname.split('/'), [location.pathname])
+
+  if (!cluster) {
+    return <Alert type="error" message="Error while defining cluster" description="No cluster has been set" />
+  }
 
   return (
     <BlackholeFormProvider
       theme={theme}
       cluster={cluster}
+      partsOfUrl={partsOfUrl}
       urlParams={urlParams}
       urlParamsForPermissions={urlParamsForPermissions}
       data={data}

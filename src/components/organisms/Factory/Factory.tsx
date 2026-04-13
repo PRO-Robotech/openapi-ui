@@ -7,6 +7,7 @@ import {
   TDynamicComponentsAppTypeMap,
   useK8sSmartResource,
   TFactoryResponse,
+  ErrorBoundary,
   // ContentCard,
 } from '@prorobotech/openapi-k8s-toolkit'
 import { Result } from 'antd'
@@ -24,11 +25,13 @@ import { Styled } from './styled'
 
 type TFactoryProps = {
   setSidebarTags: (tags: string[]) => void
+  setForcedSidebarId: (id?: string) => void
 }
 
-export const Factory: FC<TFactoryProps> = ({ setSidebarTags }) => {
+export const Factory: FC<TFactoryProps> = ({ setSidebarTags, setForcedSidebarId }) => {
   const theme = useSelector((state: RootState) => state.openapiTheme.theme)
   const cluster = useSelector((state: RootState) => state.cluster.cluster)
+  const clusterEnabled = Boolean(cluster)
   const { key } = useParams()
 
   // const [height, setHeight] = useState(0)
@@ -51,17 +54,19 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags }) => {
   const { data: factoryData, isLoading: isFactoryLoading } = useK8sSmartResource<
     TFactoryResponse<TDynamicComponentsAppTypeMap>
   >({
-    cluster,
+    cluster: cluster || '',
     apiGroup: BASE_API_GROUP,
     apiVersion: BASE_API_VERSION,
     plural: 'factories',
+    isEnabled: clusterEnabled,
   })
 
   const { spec } = factoryData?.items.find(({ spec }) => spec.key === key) ?? { spec: undefined }
 
   useEffect(() => {
     setSidebarTags(spec?.sidebarTags || [])
-  }, [spec?.sidebarTags, setSidebarTags])
+    setForcedSidebarId(spec?.forcedSidebarId)
+  }, [spec?.sidebarTags, spec?.forcedSidebarId, setSidebarTags, setForcedSidebarId])
 
   if (isFactoryLoading) {
     return null
@@ -85,27 +90,34 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags }) => {
   if (spec.withScrollableMainContentCard) {
     // <ContentCard flexGrow={1} displayFlex flexFlow="column" maxHeight={height}>
     return (
-      <ContentCardMain>
-        <DynamicRendererWithProviders
-          urlsToFetch={spec.urlsToFetch ?? []}
-          theme={theme}
-          nodeTerminalDefaultProfile={NODE_TERMINAL_DEFAULT_PROFILE}
-          items={spec.data}
-          components={DynamicComponents}
-        />
-      </ContentCardMain>
+      <ErrorBoundary>
+        <ContentCardMain>
+          <DynamicRendererWithProviders
+            urlsToFetch={spec.urlsToFetch ?? []}
+            theme={theme}
+            nodeTerminalDefaultProfile={NODE_TERMINAL_DEFAULT_PROFILE}
+            items={spec.data}
+            components={DynamicComponents}
+            effectiveReqIndexes={spec.effectiveReqIndexes}
+            effectiveItemsPath={spec.effectiveItemsPath}
+          />
+        </ContentCardMain>
+      </ErrorBoundary>
     )
     // </ContentCard>
   }
 
   return (
-    <DynamicRendererWithProviders
-      urlsToFetch={spec.urlsToFetch ?? []}
-      theme={theme}
-      nodeTerminalDefaultProfile={NODE_TERMINAL_DEFAULT_PROFILE}
-      items={spec.data}
-      components={DynamicComponents}
-      key={key}
-    />
+    <ErrorBoundary>
+      <DynamicRendererWithProviders
+        urlsToFetch={spec.urlsToFetch ?? []}
+        theme={theme}
+        nodeTerminalDefaultProfile={NODE_TERMINAL_DEFAULT_PROFILE}
+        items={spec.data}
+        components={DynamicComponents}
+        effectiveReqIndexes={spec.effectiveReqIndexes}
+        key={key}
+      />
+    </ErrorBoundary>
   )
 }

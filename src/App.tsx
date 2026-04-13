@@ -4,7 +4,7 @@ import React, { FC, useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { ConfigProvider } from 'antd'
+import { App as AntdApp, ConfigProvider } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 import type { RootState } from 'store/store'
 import { setIsFederation } from 'store/federation/federation/federation'
@@ -28,7 +28,9 @@ import {
 } from 'pages'
 import { getBasePrefix } from 'utils/getBaseprefix'
 import { getConfigProviderProps } from 'utils/getConfigProviderProps'
+import { CURRENT_CLUSTER, PLUGIN_LOADING_SPINNER_MODE } from 'constants/customizationApiGroupAndVersion'
 import { MainLayout, AppShell } from 'templates'
+import { GlobalPluginLoader } from 'components/molecules'
 
 type TAppProps = {
   isFederation?: boolean
@@ -55,7 +57,13 @@ export const App: FC<TAppProps> = ({ isFederation, forcedTheme }) => {
     <Routes>
       <Route element={<MainLayout forcedTheme={forcedTheme} />}>
         <Route path={`${prefix}/`} element={<MainPage />} />
-        <Route path={`${prefix}/clusters`} element={<ListClustersPage />} />
+        {CURRENT_CLUSTER?.length > 0 ? (
+          <Route path={`${prefix}/clusters`} element={<AppShell />}>
+            <Route index element={<ListClustersPage withBaseTemplate={false} />} />
+          </Route>
+        ) : (
+          <Route path={`${prefix}/clusters`} element={<ListClustersPage />} />
+        )}
 
         <Route path={`${prefix}/:cluster/:namespace?/:syntheticProject?/*`} element={<AppShell />}>
           <Route path="api-table/:apiGroup/:apiVersion/:plural" element={<TableApiPage />} />
@@ -98,7 +106,8 @@ export const App: FC<TAppProps> = ({ isFederation, forcedTheme }) => {
     <QueryClientProvider client={queryClient}>
       {import.meta.env.MODE === 'development' && <ReactQueryDevtools />}
       <ConfigProvider theme={antdConfig}>
-        {isFederation ? renderRoutes() : <BrowserRouter>{renderRoutes(basePrefix)}</BrowserRouter>}
+        {PLUGIN_LOADING_SPINNER_MODE === 'global' && <GlobalPluginLoader />}
+        <AntdApp>{isFederation ? renderRoutes() : <BrowserRouter>{renderRoutes(basePrefix)}</BrowserRouter>}</AntdApp>
       </ConfigProvider>
     </QueryClientProvider>
   )

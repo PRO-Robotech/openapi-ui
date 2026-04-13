@@ -207,3 +207,83 @@ export const THEME_TOKENS_COMPONENTS_DARK = import.meta.env.DEV
 export const THEME_TOKENS_USE_MERGE_STRATEGY = import.meta.env.DEV
   ? window._env_.THEME_TOKENS_USE_MERGE_STRATEGY || import.meta.env.VITE_THEME_TOKENS_USE_MERGE_STRATEGY
   : window._env_.THEME_TOKENS_USE_MERGE_STRATEGY
+
+export const CURRENT_CLUSTER = import.meta.env.DEV
+  ? window._env_.CURRENT_CLUSTER || import.meta.env.VITE_CURRENT_CLUSTER
+  : window._env_.CURRENT_CLUSTER
+
+export const CLUSTERLIST_API_RESOURCE_API_GROUP = import.meta.env.DEV
+  ? window._env_.CLUSTERLIST_API_RESOURCE_API_GROUP || import.meta.env.VITE_CLUSTERLIST_API_RESOURCE_API_GROUP
+  : window._env_.CLUSTERLIST_API_RESOURCE_API_GROUP
+
+export const CLUSTERLIST_API_RESOURCE_API_VERSION = import.meta.env.DEV
+  ? window._env_.CLUSTERLIST_API_RESOURCE_API_VERSION || import.meta.env.VITE_CLUSTERLIST_API_RESOURCE_API_VERSION
+  : window._env_.CLUSTERLIST_API_RESOURCE_API_VERSION
+
+export const CLUSTERLIST_API_RESOURCE_PLURAL = import.meta.env.DEV
+  ? window._env_.CLUSTERLIST_API_RESOURCE_PLURAL || import.meta.env.VITE_CLUSTERLIST_API_RESOURCE_PLURAL
+  : window._env_.CLUSTERLIST_API_RESOURCE_PLURAL
+
+export type TPluginLoadingIndicator = 'spinner' | 'text' | 'none'
+
+const parseIndicator = (value: string | undefined): TPluginLoadingIndicator => {
+  if (value === 'spinner' || value === 'none') return value
+  return 'text' // default
+}
+
+export const PLUGIN_LOADING_INDICATOR_HEADER: TPluginLoadingIndicator = (() => {
+  const value = import.meta.env.DEV
+    ? window._env_.PLUGIN_LOADING_INDICATOR_HEADER || import.meta.env.VITE_PLUGIN_LOADING_INDICATOR_HEADER
+    : window._env_.PLUGIN_LOADING_INDICATOR_HEADER
+  return parseIndicator(value)
+})()
+
+export const PLUGIN_LOADING_INDICATOR_SIDEBAR: TPluginLoadingIndicator = (() => {
+  const value = import.meta.env.DEV
+    ? window._env_.PLUGIN_LOADING_INDICATOR_SIDEBAR || import.meta.env.VITE_PLUGIN_LOADING_INDICATOR_SIDEBAR
+    : window._env_.PLUGIN_LOADING_INDICATOR_SIDEBAR
+  return parseIndicator(value)
+})()
+
+export const PLUGIN_LOADING_INDICATOR_NAVIGATION: TPluginLoadingIndicator = (() => {
+  const value = import.meta.env.DEV
+    ? window._env_.PLUGIN_LOADING_INDICATOR_NAVIGATION || import.meta.env.VITE_PLUGIN_LOADING_INDICATOR_NAVIGATION
+    : window._env_.PLUGIN_LOADING_INDICATOR_NAVIGATION
+  return parseIndicator(value)
+})()
+
+export const PLUGIN_LOADING_INDICATOR_ROUTE: TPluginLoadingIndicator = (() => {
+  const value = import.meta.env.DEV
+    ? window._env_.PLUGIN_LOADING_INDICATOR_ROUTE || import.meta.env.VITE_PLUGIN_LOADING_INDICATOR_ROUTE
+    : window._env_.PLUGIN_LOADING_INDICATOR_ROUTE
+  return parseIndicator(value)
+})()
+
+export type TPluginLoadingSpinnerMode = 'inline' | 'global'
+export type TPluginLoadingSpinnerSize = 'small' | 'default' | 'large'
+
+const parseSpinnerSize = (value: string | undefined): TPluginLoadingSpinnerSize | undefined => {
+  if (value === 'small' || value === 'default' || value === 'large') return value
+  return undefined
+}
+
+export const PLUGIN_LOADING_SPINNER_MODE: TPluginLoadingSpinnerMode = (() => {
+  const value = import.meta.env.DEV
+    ? window._env_.PLUGIN_LOADING_SPINNER_MODE || import.meta.env.VITE_PLUGIN_LOADING_SPINNER_MODE
+    : window._env_.PLUGIN_LOADING_SPINNER_MODE
+  return value === 'global' ? 'global' : 'inline'
+})()
+
+export const PLUGIN_LOADING_SPINNER_SIZE: TPluginLoadingSpinnerSize | undefined = (() => {
+  const value = import.meta.env.DEV
+    ? window._env_.PLUGIN_LOADING_SPINNER_SIZE || import.meta.env.VITE_PLUGIN_LOADING_SPINNER_SIZE
+    : window._env_.PLUGIN_LOADING_SPINNER_SIZE
+  return parseSpinnerSize(value)
+})()
+
+export const PLUGIN_GLOBAL_SPINNER_SIZE: TPluginLoadingSpinnerSize | undefined = (() => {
+  const value = import.meta.env.DEV
+    ? window._env_.PLUGIN_GLOBAL_SPINNER_SIZE || import.meta.env.VITE_PLUGIN_GLOBAL_SPINNER_SIZE
+    : window._env_.PLUGIN_GLOBAL_SPINNER_SIZE
+  return parseSpinnerSize(value)
+})()

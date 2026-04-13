@@ -1,6 +1,4 @@
-/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// src/pages/PluginRoute.tsx
 import React, { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
@@ -9,10 +7,20 @@ import {
   __federation_method_unwrapDefault as unwrapModule,
 } from 'virtual:__federation__'
 import { TPluginManifestEntry } from '@prorobotech/openapi-k8s-toolkit'
+import { Spin } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 import type { RootState } from 'store/store'
 import { setTheme } from 'store/theme/theme/theme'
+import { addLoadingPlugin, removeLoadingPlugin } from 'store/pluginLoading/pluginLoading/pluginLoading'
 import { THEME_EVENT } from 'constants/theme'
+import {
+  PLUGIN_LOADING_INDICATOR_HEADER,
+  PLUGIN_LOADING_INDICATOR_SIDEBAR,
+  PLUGIN_LOADING_INDICATOR_NAVIGATION,
+  PLUGIN_LOADING_SPINNER_MODE,
+  PLUGIN_LOADING_SPINNER_SIZE,
+  TPluginLoadingIndicator,
+} from 'constants/customizationApiGroupAndVersion'
 
 type TParams = {
   cluster: string
@@ -26,23 +34,42 @@ type TPluginByManifestProps = {
   manifestEntry: TPluginManifestEntry
 }
 
+const getLoadingIndicator = (pluginName: string): TPluginLoadingIndicator => {
+  if (pluginName === 'plugin-header') return PLUGIN_LOADING_INDICATOR_HEADER
+  if (pluginName === 'plugin-sidebar') return PLUGIN_LOADING_INDICATOR_SIDEBAR
+  if (pluginName === 'plugin-navigation') return PLUGIN_LOADING_INDICATOR_NAVIGATION
+  return 'text'
+}
+
 export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) => {
   const { cluster, namespace, syntheticProject, '*': pluginPath } = useParams<TParams>()
+  const dispatch = useDispatch()
+  const theme = useSelector((state: RootState) => state.openapiTheme.theme)
 
   const [Component, setComponent] = useState<React.ComponentType<any> | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [remoteLoading, setRemoteLoading] = useState(false)
+
+  const loadingIndicator = getLoadingIndicator(manifestEntry.name)
+  const showInlineSpinner = loadingIndicator === 'spinner' && PLUGIN_LOADING_SPINNER_MODE === 'inline'
+  const showGlobalSpinner = loadingIndicator === 'spinner' && PLUGIN_LOADING_SPINNER_MODE === 'global'
 
   // STEP 1 – when manifest is loaded, dynamically load the plugin remote
   useEffect(() => {
     if (!manifestEntry) return undefined
 
     let cancelled = false
+    const pluginId = `plugin-${manifestEntry.name}`
 
     const load = async (plugin: TPluginManifestEntry) => {
+      if (cancelled) return
       setRemoteLoading(true)
       setLoadError(null)
       setComponent(null)
+      // Track in Redux only for global spinner mode
+      if (showGlobalSpinner) {
+        dispatch(addLoadingPlugin(pluginId))
+      }
 
       try {
         // register remote at runtime
@@ -66,6 +93,9 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
       } finally {
         if (!cancelled) {
           setRemoteLoading(false)
+          if (showGlobalSpinner) {
+            dispatch(removeLoadingPlugin(pluginId))
+          }
         }
       }
     }
@@ -79,13 +109,10 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
 
     return () => {
       cancelled = true
+      // Always dispatch remove to avoid stale state if mode changed
+      dispatch(removeLoadingPlugin(pluginId))
     }
-  }, [manifestEntry])
-
-  console.log('manifestEntry', manifestEntry)
-
-  const dispatch = useDispatch()
-  const theme = useSelector((state: RootState) => state.openapiTheme.theme)
+  }, [manifestEntry, dispatch, showGlobalSpinner])
 
   const toggleTheme = (checked: boolean) => {
     if (checked) {
@@ -101,14 +128,31 @@ export const PluginByManifest: FC<TPluginByManifestProps> = ({ manifestEntry }) 
 
   // STEP 2 – render states
 
-  if (remoteLoading) return <div>Loading plugin {manifestEntry.name}…</div>
+  if (remoteLoading) {
+    // Global mode: return null, GlobalPluginLoader shows the spinner
+    if (showGlobalSpinner) {
+      return null
+    }
+    // Inline mode: show spinner in place
+    if (showInlineSpinner) {
+      return PLUGIN_LOADING_SPINNER_SIZE ? <Spin size={PLUGIN_LOADING_SPINNER_SIZE} /> : <Spin />
+    }
+    // None: show nothing
+    if (loadingIndicator === 'none') {
+      return null
+    }
+    // Text (default): show text
+    return <div>Loading plugin {manifestEntry.name}…</div>
+  }
   if (loadError)
     return (
       <div>
         Failed to load plugin {manifestEntry.name}: {loadError}
       </div>
     )
-  if (!Component) return <div>No plugin component available. {JSON.stringify(manifestEntry)}</div>
+  if (!Component) {
+    return <div>No plugin component available. {JSON.stringify(manifestEntry)}</div>
+  }
 
   return (
     <Component

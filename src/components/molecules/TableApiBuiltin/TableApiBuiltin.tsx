@@ -75,6 +75,7 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
   const cluster = useSelector((state: RootState) => state.cluster.cluster)
   const theme = useSelector((state: RootState) => state.openapiTheme.theme)
   const baseprefix = useSelector((state: RootState) => state.baseprefix.baseprefix)
+  const clusterEnabled = Boolean(cluster)
 
   const possibleProject = params.syntheticProject && namespace ? params.syntheticProject : namespace
   const possibleInstance = params.syntheticProject && namespace ? namespace : undefined
@@ -114,9 +115,10 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
     apiGroup: apiGroup || undefined,
     plural,
     namespace: params.namespace,
-    cluster,
+    cluster: cluster || '',
     verb: 'create',
     refetchInterval: false,
+    enabler: clusterEnabled,
   })
 
   const {
@@ -124,7 +126,7 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
     isLoading,
     error,
   } = useK8sSmartResource<{ items: TSingleResource[] }>({
-    cluster,
+    cluster: cluster || '',
     namespace,
     apiGroup,
     apiVersion: apiVersion || '',
@@ -132,9 +134,16 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
     labelSelector: labels ? encodeURIComponent(labels.join(',')) : undefined,
     fieldSelector: fields ? encodeURIComponent(fields.join(',')) : undefined,
     limit,
+    isEnabled: clusterEnabled,
   })
 
-  const { data: resourceScope } = useResourceScope({ plural, cluster, apiGroup, apiVersion })
+  const { data: resourceScope } = useResourceScope({
+    plural,
+    cluster: cluster || '',
+    apiGroup,
+    apiVersion,
+    enabler: clusterEnabled,
+  })
 
   const moreResourcesParams = useSmartResourceParams({ cluster, namespace })
   const moreResources = useManyK8sSmartResource(moreResourcesParams.paramsList)
@@ -169,6 +178,10 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
   //     ? `/v1/${plural}-${extrasTickKey}`
   //     : `/${apiGroup}/${apiVersion}/${plural}-${extrasTickKey}`
   const providerKey = resourceType === 'builtin' ? `/v1/${plural}` : `/${apiGroup}/${apiVersion}/${plural}`
+
+  if (!cluster) {
+    return <Alert type="error" message="Error while defining cluster" description="No cluster has been set" />
+  }
 
   return (
     <>
