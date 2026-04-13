@@ -47,16 +47,26 @@ export const PluginRoute: FC = () => {
   useEffect(() => {
     if (!pluginName) return undefined
 
+    const pluginTags = [
+      pluginName,
+      ...(pluginPath
+        ? pluginPath
+            .split('/')
+            .filter(Boolean)
+            .map((_, index, parts) => `${pluginName}/${parts.slice(0, index + 1).join('/')}`)
+        : []),
+    ]
+
     setSidebarSuffix(`plugin-${pluginName}`)
     setBreadcrumbsSuffix(`plugin-${pluginName}`)
-    setCurrentTags([pluginName])
+    setCurrentTags(pluginTags)
 
     return () => {
       setCurrentTags(undefined)
       setSidebarSuffix(undefined)
       setBreadcrumbsSuffix(undefined)
     }
-  }, [pluginName, setBreadcrumbsSuffix, setCurrentTags, setSidebarSuffix])
+  }, [pluginName, pluginPath, setBreadcrumbsSuffix, setCurrentTags, setSidebarSuffix])
 
   // Track manifest loading in global spinner
   useEffect(() => {
