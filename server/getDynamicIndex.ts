@@ -37,13 +37,102 @@ export const getDynamicIndex = (baseprefix: string): string => {
     />
     <title>${titleText}</title>
     ${generateFavicon()}
-    <script src="${baseprefix}/env.js"></script>
-    <script type="module" crossorigin src="${baseprefix}/${mainJs}"></script>
-    <link rel="stylesheet" crossorigin href="${baseprefix}/${mainCss}">
+    <style>
+      html,
+      body,
+      #root {
+        min-height: 100%;
+        margin: 0;
+      }
+
+      .incloud-bootloader {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        background: #f5f5f5;
+        color: #1f1f1f;
+        font-family: Roboto, Arial, sans-serif;
+      }
+
+      .incloud-bootloader__spinner {
+        width: 24px;
+        height: 24px;
+        position: relative;
+        animation: incloud-bootloader-rotate 1.2s infinite linear;
+      }
+
+      .incloud-bootloader__dot {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: #1677ff;
+        border-radius: 50%;
+        transform: scale(0.75);
+        transform-origin: 12px 12px;
+        animation: incloud-bootloader-dot 1.2s infinite ease-in-out alternate;
+      }
+
+      .incloud-bootloader__dot:nth-child(1) {
+        top: 0;
+        left: 0;
+      }
+
+      .incloud-bootloader__dot:nth-child(2) {
+        top: 0;
+        right: 0;
+        animation-delay: 0.4s;
+      }
+
+      .incloud-bootloader__dot:nth-child(3) {
+        right: 0;
+        bottom: 0;
+        animation-delay: 0.8s;
+      }
+
+      .incloud-bootloader__dot:nth-child(4) {
+        bottom: 0;
+        left: 0;
+        animation-delay: 1.2s;
+      }
+
+      .incloud-bootloader__text {
+        font-size: 14px;
+        line-height: 22px;
+      }
+
+      @keyframes incloud-bootloader-rotate {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes incloud-bootloader-dot {
+        to {
+          opacity: 0.3;
+          transform: scale(0.45);
+        }
+      }
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="root">
+      <div class="incloud-bootloader" role="status" aria-live="polite">
+        <div class="incloud-bootloader__spinner" aria-hidden="true">
+          <span class="incloud-bootloader__dot"></span>
+          <span class="incloud-bootloader__dot"></span>
+          <span class="incloud-bootloader__dot"></span>
+          <span class="incloud-bootloader__dot"></span>
+        </div>
+        <div class="incloud-bootloader__text">Loading...</div>
+      </div>
+    </div>
+    <script src="${baseprefix}/env.js"></script>
+    <script type="module" crossorigin src="${baseprefix}/${mainJs}"></script>
+    <link rel="stylesheet" crossorigin href="${baseprefix}/${mainCss}">
   </body>
 </html>
 `
