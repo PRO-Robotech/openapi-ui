@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-const NotFoundContainer = styled.div`
+const LoadingNotFoundContainer = styled.div`
   flex: 1;
   display: flex;
   align-items: center;
@@ -8,9 +8,6 @@ const NotFoundContainer = styled.div`
   overflow: hidden;
 `
 
-const LoadingContainer = styled(NotFoundContainer)``
-
 export const Styled = {
-  LoadingContainer,
-  NotFoundContainer,
+  LoadingNotFoundContainer,
 }

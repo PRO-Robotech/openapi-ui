@@ -70,23 +70,23 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags, setForcedSidebarId 
 
   if (isFactoryLoading) {
     return (
-      <Styled.LoadingContainer>
+      <Styled.LoadingNotFoundContainer>
         <Spin />
-      </Styled.LoadingContainer>
+      </Styled.LoadingNotFoundContainer>
     )
   }
 
   if (!spec) {
     return (
       <ContentCardMain>
-        <Styled.NotFoundContainer>
+        <Styled.LoadingNotFoundContainer>
           <Result
             status="404"
             title="Factory Not Found"
             subTitle={`No factory is configured for key "${key ?? ''}".`}
             style={{ padding: 0 }}
           />
-        </Styled.NotFoundContainer>
+        </Styled.LoadingNotFoundContainer>
       </ContentCardMain>
     )
   }
