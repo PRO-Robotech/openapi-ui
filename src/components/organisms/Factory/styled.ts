@@ -8,6 +8,9 @@ const NotFoundContainer = styled.div`
   overflow: hidden;
 `
 
+const LoadingContainer = styled(NotFoundContainer)``
+
 export const Styled = {
+  LoadingContainer,
   NotFoundContainer,
 }

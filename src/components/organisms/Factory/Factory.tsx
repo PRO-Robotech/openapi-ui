@@ -10,7 +10,7 @@ import {
   ErrorBoundary,
   // ContentCard,
 } from '@prorobotech/openapi-k8s-toolkit'
-import { Result } from 'antd'
+import { Result, Spin } from 'antd'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store/store'
 import {
@@ -69,7 +69,11 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags, setForcedSidebarId 
   }, [spec?.sidebarTags, spec?.forcedSidebarId, setSidebarTags, setForcedSidebarId])
 
   if (isFactoryLoading) {
-    return null
+    return (
+      <Styled.LoadingContainer>
+        <Spin />
+      </Styled.LoadingContainer>
+    )
   }
 
   if (!spec) {
