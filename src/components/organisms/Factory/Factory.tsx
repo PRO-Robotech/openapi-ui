@@ -1,5 +1,4 @@
-// import React, { FC, useState, useEffect } from 'react'
-import React, { FC, useEffect } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
   DynamicComponents,
@@ -18,7 +17,6 @@ import {
   BASE_API_VERSION,
   NODE_TERMINAL_DEFAULT_PROFILE,
 } from 'constants/customizationApiGroupAndVersion'
-// import { HEAD_FIRST_ROW, HEAD_SECOND_ROW, FOOTER_HEIGHT, NAV_HEIGHT } from 'constants/blocksSizes'
 import '@xterm/xterm/css/xterm.css'
 import { ContentCardMain } from 'components/atoms'
 import { Styled } from './styled'
@@ -33,23 +31,7 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags, setForcedSidebarId 
   const cluster = useSelector((state: RootState) => state.cluster.cluster)
   const clusterEnabled = Boolean(cluster)
   const { key } = useParams()
-
-  // const [height, setHeight] = useState(0)
-
-  // useEffect(() => {
-  //   const height = window.innerHeight - HEAD_FIRST_ROW - HEAD_SECOND_ROW - NAV_HEIGHT - FOOTER_HEIGHT
-  //   setHeight(height)
-
-  //   const handleResize = () => {
-  //     setHeight(height)
-  //   }
-
-  //   window.addEventListener('resize', handleResize)
-
-  //   return () => {
-  //     window.removeEventListener('resize', handleResize)
-  //   }
-  // }, [])
+  const [canShowNotFound, setCanShowNotFound] = useState(false)
 
   const { data: factoryData, isLoading: isFactoryLoading } = useK8sSmartResource<
     TFactoryResponse<TDynamicComponentsAppTypeMap>
@@ -62,13 +44,29 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags, setForcedSidebarId 
   })
 
   const { spec } = factoryData?.items.find(({ spec }) => spec.key === key) ?? { spec: undefined }
+  const hasFactoryData = Array.isArray(factoryData?.items)
+
+  useEffect(() => {
+    if (isFactoryLoading || !hasFactoryData || spec) {
+      setCanShowNotFound(false)
+      return undefined
+    }
+
+    const timer = window.setTimeout(() => {
+      setCanShowNotFound(true)
+    }, 400)
+
+    return () => {
+      window.clearTimeout(timer)
+    }
+  }, [isFactoryLoading, hasFactoryData, spec, key])
 
   useEffect(() => {
     setSidebarTags(spec?.sidebarTags || [])
     setForcedSidebarId(spec?.forcedSidebarId)
   }, [spec?.sidebarTags, spec?.forcedSidebarId, setSidebarTags, setForcedSidebarId])
 
-  if (isFactoryLoading) {
+  if (isFactoryLoading || !hasFactoryData || (!spec && !canShowNotFound)) {
     return (
       <Styled.LoadingNotFoundContainer>
         <Spin />
@@ -79,7 +77,7 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags, setForcedSidebarId 
   if (!spec) {
     return (
       <ContentCardMain>
-        <Styled.LoadingNotFoundContainer>
+        <Styled.LoadingNotFoundContainer $insideContentCard>
           <Result
             status="404"
             title="Factory Not Found"

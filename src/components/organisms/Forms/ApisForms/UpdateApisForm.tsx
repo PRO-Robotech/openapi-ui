@@ -1,9 +1,9 @@
 import React, { FC, useState } from 'react'
-import { Spin, Alert, Segmented } from 'antd'
+import { Alert, Segmented } from 'antd'
 import { useApiResourceSingle, Spacer } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store/store'
-import { BlackholeForm } from 'components'
+import { BlackholeForm, CenteredFormSpinner } from 'components'
 
 type TUpdateApisFormProps = {
   apiGroup: string
@@ -54,7 +54,7 @@ export const UpdateApisForm: FC<TUpdateApisFormProps> = ({
   })
 
   if (isPending) {
-    return <Spin />
+    return <CenteredFormSpinner />
   }
 
   if (error) {

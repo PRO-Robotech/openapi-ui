@@ -2,7 +2,7 @@
 // import React, { FC, useState, useEffect } from 'react'
 import React, { FC, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { Spin, Alert, Button, Flex } from 'antd'
+import { Alert, Button, Flex } from 'antd'
 import { PlusOutlined, ClearOutlined, MinusOutlined } from '@ant-design/icons'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store/store'
@@ -27,6 +27,8 @@ import {
   SelectorNamespaceProjectNew,
   MainContentFixedTop,
   MainContentFixedBottom,
+  CenteredTableSpinner,
+  getTableSpinnerHeight,
 } from 'components'
 import { TABLE_PROPS } from 'constants/tableProps'
 import { BASE_USE_NAMESPACE_NAV } from 'constants/customizationApiGroupAndVersion'
@@ -178,6 +180,11 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
   //     ? `/v1/${plural}-${extrasTickKey}`
   //     : `/${apiGroup}/${apiVersion}/${plural}-${extrasTickKey}`
   const providerKey = resourceType === 'builtin' ? `/v1/${plural}` : `/${apiGroup}/${apiVersion}/${plural}`
+  const tableProps = {
+    ...TABLE_PROPS,
+    disablePagination: !searchMount,
+    loadingMinHeight: getTableSpinnerHeight(searchMount),
+  }
 
   if (!cluster) {
     return <Alert type="error" message="Error while defining cluster" description="No cluster has been set" />
@@ -208,7 +215,7 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
         </>
       )}
       {error && <Alert message={`An error has occurred: ${error} `} type="error" />}
-      {isLoading && !dataItems && <Spin />}
+      {isLoading && !dataItems && <CenteredTableSpinner searchMount={searchMount} />}
       {!error && dataItems && (
         <EnrichedTableProvider
           key={providerKey}
@@ -259,7 +266,7 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
               setSelectedRowsData(selectedRowsData)
             },
           }}
-          tableProps={{ ...TABLE_PROPS, disablePagination: !searchMount }}
+          tableProps={tableProps}
         />
       )}
       {/* </OverflowContainer> */}

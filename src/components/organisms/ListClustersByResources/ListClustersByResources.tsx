@@ -1,9 +1,10 @@
 import React, { FC } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
-import { Spin, Alert } from 'antd'
+import { Alert } from 'antd'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store/store'
 import { EnrichedTableProvider, useK8sSmartResource, TSingleResource, TJSON } from '@prorobotech/openapi-k8s-toolkit'
+import { CenteredTableSpinner, getTableSpinnerHeight } from 'components'
 import { TABLE_PROPS } from 'constants/tableProps'
 import {
   CURRENT_CLUSTER,
@@ -35,11 +36,15 @@ export const ListClustersByResources: FC = () => {
       acc[index.toString()] = value
       return acc
     }, {})
+  const tableProps = {
+    ...TABLE_PROPS,
+    loadingMinHeight: getTableSpinnerHeight(),
+  }
 
   return (
     <>
       {error && <Alert message={`An error has occurred: ${error} `} type="error" />}
-      {isLoading && !dataItems && <Spin />}
+      {isLoading && !dataItems && <CenteredTableSpinner />}
       {!error && dataItems && (
         <EnrichedTableProvider
           customizationId={`stock-cluster-/${CLUSTERLIST_API_RESOURCE_API_GROUP}/${CLUSTERLIST_API_RESOURCE_API_VERSION}/${CLUSTERLIST_API_RESOURCE_PLURAL}`}
@@ -62,7 +67,7 @@ export const ListClustersByResources: FC = () => {
           theme={theme}
           baseprefix={baseprefix}
           dataItems={(dataItems.items as TJSON[] | undefined) || []}
-          tableProps={{ ...TABLE_PROPS }}
+          tableProps={tableProps}
           dataForControls={undefined}
           dataForControlsInternal={{
             onDeleteHandle: () => {

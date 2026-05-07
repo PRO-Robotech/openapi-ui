@@ -1,9 +1,9 @@
 import React, { FC, useState } from 'react'
-import { Spin, Alert, Segmented } from 'antd'
+import { Alert, Segmented } from 'antd'
 import { useBuiltinResourceSingle, Spacer } from '@prorobotech/openapi-k8s-toolkit'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store/store'
-import { BlackholeForm } from 'components'
+import { BlackholeForm, CenteredFormSpinner } from 'components'
 
 type TUpdateBuiltinFormProps = {
   plural: string
@@ -43,7 +43,7 @@ export const UpdateBuiltinForm: FC<TUpdateBuiltinFormProps> = ({ plural, name, n
   })
 
   if (isPending) {
-    return <Spin />
+    return <CenteredFormSpinner />
   }
 
   if (error) {
