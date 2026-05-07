@@ -57,42 +57,68 @@ export const getDynamicIndex = (baseprefix: string): string => {
         font-family: Roboto, Arial, sans-serif;
       }
 
-      .incloud-bootloader__spinner {
-        width: 24px;
-        height: 24px;
-        position: relative;
-        animation: incloud-bootloader-rotate 1.2s infinite linear;
+      /*
+        Spinner — vanilla CSS copy of antd <Spin /> (antd 5.26.4).
+        Source: node_modules/antd/es/spin/style/index.js
+        Token values used (antd defaults):
+          dotSize    = controlHeightLG / 2 = 40 / 2 = 20px
+          dotItem    = (dotSize - marginXXS / 2) / 2 = (20 - 2) / 2 = 9px
+          colorPrimary in this project (light theme) = #3B82F6
+            — global token from constants/colors.ts (NOT the per-Button override)
+        On antd upgrade or theme token change — re-verify against the source.
+      */
+      .incloud-bootloader__dot-holder {
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        font-size: 20px;
+        line-height: 1;
+        color: #3b82f6;
+        transform-origin: 50% 50%;
       }
 
       .incloud-bootloader__dot {
-        position: absolute;
-        width: 8px;
-        height: 8px;
-        background: #1677ff;
-        border-radius: 50%;
-        transform: scale(0.75);
-        transform-origin: 12px 12px;
-        animation: incloud-bootloader-dot 1.2s infinite ease-in-out alternate;
+        position: relative;
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        font-size: 20px;
+        transform: rotate(45deg);
+        animation: incloud-bootloader-rotate 1.2s linear infinite;
       }
 
-      .incloud-bootloader__dot:nth-child(1) {
+      .incloud-bootloader__dot-item {
+        position: absolute;
+        display: block;
+        width: 9px;
+        height: 9px;
+        background: currentColor;
+        border-radius: 100%;
+        transform: scale(0.75);
+        transform-origin: 50% 50%;
+        opacity: 0.3;
+        animation: incloud-bootloader-pulse 1s linear infinite alternate;
+      }
+
+      .incloud-bootloader__dot-item:nth-child(1) {
         top: 0;
         left: 0;
+        animation-delay: 0s;
       }
 
-      .incloud-bootloader__dot:nth-child(2) {
+      .incloud-bootloader__dot-item:nth-child(2) {
         top: 0;
         right: 0;
         animation-delay: 0.4s;
       }
 
-      .incloud-bootloader__dot:nth-child(3) {
+      .incloud-bootloader__dot-item:nth-child(3) {
         right: 0;
         bottom: 0;
         animation-delay: 0.8s;
       }
 
-      .incloud-bootloader__dot:nth-child(4) {
+      .incloud-bootloader__dot-item:nth-child(4) {
         bottom: 0;
         left: 0;
         animation-delay: 1.2s;
@@ -105,14 +131,13 @@ export const getDynamicIndex = (baseprefix: string): string => {
 
       @keyframes incloud-bootloader-rotate {
         to {
-          transform: rotate(360deg);
+          transform: rotate(405deg);
         }
       }
 
-      @keyframes incloud-bootloader-dot {
+      @keyframes incloud-bootloader-pulse {
         to {
-          opacity: 0.3;
-          transform: scale(0.45);
+          opacity: 1;
         }
       }
     </style>
@@ -121,12 +146,14 @@ export const getDynamicIndex = (baseprefix: string): string => {
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root">
       <div class="incloud-bootloader" role="status" aria-live="polite">
-        <div class="incloud-bootloader__spinner" aria-hidden="true">
-          <span class="incloud-bootloader__dot"></span>
-          <span class="incloud-bootloader__dot"></span>
-          <span class="incloud-bootloader__dot"></span>
-          <span class="incloud-bootloader__dot"></span>
-        </div>
+        <span class="incloud-bootloader__dot-holder" aria-hidden="true">
+          <span class="incloud-bootloader__dot">
+            <i class="incloud-bootloader__dot-item"></i>
+            <i class="incloud-bootloader__dot-item"></i>
+            <i class="incloud-bootloader__dot-item"></i>
+            <i class="incloud-bootloader__dot-item"></i>
+          </span>
+        </span>
         <div class="incloud-bootloader__text">Loading...</div>
       </div>
     </div>
