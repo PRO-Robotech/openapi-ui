@@ -16,7 +16,7 @@ export const ContentContainerMiddle = styled.div<TContentContainerMiddleProps>`
   background-color: ${({ $bgColor }) => $bgColor};
   width: 100%;
   height: ${({ $maxHeight }) => $maxHeight || '100%'};
-  overflow-y: auto;
+  overflow-y: ${({ $maxHeight }) => ($maxHeight ? 'auto' : 'visible')};
   padding: 0 24px;
   flex-grow: ${({ $flexGrow }) => $flexGrow};
   display: ${({ $displayFlex }) => ($displayFlex ? 'flex' : 'block')};
