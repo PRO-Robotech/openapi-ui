@@ -72,7 +72,7 @@ export const TableBuiltinPage: FC<TTableBuiltinPageProps> = ({ inside }) => {
         <TableApiBuiltin
           resourceType="builtin"
           apiVersion="v1"
-          key={`${namespace}-${plural}`}
+          key={`${cluster}-${namespace}-${plural}`}
           namespace={namespace}
           plural={plural}
           limit={limitSp && limitSp.length > 0 ? Number(limitSp) : undefined}

@@ -179,7 +179,8 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
   //   resourceType === 'builtin'
   //     ? `/v1/${plural}-${extrasTickKey}`
   //     : `/${apiGroup}/${apiVersion}/${plural}-${extrasTickKey}`
-  const providerKey = resourceType === 'builtin' ? `/v1/${plural}` : `/${apiGroup}/${apiVersion}/${plural}`
+  const providerKey =
+    resourceType === 'builtin' ? `${cluster}/v1/${plural}` : `${cluster}/${apiGroup}/${apiVersion}/${plural}`
   const tableProps = {
     ...TABLE_PROPS,
     disablePagination: !searchMount,

@@ -30,7 +30,7 @@ type TSearchEntryProps = {
 }
 
 export const SearchEntry: FC<TSearchEntryProps> = ({ resource, labels, fields, form, constants, kindsWithVersion }) => {
-  const { namespace, syntheticProject } = useParams()
+  const { cluster, namespace, syntheticProject } = useParams()
   const [searchParams] = useSearchParams()
   const { token } = antdtheme.useToken()
 
@@ -93,6 +93,7 @@ export const SearchEntry: FC<TSearchEntryProps> = ({ resource, labels, fields, f
           <Spacer $space={12} $samespace />
           {plural && (
             <TableApiBuiltin
+              key={`${cluster}-${namespace}-${resource}`}
               resourceType={apiGroup.length > 0 ? 'api' : 'builtin'}
               namespace={isNamespaceResource ? namespace : undefined}
               apiGroup={apiGroup.length > 0 ? apiGroup : undefined}
