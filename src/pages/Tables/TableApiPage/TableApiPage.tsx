@@ -91,7 +91,7 @@ export const TableApiPage: FC<TTableApiPageProps> = ({ inside }) => {
           apiGroup={apiGroup}
           apiVersion={apiVersion}
           plural={plural}
-          key={`${apiGroup}-${apiVersion}-${namespace}-${plural}`}
+          key={`${cluster}-${apiGroup}-${apiVersion}-${namespace}-${plural}`}
           limit={limitSp && limitSp.length > 0 ? Number(limitSp) : undefined}
           inside={inside}
           customizationIdPrefix={tableCustomizationIdPrefix}
