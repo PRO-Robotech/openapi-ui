@@ -124,12 +124,14 @@ export const MainLayout: FC<TMainLayoutProps> = ({ children, forcedTheme }) => {
             <Styled.ContentContainer>
               <Header />
               {(useClusterListByResources ? clusterListQueryByResources.error : clusterListQuery.error) && (
-                <Alert
-                  message={`Cluster List Error: ${
-                    useClusterListByResources ? clusterListQueryByResources.error : clusterListQuery.error?.message
-                  } `}
-                  type="error"
-                />
+                <Styled.ClusterListAlertContainer>
+                  <Alert
+                    message={`Cluster List Error: ${
+                      useClusterListByResources ? clusterListQueryByResources.error : clusterListQuery.error?.message
+                    } `}
+                    type="error"
+                  />
+                </Styled.ClusterListAlertContainer>
               )}
               <Outlet />
               {children}
