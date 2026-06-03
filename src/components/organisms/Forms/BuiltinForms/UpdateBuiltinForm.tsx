@@ -47,7 +47,7 @@ export const UpdateBuiltinForm: FC<TUpdateBuiltinFormProps> = ({ plural, name, n
   }
 
   if (error) {
-    return <Alert message={`An error has occurred: ${error?.message} `} type="error" />
+    return <Alert title={`An error has occurred: ${error?.message} `} type="error" />
   }
 
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */

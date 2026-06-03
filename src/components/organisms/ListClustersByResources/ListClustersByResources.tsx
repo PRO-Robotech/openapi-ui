@@ -43,7 +43,7 @@ export const ListClustersByResources: FC = () => {
 
   return (
     <>
-      {error && <Alert message={`An error has occurred: ${error} `} type="error" />}
+      {error && <Alert title={`An error has occurred: ${error} `} type="error" />}
       {isLoading && !dataItems && <CenteredTableSpinner />}
       {!error && dataItems && (
         <EnrichedTableProvider

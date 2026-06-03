@@ -238,11 +238,11 @@ export const Search: FC = () => {
   }
 
   if (kindsError) {
-    return <Alert type="error" message="Error while loading kinds" description={kindsError?.message} />
+    return <Alert type="error" title="Error while loading kinds" description={kindsError?.message} />
   }
 
   if (!cluster) {
-    return <Alert type="error" message="Error while defining cluster" description="No cluster has been set" />
+    return <Alert type="error" title="Error while defining cluster" description="No cluster has been set" />
   }
 
   return (
