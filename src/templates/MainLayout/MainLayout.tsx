@@ -126,7 +126,7 @@ export const MainLayout: FC<TMainLayoutProps> = ({ children, forcedTheme }) => {
               {(useClusterListByResources ? clusterListQueryByResources.error : clusterListQuery.error) && (
                 <Styled.ClusterListAlertContainer>
                   <Alert
-                    message={`Cluster List Error: ${
+                    title={`Cluster List Error: ${
                       useClusterListByResources ? clusterListQueryByResources.error : clusterListQuery.error?.message
                     } `}
                     type="error"

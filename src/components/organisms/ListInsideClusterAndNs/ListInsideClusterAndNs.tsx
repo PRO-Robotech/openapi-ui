@@ -88,7 +88,7 @@ export const ListInsideClusterAndNs: FC = () => {
       )}
       {selectedCluster && (isCustomNamespaceResource ? namespacesDataCustom.error : namespacesData.error) && (
         <Alert
-          message={`An error has occurred: ${
+          title={`An error has occurred: ${
             isCustomNamespaceResource
               ? typeof namespacesDataCustom.error === 'string'
                 ? namespacesDataCustom.error

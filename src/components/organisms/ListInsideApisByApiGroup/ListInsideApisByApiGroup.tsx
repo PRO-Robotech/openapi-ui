@@ -94,7 +94,7 @@ export const ListInsideApisByApiGroup: FC<TListInsideApisByApiGroupProps> = ({ n
               })}
         </Styled.Grid>
       )}
-      {error && <Alert message={`An error has occurred: ${error?.message} `} type="error" />}
+      {error && <Alert title={`An error has occurred: ${error?.message} `} type="error" />}
     </>
   )
 }

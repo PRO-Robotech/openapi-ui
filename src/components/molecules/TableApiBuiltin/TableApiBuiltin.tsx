@@ -188,7 +188,7 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
   }
 
   if (!cluster) {
-    return <Alert type="error" message="Error while defining cluster" description="No cluster has been set" />
+    return <Alert type="error" title="Error while defining cluster" description="No cluster has been set" />
   }
 
   return (
@@ -215,7 +215,7 @@ export const TableApiBuiltin: FC<TTableApiBuiltinProps> = ({
           <Spacer $space={48} $samespace />
         </>
       )}
-      {error && <Alert message={`An error has occurred: ${error} `} type="error" />}
+      {error && <Alert title={`An error has occurred: ${error} `} type="error" />}
       {isLoading && !dataItems && <CenteredTableSpinner searchMount={searchMount} />}
       {!error && dataItems && (
         <EnrichedTableProvider

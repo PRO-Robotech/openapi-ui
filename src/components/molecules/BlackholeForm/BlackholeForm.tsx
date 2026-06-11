@@ -93,7 +93,7 @@ export const BlackholeForm: FC<TBlackholeFormProps> = ({ data, customizationId, 
   const partsOfUrl = useMemo(() => location.pathname.split('/'), [location.pathname])
 
   if (!cluster) {
-    return <Alert type="error" message="Error while defining cluster" description="No cluster has been set" />
+    return <Alert type="error" title="Error while defining cluster" description="No cluster has been set" />
   }
 
   return (

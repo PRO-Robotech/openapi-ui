@@ -36,12 +36,14 @@ const Container = styled.div<TContainerProps>`
 
   /* full width */
 
-  && .ant-menu li div {
+  && .ant-menu-item,
+  && .ant-menu-submenu-title {
     width: 100%;
     margin: 0 !important;
   }
 
-  && .ant-menu li {
+  && .ant-menu-item,
+  && .ant-menu-submenu {
     width: 100%;
     margin: 0 !important;
   }
@@ -60,11 +62,11 @@ const Container = styled.div<TContainerProps>`
 
   /* selected header bgcolor */
 
-  && .ant-menu-submenu-selected div {
+  && .ant-menu-submenu-selected > .ant-menu-submenu-title {
     background-color: ${({ $colorBgContainer }) => $colorBgContainer || 'initial'};
   }
 
-  && .ant-menu-submenu-selected div:hover {
+  && .ant-menu-submenu-selected > .ant-menu-submenu-title:hover {
     background-color: ${({ $colorBgContainer }) => $colorBgContainer || 'initial'};
   }
 

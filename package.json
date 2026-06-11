@@ -17,7 +17,7 @@
     "lint": "npm run lint:js && npm run lint:css && npm run tsc"
   },
   "dependencies": {
-    "@ant-design/icons": "5.6.0",
+    "@ant-design/icons": "6.2.5",
     "@monaco-editor/react": "4.6.0",
     "@originjs/vite-plugin-federation": "1.4.1",
     "@prorobotech/openapi-k8s-toolkit": "1.5.0-alpha.10",
@@ -29,7 +29,7 @@
     "@xterm/addon-fit": "0.10.0",
     "@xterm/xterm": "5.5.0",
     "@xyflow/react": "12.10.1",
-    "antd": "5.26.4",
+    "antd": "6.4.3",
     "axios": "1.12.2",
     "cross-env": "7.0.3",
     "dotenv": "16.4.5",

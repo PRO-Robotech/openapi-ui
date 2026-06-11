@@ -70,7 +70,7 @@ export const ListInsideAllResources: FC<TListInsideAllResourcesProps> = ({ names
         <Spacer $space={20} $samespace />
         {apiGroupList.isPending && <Spin />}
         {apiGroupList.error && (
-          <Alert message={`An error has occurred: ${apiGroupList.error?.message} `} type="error" />
+          <Alert title={`An error has occurred: ${apiGroupList.error?.message} `} type="error" />
         )}
         {!apiGroupList.error && crdGroups && (
           <TreeWithSearch
@@ -111,7 +111,7 @@ export const ListInsideAllResources: FC<TListInsideAllResourcesProps> = ({ names
         <div>
           {apiGroupList.isPending && <Spin />}
           {apiGroupList.error && (
-            <Alert message={`An error has occurred: ${apiGroupList.error?.message} `} type="error" />
+            <Alert title={`An error has occurred: ${apiGroupList.error?.message} `} type="error" />
           )}
           {!apiGroupList.error && nonCrdGroups && (
             <TreeWithSearch
@@ -133,9 +133,7 @@ export const ListInsideAllResources: FC<TListInsideAllResourcesProps> = ({ names
         </div>
         <div>
           {builtInData.isPending && <Spin />}
-          {builtInData.error && (
-            <Alert message={`An error has occurred: ${builtInData.error?.message} `} type="error" />
-          )}
+          {builtInData.error && <Alert title={`An error has occurred: ${builtInData.error?.message} `} type="error" />}
           {!builtInData.error && builtinGroups && (
             <TreeWithSearch
               treeData={getBuiltinTreeData(
