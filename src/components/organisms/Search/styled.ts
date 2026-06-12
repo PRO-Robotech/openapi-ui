@@ -32,9 +32,35 @@ const EmptyText = styled.div`
   line-height: 24px; /* 150% */
 `
 
+const SearchControls = styled.div`
+  .ant-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    width: fit-content;
+    min-height: 22px;
+    white-space: nowrap;
+    line-height: 20px;
+  }
+
+  .ant-tag > span:first-child {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .ant-tag .ant-tag-close-icon {
+    display: inline-flex;
+    align-items: center;
+    margin-inline-start: 2px;
+  }
+`
+
 export const Styled = {
   // Container,
   // OverflowContainer,
   EmptyContainer,
   EmptyText,
+  SearchControls,
 }

@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { Tag } from 'antd'
+import { resourceBadgeAbbrCss } from '@prorobotech/openapi-k8s-toolkit'
 
 type TContainerProps = {
   $colorBorder: string
@@ -15,10 +16,22 @@ const Container = styled.div<TContainerProps>`
 `
 
 const CustomTag = styled(Tag)`
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 14px;
-  height: 22px;
+  min-height: 22px;
+  width: fit-content;
+  white-space: nowrap;
+  line-height: 20px;
   /* stylelint-disable declaration-no-important */
   margin-inline-end: 0 !important;
+
+  .ant-tag-close-icon {
+    display: inline-flex;
+    align-items: center;
+    margin-inline-start: 2px;
+  }
 `
 
 type TAbbrProps = {
@@ -27,22 +40,7 @@ type TAbbrProps = {
 
 const Abbr = styled.span<TAbbrProps>`
   background-color: ${({ $bgColor }) => $bgColor};
-  border: 1px solid ${({ $bgColor }) => $bgColor};
-  border-radius: 4px;
-  padding: 0 7px;
-  height: 22px;
-  font-family: 'SF Pro', sans-serif;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-transform: uppercase;
-  letter-spacing: 0;
-  box-sizing: border-box;
-  flex-shrink: 0;
+  ${resourceBadgeAbbrCss}
 `
 
 type TApiGroupVersionProps = {

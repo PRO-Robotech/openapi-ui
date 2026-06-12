@@ -250,19 +250,21 @@ export const Search: FC = () => {
       {/* <Styled.Container $height={height}> */}
       {/* <Styled.OverflowContainer> */}
       <MainContentFixedTop ref={ref}>
-        <PackageSearch
-          cluster={cluster}
-          theme={theme}
-          form={form}
-          constants={{
-            FIELD_NAME,
-            FIELD_NAME_STRING,
-            FIELD_NAME_LABELS,
-            FIELD_NAME_FIELDS,
-            TYPE_SELECTOR,
-          }}
-          kindsWithVersion={kindsData.kindsWithVersion}
-        />
+        <Styled.SearchControls>
+          <PackageSearch
+            cluster={cluster}
+            theme={theme}
+            form={form}
+            constants={{
+              FIELD_NAME,
+              FIELD_NAME_STRING,
+              FIELD_NAME_LABELS,
+              FIELD_NAME_FIELDS,
+              TYPE_SELECTOR,
+            }}
+            kindsWithVersion={kindsData.kindsWithVersion}
+          />
+        </Styled.SearchControls>
       </MainContentFixedTop>
       <Spacer $space={height} $samespace />
       <ConfigProvider
