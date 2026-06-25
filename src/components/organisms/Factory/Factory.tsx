@@ -16,6 +16,11 @@ import {
   BASE_API_GROUP,
   BASE_API_VERSION,
   NODE_TERMINAL_DEFAULT_PROFILE,
+  RAW_NAMESPACE_ALL_LABEL,
+  RAW_NAMESPACE_CHOOSE_PLACEHOLDER,
+  RAW_NAMESPACE_LABEL,
+  RAW_NAMESPACE_PLACEHOLDER,
+  RAW_NAMESPACE_SELECT_PLACEHOLDER,
 } from 'constants/customizationApiGroupAndVersion'
 import '@xterm/xterm/css/xterm.css'
 import { ContentCardMain } from 'components/atoms'
@@ -32,6 +37,14 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags, setForcedSidebarId 
   const clusterEnabled = Boolean(cluster)
   const { key } = useParams()
   const [canShowNotFound, setCanShowNotFound] = useState(false)
+  const namespaceLabels = {
+    ...(RAW_NAMESPACE_LABEL ? { label: RAW_NAMESPACE_LABEL } : {}),
+    ...(RAW_NAMESPACE_PLACEHOLDER ? { placeholder: RAW_NAMESPACE_PLACEHOLDER } : {}),
+    ...(RAW_NAMESPACE_ALL_LABEL ? { allLabel: RAW_NAMESPACE_ALL_LABEL } : {}),
+    ...(RAW_NAMESPACE_CHOOSE_PLACEHOLDER ? { choosePlaceholder: RAW_NAMESPACE_CHOOSE_PLACEHOLDER } : {}),
+    ...(RAW_NAMESPACE_SELECT_PLACEHOLDER ? { selectPlaceholder: RAW_NAMESPACE_SELECT_PLACEHOLDER } : {}),
+  }
+  const hasNamespaceLabels = Object.keys(namespaceLabels).length > 0
 
   const { data: factoryData, isLoading: isFactoryLoading } = useK8sSmartResource<
     TFactoryResponse<TDynamicComponentsAppTypeMap>
@@ -98,6 +111,7 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags, setForcedSidebarId 
             urlsToFetch={spec.urlsToFetch ?? []}
             theme={theme}
             nodeTerminalDefaultProfile={NODE_TERMINAL_DEFAULT_PROFILE}
+            namespaceLabels={hasNamespaceLabels ? namespaceLabels : undefined}
             items={spec.data}
             components={DynamicComponents}
             effectiveReqIndexes={spec.effectiveReqIndexes}
@@ -115,6 +129,7 @@ export const Factory: FC<TFactoryProps> = ({ setSidebarTags, setForcedSidebarId 
         urlsToFetch={spec.urlsToFetch ?? []}
         theme={theme}
         nodeTerminalDefaultProfile={NODE_TERMINAL_DEFAULT_PROFILE}
+        namespaceLabels={hasNamespaceLabels ? namespaceLabels : undefined}
         items={spec.data}
         components={DynamicComponents}
         effectiveReqIndexes={spec.effectiveReqIndexes}

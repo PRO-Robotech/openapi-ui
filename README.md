@@ -36,6 +36,11 @@ This app can be configured through environment variables.
 | `SELECTOR_WIDTH_NAMESPACE`                  | `string`  | No               | Selector width for namespace: `200px`                                                         |
 | `SELECTOR_WIDTH_PROJECT`                    | `string`  | No               | Selector width for project: `200px`                                                           |
 | `SELECTOR_WIDTH_INSTANCE`                   | `string`  | No               | Selector width for instance: `200px`                                                          |
+| `NAMESPACE_LABEL`                           | `string`  | No               | Visible namespace label. Defaults to `Namespace`.                                             |
+| `NAMESPACE_PLACEHOLDER`                     | `string`  | No               | Visible namespace selector placeholder. Defaults to `Namespace`.                              |
+| `NAMESPACE_ALL_LABEL`                       | `string`  | No               | Visible label for the all-namespaces selector option. Defaults to `All Namespaces`.           |
+| `NAMESPACE_CHOOSE_PLACEHOLDER`              | `string`  | No               | Visible namespace chooser placeholder. Defaults to `Choose namespace`.                        |
+| `NAMESPACE_SELECT_PLACEHOLDER`              | `string`  | No               | Visible namespace form selector placeholder. Defaults to `Select namespace`.                  |
 | `CUSTOMIZATION_SIDEBAR_FALLBACK_ID`         | `string`  | Yes if no plugin | `spec.id` to find in `sidebars` to fallback. Use `-namespaced` for NS-pages                   |
 | `CUSTOMIZATION_BREADCRUMBS_FALLBACK_ID`     | `string`  | Yes if no plugin | `spec.id` **prefix** to find in `breadcrumbs` to fallback                                     |
 | `CUSTOMIZATION_CFO_FALLBACK_ID`             | `string`  | No               | `spec.id` **prefix** to find in `CFO` to fallback                                             |

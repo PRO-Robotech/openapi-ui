@@ -4,7 +4,12 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useNavSelectorInside } from 'hooks/useNavSelectorInside'
 import { useMountEffect } from 'hooks/useMountEffect'
 import { EntrySelect } from 'components/atoms'
-import { SELECTOR_WIDTH_NAMESPACE } from 'constants/customizationApiGroupAndVersion'
+import {
+  NAMESPACE_ALL_LABEL,
+  NAMESPACE_LABEL,
+  NAMESPACE_PLACEHOLDER,
+  SELECTOR_WIDTH_NAMESPACE,
+} from 'constants/customizationApiGroupAndVersion'
 
 type TSelectorNamespaceInsideProps = {
   cluster?: string
@@ -45,10 +50,10 @@ export const SelectorNamespaceInside: FC<TSelectorNamespaceInsideProps> = ({ clu
 
   return (
     <Flex gap={18} justify="start" align="center">
-      <Typography.Text>Namespace: </Typography.Text>
+      <Typography.Text>{NAMESPACE_LABEL}: </Typography.Text>
       <EntrySelect
-        placeholder="Namespace"
-        options={[{ value: 'all', label: 'All Namespaces' }, ...namespacesInSidebar]}
+        placeholder={NAMESPACE_PLACEHOLDER}
+        options={[{ value: 'all', label: NAMESPACE_ALL_LABEL }, ...namespacesInSidebar]}
         value={selectedNamespace || 'all'}
         onChange={handleNamepsaceChange}
         disabled={selectedCluster === undefined || namespacesInSidebar.length === 0}

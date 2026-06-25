@@ -13,6 +13,9 @@ import {
   BASE_API_VERSION,
   BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_PLURAL,
   BASE_CUSTOMIZATION_NAVIGATION_RESOURCE_NAME,
+  NAMESPACE_ALL_LABEL,
+  NAMESPACE_LABEL,
+  NAMESPACE_PLACEHOLDER,
   SELECTOR_WIDTH_NAMESPACE,
 } from 'constants/customizationApiGroupAndVersion'
 
@@ -107,10 +110,10 @@ export const SelectorNamespace: FC<TSelectorNamespaceProps> = ({ cluster, namesp
 
   return (
     <Flex gap={18} justify="start" align="center">
-      <Typography.Text>Namespace: </Typography.Text>
+      <Typography.Text>{NAMESPACE_LABEL}: </Typography.Text>
       <EntrySelect
-        placeholder="Namespace"
-        options={[{ value: 'all', label: 'All Namespaces' }, ...namespacesInSidebar]}
+        placeholder={NAMESPACE_PLACEHOLDER}
+        options={[{ value: 'all', label: NAMESPACE_ALL_LABEL }, ...namespacesInSidebar]}
         value={selectedNamespace || 'all'}
         onChange={handleNamepsaceChange}
         disabled={selectedCluster === undefined || namespacesInSidebar.length === 0}

@@ -10,6 +10,8 @@ import {
   CUSTOM_NAMESPACE_API_RESOURCE_API_GROUP,
   CUSTOM_NAMESPACE_API_RESOURCE_API_VERSION,
   CUSTOM_NAMESPACE_API_RESOURCE_PLURAL,
+  NAMESPACE_CHOOSE_PLACEHOLDER,
+  NAMESPACE_LABEL,
 } from 'constants/customizationApiGroupAndVersion'
 import { Styled } from './styled'
 
@@ -105,11 +107,11 @@ export const ListInsideClusterAndNs: FC = () => {
         ((!isCustomNamespaceResource && namespacesData.data && namespacesData.data.items.length > 0) ||
           (isCustomNamespaceResource && namespacesDataCustom.data && namespacesDataCustom.data.items.length > 0)) && (
           <>
-            <Typography.Text>Namespace</Typography.Text>
+            <Typography.Text>{NAMESPACE_LABEL}</Typography.Text>
             <Spacer $space={8} $samespace />
             {isCustomNamespaceResource ? (
               <Styled.FullWidthSelect
-                placeholder="Choose namespace"
+                placeholder={NAMESPACE_CHOOSE_PLACEHOLDER}
                 options={namespacesDataCustom.data?.items.map(ns => ({
                   label: ns.metadata.name,
                   value: ns.metadata.name,
@@ -126,7 +128,7 @@ export const ListInsideClusterAndNs: FC = () => {
               />
             ) : (
               <Styled.FullWidthSelect
-                placeholder="Choose namespace"
+                placeholder={NAMESPACE_CHOOSE_PLACEHOLDER}
                 options={namespacesData.data?.items.map(ns => ({
                   label: ns.metadata.name,
                   value: ns.metadata.name,
