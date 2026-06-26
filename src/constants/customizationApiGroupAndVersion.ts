@@ -1,5 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 
+window._env_ = window._env_ || {}
+
 export const TITLE_TEXT = import.meta.env.DEV
   ? window._env_.TITLE_TEXT || import.meta.env.VITE_TITLE_TEXT
   : window._env_.TITLE_TEXT
@@ -76,6 +78,28 @@ export const SELECTOR_WIDTH_PROJECT = import.meta.env.DEV
 export const SELECTOR_WIDTH_INSTANCE = import.meta.env.DEV
   ? window._env_.SELECTOR_WIDTH_INSTANCE || import.meta.env.VITE_SELECTOR_WIDTH_INSTANCE
   : window._env_.SELECTOR_WIDTH_INSTANCE
+
+export const RAW_NAMESPACE_LABEL = import.meta.env.DEV
+  ? window._env_.NAMESPACE_LABEL || import.meta.env.VITE_NAMESPACE_LABEL
+  : window._env_.NAMESPACE_LABEL
+export const RAW_NAMESPACE_PLACEHOLDER = import.meta.env.DEV
+  ? window._env_.NAMESPACE_PLACEHOLDER || import.meta.env.VITE_NAMESPACE_PLACEHOLDER
+  : window._env_.NAMESPACE_PLACEHOLDER
+export const RAW_NAMESPACE_ALL_LABEL = import.meta.env.DEV
+  ? window._env_.NAMESPACE_ALL_LABEL || import.meta.env.VITE_NAMESPACE_ALL_LABEL
+  : window._env_.NAMESPACE_ALL_LABEL
+export const RAW_NAMESPACE_CHOOSE_PLACEHOLDER = import.meta.env.DEV
+  ? window._env_.NAMESPACE_CHOOSE_PLACEHOLDER || import.meta.env.VITE_NAMESPACE_CHOOSE_PLACEHOLDER
+  : window._env_.NAMESPACE_CHOOSE_PLACEHOLDER
+export const RAW_NAMESPACE_SELECT_PLACEHOLDER = import.meta.env.DEV
+  ? window._env_.NAMESPACE_SELECT_PLACEHOLDER || import.meta.env.VITE_NAMESPACE_SELECT_PLACEHOLDER
+  : window._env_.NAMESPACE_SELECT_PLACEHOLDER
+
+export const NAMESPACE_LABEL = RAW_NAMESPACE_LABEL || 'Namespace'
+export const NAMESPACE_PLACEHOLDER = RAW_NAMESPACE_PLACEHOLDER || 'Namespace'
+export const NAMESPACE_ALL_LABEL = RAW_NAMESPACE_ALL_LABEL || 'All Namespaces'
+export const NAMESPACE_CHOOSE_PLACEHOLDER = RAW_NAMESPACE_CHOOSE_PLACEHOLDER || 'Choose namespace'
+export const NAMESPACE_SELECT_PLACEHOLDER = RAW_NAMESPACE_SELECT_PLACEHOLDER || 'Select namespace'
 
 export const CUSTOMIZATION_SIDEBAR_FALLBACK_ID = import.meta.env.DEV
   ? window._env_.CUSTOMIZATION_SIDEBAR_FALLBACK_ID || import.meta.env.VITE_CUSTOMIZATION_SIDEBAR_FALLBACK_ID
